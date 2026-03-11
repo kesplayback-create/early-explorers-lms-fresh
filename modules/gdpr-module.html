@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confidentiality & GDPR — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:#3AAFA9;--teal-d:#2B8A85;--teal-deep:#1A6562;--teal-l:#E8F7F6;--teal-pale:#F2FBFA;
+  --coral:#E07B5A;--coral-l:#FDF2EE;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;
+  --red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;
+  --white:#FFFFFF;--cream:#F8FCFB;
+  --gdpr:#1A3A6B;--gdpr-d:#0F2347;--gdpr-m:#2952A3;--gdpr-accent:#4A90D9;--gdpr-pale:rgba(74,144,217,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--gdpr);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#1A3A6B 0%,#0F2347 50%,#081830 100%);}
+
+/* TOP NAV */
+.topnav{background:rgba(15,35,71,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+
+.progress-track{display:flex;align-items:center;gap:6px;}
+.pdot{width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#90CAF9;}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+.pdot:hover .pdot-tip{opacity:1;}
+
+/* STAGE */
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+
+/* BOTTOM BAR */
+.bottombar{background:rgba(15,35,71,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#2952A3,#1A3A6B);color:#fff;box-shadow:0 4px 16px rgba(41,82,163,0.5);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(41,82,163,0.6);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* SLIDE SYSTEM */
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+
+/* TITLE CARD */
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(74,144,217,0.2) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:#fff;margin-bottom:12px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#90CAF9;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+
+/* TWO COLUMN */
+.sl-two{gap:28px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:16px;}
+.sl-two .visual-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+
+/* CONTENT CARD */
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);color:var(--ink);}
+.content-card.blue-card{background:linear-gradient(135deg,#1A3A6B,#0F2347);border-color:rgba(255,255,255,0.1);}
+
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.slide-h3.dark{color:var(--gdpr);}
+.slide-p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+
+/* STAT BOXES */
+.stat-row{display:flex;gap:12px;}
+.stat-box{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:13px;padding:16px 14px;text-align:center;}
+.stat-box .s-num{font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:#90CAF9;}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:3px;}
+
+/* BULLET LIST */
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.dark{color:var(--ink-m);}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.bi-blue{background:rgba(74,144,217,0.2);color:#90CAF9;}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+.bi-green{background:var(--sage-l);color:var(--sage);}
+.bi-red{background:#FFEAEA;color:#C9184A;}
+
+/* STEP SEQUENCE */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4A90D9,#2952A3);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(74,144,217,0.4);}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+
+/* HIGHLIGHT BOX */
+.highlight-box{border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.hb-warn{background:rgba(240,165,0,0.12);border:1.5px solid rgba(240,165,0,0.3);}
+.hb-info{background:rgba(74,144,217,0.15);border:1.5px solid rgba(74,144,217,0.3);}
+.hb-crit{background:rgba(224,90,90,0.15);border:1.5px solid rgba(224,90,90,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;}
+.hb-warn .hb-text{color:rgba(255,230,150,0.9);}
+.hb-info .hb-text{color:rgba(144,202,249,0.9);}
+.hb-crit .hb-text{color:rgba(255,180,180,0.9);}
+
+/* SCENE CARD */
+.scene-card{background:linear-gradient(135deg,rgba(74,144,217,0.2),rgba(26,58,107,0.6));border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 30% 70%,rgba(41,82,163,0.3),transparent 60%);}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+
+/* KNOWLEDGE CHECK */
+.kc-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;}
+.kc-tag{font-size:11px;font-weight:800;color:#90CAF9;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{display:flex;align-items:center;gap:13px;padding:15px 18px;border:2px solid rgba(255,255,255,0.12);border-radius:13px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#90CAF9;background:rgba(74,144,217,0.15);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#E05A5A;background:rgba(224,90,90,0.15);color:#FFB3B3;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#E05A5A;border-color:#E05A5A;color:#fff;}
+.kc-feedback{border-radius:13px;padding:15px 18px;display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(224,90,90,0.12);border:1.5px solid rgba(224,90,90,0.25);color:#FFB3B3;}
+
+/* SUMMARY */
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 14px;text-align:center;}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+
+/* ANIMATIONS */
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.anim-delay-1{animation-delay:0.15s !important;}
+.anim-delay-2{animation-delay:0.3s !important;}
+.anim-delay-3{animation-delay:0.45s !important;}
+.anim-delay-4{animation-delay:0.6s !important;}
+.anim-delay-5{animation-delay:0.75s !important;}
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+.bg-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.deco-circle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(74,144,217,0.12),transparent);}
+.dc1{width:400px;height:400px;top:-100px;right:-80px;}
+.dc2{width:280px;height:280px;bottom:-60px;left:-40px;}
+
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:#90CAF9;}
+
+/* PRINCIPLES GRID */
+.principles-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.principle-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;}
+.pc-num{font-size:10px;font-weight:800;color:#90CAF9;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.pc-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
+.pc-desc{font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;line-height:1.4;}
+
+/* RIGHTS GRID */
+.rights-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.right-card{background:rgba(74,144,217,0.1);border:1px solid rgba(74,144,217,0.2);border-radius:12px;padding:14px;text-align:center;}
+.rc-icon{font-size:24px;margin-bottom:6px;}
+.rc-title{font-size:12px;font-weight:800;color:#90CAF9;margin-bottom:3px;}
+.rc-desc{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.3;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <nav class="topnav">
+    <div class="tn-brand">
+      <div class="tn-logo">🌱</div>
+      <div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div>
+    </div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Confidentiality & GDPR</div>
+    <div class="tn-meta">
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 3</div>
+      <div class="tn-sep"></div>
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">20:00</span></div>
+    </div>
+  </nav>
+
+  <main class="stage">
+    <div class="bg-deco"><div class="deco-circle dc1"></div><div class="deco-circle dc2"></div></div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 1: WHAT IS GDPR & CONFIDENTIALITY
+    ════════════════════════════════════════════ -->
+
+    <!-- L1 S0 — Title -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="big-icon">🔒</div>
+      <div class="lesson-label">Lesson 1 of 3</div>
+      <h1>GDPR & Confidentiality</h1>
+      <p class="lesson-intro">Understanding your legal duties around data protection and confidentiality in early years settings.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~8 minutes</span>
+        <span class="t-pill">🔒 Your legal duty</span>
+      </div>
+    </div>
+
+    <!-- L1 S1 — What is GDPR -->
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · What is GDPR</div>
+        <div class="slide-h2 slide-in anim-delay-1">GDPR: The law that protects personal information</div>
+        <div class="content-card slide-in anim-delay-2">
+          <p class="slide-p">The <strong style="color:#90CAF9;">General Data Protection Regulation (GDPR)</strong> is a UK law that controls how organisations collect, store, use and share personal data. At Early Explorers, we hold sensitive information about children and families — GDPR tells us exactly how to handle it responsibly.</p>
+        </div>
+        <div class="stat-row slide-in anim-delay-3">
+          <div class="stat-box"><div class="s-num">2018</div><div class="s-lbl">UK GDPR came into force</div></div>
+          <div class="stat-box"><div class="s-num">£17.5M</div><div class="s-lbl">Maximum fine for breaches</div></div>
+          <div class="stat-box"><div class="s-num">72hrs</div><div class="s-lbl">To report a data breach</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🛡️</div>
+          <div class="scene-title">Personal Data at Early Explorers</div>
+          <div class="scene-sub">We hold children's names, dates of birth, medical needs, family contacts, observations, and photos. All of this is personal data protected by GDPR.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S2 — What counts as personal data -->
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Personal Data</div>
+        <div class="slide-h2 slide-in anim-delay-1">What counts as personal data?</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-blue">👤</div><div><strong>Basic identifiers</strong> — names, addresses, dates of birth, phone numbers</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">🏥</div><div><strong>Special category data</strong> — health information, allergies, medical conditions (extra protection required)</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-blue">📸</div><div><strong>Photos & videos</strong> — images of children are personal data and need parental consent</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">📋</div><div><strong>Observation records</strong> — developmental notes, Learning Journals, EYFS assessments</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-amber">👨‍👩‍👧</div><div><strong>Family information</strong> — custody arrangements, contact restrictions, court orders</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-info slide-in-r">
+          <div class="hb-icon">ℹ️</div>
+          <div class="hb-text">Special category data (health, ethnicity, religion) requires extra safeguards. Always treat it with the highest level of care and never share it without clear authorisation.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Even casual conversations about a child to an unauthorised person can be a GDPR breach. Be mindful of who can hear you at all times.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S3 — The 7 Principles -->
+    <div class="slide sl-two" data-lesson="1" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · The 7 Principles</div>
+        <div class="slide-h2 slide-in anim-delay-1">GDPR is built on 7 principles</div>
+        <div class="principles-grid slide-in anim-delay-2">
+          <div class="principle-card"><div class="pc-num">01</div><div class="pc-title">Lawful & Fair</div><div class="pc-desc">Only process data with a legal basis and in a fair way</div></div>
+          <div class="principle-card"><div class="pc-num">02</div><div class="pc-title">Purpose Limitation</div><div class="pc-desc">Only use data for the reason it was collected</div></div>
+          <div class="principle-card"><div class="pc-num">03</div><div class="pc-title">Data Minimisation</div><div class="pc-desc">Only collect what you actually need</div></div>
+          <div class="principle-card"><div class="pc-num">04</div><div class="pc-title">Accuracy</div><div class="pc-desc">Keep records up to date and correct</div></div>
+          <div class="principle-card"><div class="pc-num">05</div><div class="pc-title">Storage Limitation</div><div class="pc-desc">Don&#39;t keep data longer than necessary</div></div>
+          <div class="principle-card"><div class="pc-num">06</div><div class="pc-title">Security</div><div class="pc-desc">Protect data from loss, theft or unauthorised access</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">⚖️</div>
+          <div class="scene-title">Accountability</div>
+          <div class="scene-sub">The 7th principle — Early Explorers must be able to demonstrate compliance with all other principles. This is why we have a Data Protection Policy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S4 — Knowledge Check -->
+    <div class="slide" data-lesson="1" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q slide-in anim-delay-1">A parent asks you to share another child's allergy information with them. What should you do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Sharing one child\'s data with another parent is a GDPR breach. Each family\'s information is confidential.')"><div class="kc-letter">A</div>Share it — parents have a right to know about risks in the room</div>
+          <div class="kc-opt" data-feedback="Correct. Medical and allergy data is special category data. You must never share one child's personal data with another family." onclick="checkAnswer(this,'kc-1',true,this.dataset.feedback)"><div class="kc-letter">B</div>Decline politely and explain you cannot share other children's information</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Only sharing with the manager is still a breach if not necessary. The answer is to decline the request entirely.')"><div class="kc-letter">C</div>Tell the manager and let them decide</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Sharing is still a breach regardless of who requests it. Decline the request and explain confidentiality.')"><div class="kc-letter">D</div>Share it only if the parent seems genuinely concerned</div>
+        </div>
+        <div id="kc-1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 2: YOUR RESPONSIBILITIES
+    ════════════════════════════════════════════ -->
+
+    <!-- L2 S0 — Title -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="big-icon">👤</div>
+      <div class="lesson-label">Lesson 2 of 3</div>
+      <h1>Your Responsibilities</h1>
+      <p class="lesson-intro">What you must do every day to protect personal data and maintain confidentiality at Early Explorers.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~7 minutes</span>
+        <span class="t-pill">✅ Daily practice</span>
+      </div>
+    </div>
+
+    <!-- L2 S1 — Day to day duties -->
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Daily Duties</div>
+        <div class="slide-h2 slide-in anim-delay-1">Your day-to-day data protection duties</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div><div class="step-title">Keep records secure</div><div class="step-desc">Never leave children's files, registers or medical forms where unauthorised people can see them. Lock away or close down when not in use.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div><div class="step-title">Passwords & screens</div><div class="step-desc">Lock your screen when stepping away. Never share passwords. Do not use personal devices to photograph or record children.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div><div class="step-title">Conversations</div><div class="step-desc">Discuss children only with those who need to know. Never talk about families in the carpark, corridors or social settings.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div><div class="step-title">Social media</div><div class="step-desc">Never post photos of children or share any information about families online — even in private groups. This is gross misconduct.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-crit slide-in-r">
+          <div class="hb-icon">🚫</div>
+          <div class="hb-text">Posting photos of children on social media — even privately — is a serious data breach and gross misconduct. It can result in immediate dismissal.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">📱</div>
+          <div class="scene-title">Personal Devices</div>
+          <div class="scene-sub">Personal phones must not be used to photograph children. All photos must be taken on setting devices only with parental consent on file.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S2 — Sharing data lawfully -->
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Sharing Data</div>
+        <div class="slide-h2 slide-in anim-delay-1">When can you share information?</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-green">✅</div><div><strong>With consent</strong> — the parent or carer has given written permission for that specific sharing</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-green">✅</div><div><strong>Need to know</strong> — sharing within the team where it is necessary for the child's care</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-green">✅</div><div><strong>Legal obligation</strong> — sharing with Ofsted, local authority or police when legally required</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-green">✅</div><div><strong>Safeguarding</strong> — when a child is at risk, safeguarding overrides confidentiality. Share with DSL immediately.</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-red">❌</div><div><strong>Never share</strong> with friends, other parents, family members, or on social media — regardless of context</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-info slide-in-r">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">Safeguarding always takes priority over confidentiality. If a child is at risk, you must share information with the DSL even without parental consent.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">🤝</div>
+          <div class="scene-title">Information Requests</div>
+          <div class="scene-sub">If you are unsure whether you can share information, always check with your manager first. When in doubt, do not share.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S3 — Data Breaches -->
+    <div class="slide sl-two" data-lesson="2" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Data Breaches</div>
+        <div class="slide-h2 slide-in anim-delay-1">What is a data breach and what do you do?</div>
+        <div class="content-card slide-in anim-delay-2">
+          <p class="slide-p">A data breach is any incident where personal data is accessed, lost, altered or shared without authorisation. Examples include: leaving a child's file in a public area, sending an email to the wrong person, or a lost USB stick containing records.</p>
+        </div>
+        <div class="steps slide-in anim-delay-3">
+          <div class="step"><div class="step-num">1</div><div><div class="step-title">Don&#39;t panic — act immediately</div><div class="step-desc">Stop the breach if possible (retrieve the document, close the email thread)</div></div></div>
+          <div class="step"><div class="step-num">2</div><div><div class="step-title">Report to your manager</div><div class="step-desc">Tell your manager straight away — even if you think it&#39;s minor</div></div></div>
+          <div class="step"><div class="step-num">3</div><div><div class="step-title">72-hour window</div><div class="step-desc">Serious breaches must be reported to the ICO within 72 hours — your manager handles this</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⏱️</div>
+          <div class="hb-text">The ICO (Information Commissioner&#39;s Office) must be notified of serious breaches within 72 hours. Prompt reporting protects the setting and the families involved.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">📋</div>
+          <div class="scene-title">Always Report</div>
+          <div class="scene-sub">Never try to handle a breach alone. Report to your manager immediately — no matter how small it seems. Unreported breaches can become much bigger problems.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S4 — Knowledge Check -->
+    <div class="slide" data-lesson="2" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q slide-in anim-delay-1">You accidentally send a child's medical report to the wrong parent by email. What should you do first?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Waiting until the end of the day delays reporting. Data breaches must be reported immediately.')"><div class="kc-letter">A</div>Wait until the end of the day and mention it in handover</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Contacting the parent first without telling your manager is not the correct procedure. Report to your manager immediately.')"><div class="kc-letter">B</div>Email the wrong parent and ask them to delete it</div>
+          <div class="kc-opt" data-feedback="Correct. Report to your manager immediately. They will manage the breach process, contact the ICO if needed, and advise on next steps." onclick="checkAnswer(this,'kc-2',true,this.dataset.feedback)"><div class="kc-letter">C</div>Report to your manager immediately and follow the breach procedure</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Hoping no one notices is never acceptable. All breaches must be reported regardless of perceived impact.')"><div class="kc-letter">D</div>Hope the wrong parent does not read it and do nothing</div>
+        </div>
+        <div id="kc-2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 3: RIGHTS & EARLY EXPLORERS PRACTICE
+    ════════════════════════════════════════════ -->
+
+    <!-- L3 S0 — Title -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="big-icon">⚖️</div>
+      <div class="lesson-label">Lesson 3 of 3</div>
+      <h1>Rights & Our Practice</h1>
+      <p class="lesson-intro">Understanding individual rights under GDPR and how Early Explorers embeds data protection into everyday practice.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~5 minutes</span>
+        <span class="t-pill">🏆 Module complete</span>
+      </div>
+    </div>
+
+    <!-- L3 S1 — Rights under GDPR -->
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Individual Rights</div>
+        <div class="slide-h2 slide-in anim-delay-1">Families have rights over their data</div>
+        <div class="rights-grid slide-in anim-delay-2">
+          <div class="right-card"><div class="rc-icon">👁️</div><div class="rc-title">Right to Access</div><div class="rc-desc">Parents can request to see all data held on their child</div></div>
+          <div class="right-card"><div class="rc-icon">✏️</div><div class="rc-title">Right to Rectify</div><div class="rc-desc">They can ask us to correct inaccurate information</div></div>
+          <div class="right-card"><div class="rc-icon">🗑️</div><div class="rc-title">Right to Erasure</div><div class="rc-desc">They can request deletion in certain circumstances</div></div>
+          <div class="right-card"><div class="rc-icon">🚫</div><div class="rc-title">Right to Object</div><div class="rc-desc">They can object to certain types of processing</div></div>
+          <div class="right-card"><div class="rc-icon">📦</div><div class="rc-title">Portability</div><div class="rc-desc">They can request their data in a portable format</div></div>
+          <div class="right-card"><div class="rc-icon">⚙️</div><div class="rc-title">Restrict Processing</div><div class="rc-desc">They can limit how we use their data</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-info slide-in-r">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">If a parent makes a Subject Access Request (asking to see their data), refer them to the manager. We have 30 days to respond. Never ignore these requests.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 S2 — Early Explorers Practice -->
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Our Practice</div>
+        <div class="slide-h2 slide-in anim-delay-1">How Early Explorers protects data</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-blue">📝</div><div><strong>Privacy notices</strong> — parents are informed at enrolment about what data we hold and why</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-blue">🔐</div><div><strong>Secure storage</strong> — physical files locked, digital data password protected, limited access</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-blue">📸</div><div><strong>Photo consent</strong> — written consent obtained before any photos are taken or shared</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-blue">⏳</div><div><strong>Retention periods</strong> — records kept only as long as required by law, then securely destroyed</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-blue">🎓</div><div><strong>Staff training</strong> — all staff complete GDPR training (you&#39;re doing it now!)</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🗂️</div>
+          <div class="scene-title">Record Retention</div>
+          <div class="scene-sub">Children's records are kept for a set period after they leave — typically until they turn 21 for safeguarding records. Never dispose of records without manager approval.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 S3 — Summary -->
+    <div class="slide sl-summary" data-lesson="3" data-slide="3">
+      <div class="summary-icon">🔒</div>
+      <h2 class="summary-h">Module Complete — Key Principles</h2>
+      <p class="summary-p">You&#39;ve completed Confidentiality & GDPR. Carry these principles into your daily practice at Early Explorers.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">🔐</div><div class="sk-title">Keep It Secure</div><div class="sk-sub">Lock away files, use passwords, no personal devices</div></div>
+        <div class="sk-card"><div class="sk-icon">🤫</div><div class="sk-title">Need to Know</div><div class="sk-sub">Only share with those who genuinely need the information</div></div>
+        <div class="sk-card"><div class="sk-icon">📱</div><div class="sk-title">No Social Media</div><div class="sk-sub">Never post children or family info online — ever</div></div>
+        <div class="sk-card"><div class="sk-icon">🚨</div><div class="sk-title">Report Breaches</div><div class="sk-sub">Tell your manager immediately — never cover up</div></div>
+        <div class="sk-card"><div class="sk-icon">🛡️</div><div class="sk-title">Safeguarding First</div><div class="sk-sub">Risk to a child overrides confidentiality always</div></div>
+        <div class="sk-card"><div class="sk-icon">❓</div><div class="sk-title">When in Doubt</div><div class="sk-sub">Ask your manager before sharing anything</div></div>
+      </div>
+    </div>
+
+    <!-- L3 S4 — Knowledge Check + Final CTA -->
+    <div class="slide" data-lesson="3" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q slide-in anim-delay-1">A colleague asks you about a child&#39;s family situation that you know from their confidential records. What should you do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-3">
+          <div class="kc-opt" data-feedback="Correct. Share information only with those who need it for their role. Even colleagues have no automatic right to confidential family information." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">A</div>Only share if it is directly relevant to their role with that child</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Colleagues do not automatically have the right to all information. Only share on a need-to-know basis.')"><div class="kc-letter">B</div>Share it — they are a trusted colleague</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This avoids the issue but does not address the principle. The correct answer is to only share on a need-to-know basis.')"><div class="kc-letter">C</div>Change the subject without explaining why</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Sharing outside work is a serious breach. Confidentiality applies everywhere, not just in the setting.')"><div class="kc-letter">D</div>Tell them outside of work where it is more private</div>
+        </div>
+        <div id="kc-3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- L3 S5 — Ready for Assessment -->
+    <div class="slide sl-title" data-lesson="3" data-slide="5">
+      <div class="big-icon" style="animation:pulse 2s ease-in-out infinite;">🏆</div>
+      <h1>Ready for Your Assessment?</h1>
+      <p class="lesson-intro">You&#39;ve completed all 3 lessons. Take the 10-question assessment to receive your certificate. Pass mark: 80%.</p>
+      <div class="title-pills">
+        <span class="t-pill">❓ 10 questions</span>
+        <span class="t-pill">🎯 80% to pass</span>
+        <span class="t-pill">🏆 Certificate on completion</span>
+      </div>
+      <div style="margin-top:28px;animation:slideUp 0.5s ease 0.6s both;">
+        <button class="btn-nav btn-next-main" style="padding:15px 36px;font-size:15px;" onclick="returnToLMSForQuiz()">Return to LMS for Quiz →</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bottombar">
+    <div class="bb-left">
+      <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button>
+    </div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 5</div>
+    <div class="bb-right">
+      <button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const lessons=[
+  {title:"GDPR & Confidentiality",slides:5},
+  {title:"Your Responsibilities",slides:5},
+  {title:"Rights & Our Practice",slides:6},
+];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+
+function buildDots(){
+  const track=document.getElementById('prog-track');
+  lessons.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='pdot';
+    d.dataset.lesson=i;
+    const tip=document.createElement('div');
+    tip.className='pdot-tip';
+    tip.textContent=`Lesson ${i+1}: ${l.title}`;
+    d.appendChild(tip);
+    d.onclick=()=>jumpToLesson(i);
+    track.appendChild(d);
+  });
+  updateDots();
+}
+
+function updateDots(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson)-1;
+  document.querySelectorAll('.pdot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<lessonNum)d.classList.add('done');
+    else if(i===lessonNum)d.classList.add('active');
+  });
+}
+
+function jumpToLesson(lessonIdx){
+  const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===lessonIdx);
+  if(target>=0)goTo(target);
+}
+
+function goTo(idx,direction=1){
+  if(idx<0||idx>=totalSlides)return;
+  const outSlide=allSlides[currentIndex];
+  const inSlide=allSlides[idx];
+  outSlide.classList.remove('active');
+  outSlide.classList.add('exit');
+  setTimeout(()=>{
+    outSlide.classList.remove('exit');
+    inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';
+  },50);
+  currentIndex=idx;
+  inSlide.classList.add('active');
+  setTimeout(()=>{
+    inSlide.querySelectorAll('.step').forEach((s,i)=>{
+      setTimeout(()=>s.classList.add('visible'),i*120);
+    });
+    inSlide.querySelectorAll('.slide-in,.slide-in-r').forEach((s)=>{
+      s.style.opacity='1';
+      s.style.transform='translateY(0)';
+    });
+  },100);
+  updateUI();
+
+  if(typeof trackLessonComplete==="function"){
+    const lessonSlides=allSlides.filter(s=>s.dataset.lesson&&s.dataset.slide==="0");
+    const currentLesson=inSlide.dataset.lesson;
+    if(currentLesson&&inSlide.dataset.slide==="0"){
+      trackLessonComplete(parseInt(currentLesson),lessonSlides.length).catch(e=>console.error("Track error:",e));
+    }
+  }
+}
+
+function navigate(dir){goTo(currentIndex+dir,dir);}
+
+function updateUI(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson);
+  const slideNum=parseInt(slide.dataset.slide);
+  const lesson=lessons[lessonNum-1];
+  const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);
+  const slideInLesson=slideNum+1;
+  document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 3`;
+  document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;
+  document.getElementById('btn-prev').disabled=currentIndex===0;
+  const nextBtn=document.getElementById('btn-next');
+  if(currentIndex===totalSlides-1){
+    nextBtn.textContent='Return to LMS for Quiz →';
+    nextBtn.onclick=function(){returnToLMSForQuiz();};
+    nextBtn.disabled=false;
+  }else{
+    nextBtn.textContent='Next →';
+    nextBtn.onclick=function(){navigate(1);};
+    nextBtn.disabled=false;
+  }
+  updateDots();
+  const timeMap=[20,14,8];
+  document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;
+}
+
+function checkAnswer(el,kcId,isCorrect,feedbackText){
+  if(answered[kcId])return;
+  answered[kcId]=true;
+  const container=document.getElementById(kcId);
+  container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});
+  if(isCorrect){el.classList.add('correct');}
+  else{
+    el.classList.add('wrong');
+    container.querySelectorAll('.kc-opt').forEach(opt=>{
+      const oc=opt.getAttribute('onclick')||'';
+      if(oc.includes(',true,')||oc.includes(',true)')){opt.classList.add('correct');}
+    });
+  }
+  const fb=document.getElementById(kcId+'-feedback');
+  fb.style.display='flex';
+  fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;
+  setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);
+});
+
+buildDots();updateUI();
+setTimeout(()=>{
+  allSlides[0].querySelectorAll('.step').forEach((s,i)=>{
+    setTimeout(()=>s.classList.add('visible'),i*120);
+  });
+},300);
+</script>
+
+<script>
+  window.MODULE_CODE = "GDPR-01";
+
+  window.returnToLMSForQuiz = function(){
+    try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'GDPR-01'); }catch(e){}
+    if(window.opener && !window.opener.closed){
+      try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'GDPR-01'); }catch(e){}
+      try{ window.close(); }catch(e){}
+    }else{
+      try{ window.location.href = '../index.html'; }catch(e){ alert('Please return to the main LMS window and click Take Quiz.'); }
+    }
+  };
+</script>
+
+<!-- Supabase + LMS scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+
+</body>
+</html>

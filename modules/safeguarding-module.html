@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safeguarding Level 1 Refresher — Early Explorers CPD Academy</title>
+<title>Safeguarding — Early Explorers CPD Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -209,7 +209,7 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
       <div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div>
     </div>
     <div class="tn-sep"></div>
-    <div class="tn-title">Safeguarding Level 1 Refresher</div>
+    <div class="tn-title">Safeguarding</div>
     <div class="tn-meta">
       <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 4</div>
       <div class="tn-sep"></div>
@@ -542,7 +542,7 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
         <div class="kc-q slide-in anim-delay-1">A child starts to tell you something concerning but then stops and says "actually, never mind." What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-3">
           <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Never dismiss a child who has started a disclosure, even if they stop. This is still a safeguarding concern.')"><div class="kc-letter">A</div>Accept their decision and move on</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',true,'Correct. Gently encourage them, reassure them, but don't push. Then report the partial disclosure to the DSL immediately.')"><div class="kc-letter">B</div>Gently encourage them to continue, reassure them, and report even partial disclosures to the DSL</div>
+          <div class="kc-opt" data-feedback="Correct. Gently encourage them, reassure them, but don't push. Then report the partial disclosure to the DSL immediately." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">B</div>Gently encourage them to continue, reassure them, and report even partial disclosures to the DSL</div>
           <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Forcing a child to talk can be harmful and may contaminate evidence. Gentle encouragement and reassurance, then report.')"><div class="kc-letter">C</div>Insist they tell you what they were going to say</div>
           <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Waiting could put the child at continued risk. Report immediately, even if the disclosure was incomplete.')"><div class="kc-letter">D</div>Wait to see if they bring it up again later</div>
         </div>
@@ -591,7 +591,7 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
     <div class="slide sl-summary" data-lesson="4" data-slide="2">
       <div class="summary-icon">🛡️</div>
       <h2 class="summary-h">Module Complete — Key Principles</h2>
-      <p class="summary-p">You've completed Safeguarding Level 1 Refresher. Carry these principles into your daily practice.</p>
+      <p class="summary-p">You've completed the Safeguarding module. Carry these principles into your daily practice.</p>
       <div class="summary-keys">
         <div class="sk-card"><div class="sk-icon">👁️</div><div class="sk-title">Be Vigilant</div><div class="sk-sub">Notice changes, trust your instincts</div></div>
         <div class="sk-card"><div class="sk-icon">👂</div><div class="sk-title">Listen to Children</div><div class="sk-sub">Take them seriously, every time</div></div>
@@ -720,9 +720,11 @@ function updateUI(){
   const nextBtn=document.getElementById('btn-next');
   if(currentIndex===totalSlides-1){
     nextBtn.textContent='Return to LMS →';
+    nextBtn.onclick=function(){returnToLMSForQuiz();};
     nextBtn.disabled=false;
   }else{
     nextBtn.textContent='Next →';
+    nextBtn.onclick=function(){navigate(1);};
     nextBtn.disabled=false;
   }
   updateDots();
@@ -739,7 +741,8 @@ function checkAnswer(el,kcId,isCorrect,feedbackText){
   else{
     el.classList.add('wrong');
     container.querySelectorAll('.kc-opt').forEach(opt=>{
-      if(opt.getAttribute('onclick').includes('true')){opt.classList.add('correct');}
+      const oc=opt.getAttribute('onclick')||'';
+      if(oc.includes(',true,')||oc.includes(',true)')){opt.classList.add('correct');}
     });
   }
   const fb=document.getElementById(kcId+'-feedback');

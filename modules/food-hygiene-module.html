@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Safety & Medication Management (Level 2) — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2E7D32;--primary-d:#1B5E20;--primary-deep:#0A3D0E;--primary-l:#E8F5E9;--teal:#3AAFA9;--teal-l:#E8F7F6;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;--red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;--white:#FFFFFF;--cream:#F8FCFB;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#2E7D32 0%,#1B5E20 50%,#0A3D0E 100%);}
+.topnav{background:rgba(10,61,14,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.pdot{width:22px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#A5D6A7;}
+.pdot.active{background:#fff;width:30px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:10;}
+.pdot:hover .pdot-tip{opacity:1;}
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.bottombar{background:rgba(10,61,14,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;box-shadow:0 4px 16px rgba(46,125,50,0.4);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,125,50,0.5);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:24px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(165,214,167,0.15) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:80px;margin-bottom:16px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:34px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#A5D6A7;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:16px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+.sl-two{gap:24px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:14px;}
+.sl-two .visual-col{width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;}
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);}
+.content-card.green-card{background:linear-gradient(135deg,#1B5E20,#0A3D0E);border-color:rgba(255,255,255,0.1);}
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;}
+.slide-h3.dark{color:#1B5E20;}
+.slide-p{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+.stat-row{display:flex;gap:10px;}
+.stat-box{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 12px;text-align:center;}
+.stat-box .s-num{font-family:'Quicksand',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:2px;}
+.bullet-list{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+.bullet{display:flex;align-items:flex-start;gap:10px;font-size:13px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+.bullet.dark{color:var(--ink-m);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;}
+.bi-green{background:var(--primary-l);color:var(--primary-d);}
+.bi-red{background:var(--red-l);color:var(--red);}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-teal{background:var(--teal-l);color:var(--teal);}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+.bi-sage{background:var(--sage-l);color:#2d7a4f;}
+.bi-purple{background:#f0e8fd;color:#5a1aa0;}
+.steps{display:flex;flex-direction:column;}
+.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#2E7D32,#1B5E20);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(46,125,50,0.4);}
+.step-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:2px;}
+.step-desc{font-size:12px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+.highlight-box{border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;}
+.hb-warn{background:rgba(224,90,90,0.15);border:1.5px solid rgba(224,90,90,0.3);}
+.hb-crit{background:rgba(240,165,0,0.2);border:1.5px solid rgba(240,165,0,0.3);}
+.hb-info{background:rgba(46,125,50,0.2);border:1.5px solid rgba(165,214,167,0.3);}
+.hb-law{background:rgba(90,26,160,0.2);border:1.5px solid rgba(180,140,240,0.3);}
+.hb-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:12px;font-weight:600;line-height:1.6;color:rgba(255,240,210,0.9);}
+.hb-warn .hb-text{color:rgba(255,200,200,0.9);}
+.hb-info .hb-text{color:rgba(165,214,167,0.9);}
+.hb-law .hb-text{color:rgba(200,170,255,0.9);}
+.scene-card{background:linear-gradient(135deg,rgba(165,214,167,0.15),rgba(10,61,14,0.4));border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:22px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:18px;background:radial-gradient(circle at 30% 70%,rgba(46,125,50,0.2),transparent 60%);}
+.scene-big-icon{font-size:70px;margin-bottom:10px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:16px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:12px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:5px;position:relative;z-index:1;line-height:1.5;}
+.kc-wrap{max-width:660px;width:100%;display:flex;flex-direction:column;gap:18px;}
+.kc-tag{font-size:11px;font-weight:800;color:#A5D6A7;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:20px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:8px;}
+.kc-opt{display:flex;align-items:center;gap:12px;padding:13px 16px;border:2px solid rgba(255,255,255,0.12);border-radius:12px;cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#A5D6A7;background:rgba(165,214,167,0.12);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#FF9D76;background:rgba(255,157,118,0.15);color:#FFD6A5;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#FF9D76;border-color:#FF9D76;color:#fff;}
+.kc-feedback{border-radius:12px;padding:13px 16px;display:flex;align-items:flex-start;gap:10px;font-size:13px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(255,157,118,0.12);border:1.5px solid rgba(255,157,118,0.25);color:#FFD6A5;}
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:64px;margin-bottom:14px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:15px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:22px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:760px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 12px;text-align:center;}
+.sk-icon{font-size:24px;margin-bottom:6px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
+.sk-sub{font-size:10px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.lesson-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px;}
+.lb-dot{width:6px;height:6px;border-radius:50%;background:#A5D6A7;}
+.btn-quiz{background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;border:none;border-radius:12px;padding:13px 28px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(46,125,50,0.4);transition:all 0.2s;animation:slideUp 0.5s ease 0.5s both;}
+.btn-quiz:hover{transform:translateY(-2px);}
+.law-box{background:rgba(90,26,160,0.15);border:1.5px solid rgba(180,140,240,0.25);border-radius:12px;padding:14px 16px;}
+.law-title{font-size:11px;font-weight:800;color:rgba(200,170,255,0.8);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.law-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);margin-bottom:5px;line-height:1.4;}
+.law-item:last-child{margin-bottom:0;}
+.board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
+.board-chip{border-radius:8px;padding:8px 6px;text-align:center;font-size:11px;font-weight:800;}
+.haccp-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.haccp-pill{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.75);}
+.allergen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;}
+.allergen-chip{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:6px 8px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);}
+.allergen-chip .a-icon{font-size:16px;display:block;margin-bottom:2px;}
+.temp-gauge{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-top:6px;}
+.temp-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:12px;font-weight:700;}
+.temp-row:last-child{border-bottom:none;}
+.temp-val{font-family:'Quicksand',sans-serif;font-size:15px;font-weight:700;width:70px;flex-shrink:0;}
+.temp-label{color:rgba(255,255,255,0.7);flex:1;}
+.pest-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.pest-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;}
+.pest-title{font-size:12px;font-weight:800;color:#A5D6A7;margin-bottom:4px;}
+.pest-signs{font-size:11px;color:rgba(255,255,255,0.65);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="topnav">
+    <div class="tn-brand"><div class="tn-logo">🌱</div><div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div></div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Food Safety & Medication Management — Level 2</div>
+    <div class="tn-meta">
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 7</div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">45:00</span></div>
+    </div>
+  </nav>
+  <main class="stage">
+
+    <!-- ═══════════════════════════════════════ LESSON 1 ═══════════════════════════════════════ -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="big-icon">⚖️</div>
+      <div class="lesson-label">Lesson 1 of 7</div>
+      <h1>Food Safety Law & Your Responsibilities</h1>
+      <p class="lesson-intro">Every person who handles food is subject to food safety law. Understand the legal framework, what it requires of you, and the principles of HACCP that underpin everything we do.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · The Legal Framework</div>
+        <h2 class="slide-h2">The Law That Governs Food Safety</h2>
+        <p class="slide-p">Food safety in the UK is governed by several pieces of legislation. As a food handler, you are personally responsible for complying with these laws.</p>
+        <div class="law-box slide-in" style="animation-delay:0.1s">
+          <div class="law-title">Key Legislation</div>
+          <div class="law-item">⚖️ <div><strong>Food Safety Act 1990</strong> — makes it an offence to sell food that is unfit, unsafe or not of the nature/substance/quality demanded</div></div>
+          <div class="law-item">📋 <div><strong>Food Hygiene (England) Regulations 2006</strong> — sets hygiene requirements for all food businesses, based on EU Regulation 852/2004</div></div>
+          <div class="law-item">🏛️ <div><strong>Food Standards Agency (FSA)</strong> — the government body responsible for food safety policy and enforcement in the UK</div></div>
+          <div class="law-item">🔍 <div><strong>Environmental Health Officers (EHOs)</strong> — local authority inspectors who visit food businesses unannounced to check compliance</div></div>
+        </div>
+        <div class="highlight-box hb-law slide-in" style="animation-delay:0.2s">
+          <div class="hb-icon">📌</div>
+          <div class="hb-text">Ignorance of the law is not a defence. Every food handler must understand and comply with food safety regulations — including you.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🏛️</div>
+          <div class="scene-title">Ofsted & EHO Both Visit</div>
+          <div class="scene-sub">Early years settings are subject to both Ofsted inspections and unannounced EHO visits. Poor food hygiene ratings directly affect our registration.</div>
+        </div>
+        <div class="stat-row slide-in-r" style="animation-delay:0.2s">
+          <div class="stat-box"><div class="s-num">5</div><div class="s-lbl">Star FSA rating — our target</div></div>
+          <div class="stat-box"><div class="s-num">0</div><div class="s-lbl">Tolerance for food safety breaches</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · HACCP Principles</div>
+        <h2 class="slide-h2">HACCP — The Food Safety Management System</h2>
+        <p class="slide-p">HACCP stands for Hazard Analysis and Critical Control Points. UK law requires all food businesses to have a food safety management system based on HACCP principles. It means identifying risks before they cause harm.</p>
+        <div class="haccp-row slide-in" style="animation-delay:0.1s">
+          <div class="haccp-pill">1. Identify hazards</div>
+          <div class="haccp-pill">2. Identify critical control points</div>
+          <div class="haccp-pill">3. Set critical limits</div>
+          <div class="haccp-pill">4. Monitor controls</div>
+          <div class="haccp-pill">5. Corrective actions</div>
+          <div class="haccp-pill">6. Verify system works</div>
+          <div class="haccp-pill">7. Document everything</div>
+        </div>
+        <div class="bullet-list" style="margin-top:10px;">
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">🌡️</div><div><strong>Example CCP:</strong> Cooking temperature — the critical limit is 75°C core temperature to destroy pathogens</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-green">📋</div><div><strong>Your role:</strong> Follow documented procedures, complete temperature logs, report problems to the manager immediately</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-amber">✏️</div><div><strong>If you don't record it, it didn't happen</strong> — incomplete records are treated as non-compliance during inspections</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">4 Types of Food Hazard</div>
+          <div class="bullet-list">
+            <div class="bullet light-c"><div class="b-icon bi-red">🦠</div><div><strong>Biological</strong> — bacteria, viruses, moulds</div></div>
+            <div class="bullet light-c"><div class="b-icon bi-amber">⚗️</div><div><strong>Chemical</strong> — cleaning products, pesticides</div></div>
+            <div class="bullet light-c"><div class="b-icon bi-white">🔩</div><div><strong>Physical</strong> — glass, metal, packaging</div></div>
+            <div class="bullet light-c"><div class="b-icon bi-purple">⚠️</div><div><strong>Allergenic</strong> — the 14 major allergens</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 1 -->
+    <div class="slide" data-lesson="1" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q">What does HACCP stand for?</div>
+        <div class="kc-opts" id="kc1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Close — but not quite. HACCP stands for Hazard Analysis and Critical Control Points. It is the food safety management system required by law.')"><div class="kc-letter">A</div>Hygiene And Cleaning Control Procedures</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',true,'Correct! HACCP — Hazard Analysis and Critical Control Points — is the internationally recognised food safety management system required by UK food law.')"><div class="kc-letter">B</div>Hazard Analysis and Critical Control Points</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Incorrect. HACCP is about hazard analysis and critical control points — a systematic approach to identifying and managing food safety risks.')"><div class="kc-letter">C</div>Health Assessment and Compliance Check Process</div>
+        </div>
+        <div id="kc1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 2 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="big-icon">🦠</div>
+      <div class="lesson-label">Lesson 2 of 7</div>
+      <h1>Microbiological Hazards</h1>
+      <p class="lesson-intro">Bacteria are the most common cause of food poisoning. Learn how they multiply, which pathogens pose the greatest risk, and what conditions allow them to thrive.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~7 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · How Bacteria Multiply</div>
+        <h2 class="slide-h2">Binary Fission — Why Speed Matters</h2>
+        <p class="slide-p">Bacteria reproduce by splitting in two — called binary fission. Under ideal conditions, one bacterium can become over one million in just 10 hours. This is why time and temperature control is critical.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-red">⏱️</div><div>Bacteria can double every <strong>10–20 minutes</strong> in ideal conditions</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-amber">🌡️</div><div>The <strong>Danger Zone</strong> is 8°C–63°C — bacteria multiply rapidly throughout this range</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-teal">❄️</div><div>Below <strong>8°C</strong> — bacteria slow down but do NOT die (fridges slow, freezers halt growth)</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-green">🔥</div><div>Above <strong>63°C</strong> — most bacteria are killed (spores may survive — more on this shortly)</div></div>
+          <div class="bullet light-c" style="animation-delay:0.5s"><div class="b-icon bi-white">💧</div><div>Bacteria need: <strong>warmth, moisture, food and time</strong> — remove any one factor to slow growth</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="temp-gauge slide-in-r">
+          <div class="card-label dark-l" style="padding:0 0 6px 0;">Temperature Guide</div>
+          <div class="temp-row"><div class="temp-val" style="color:#FF6B6B;">63°C+</div><div class="temp-label">Bacteria killed (hot holding)</div></div>
+          <div class="temp-row"><div class="temp-val" style="color:#FF9D4D;">63–8°C</div><div class="temp-label">⚠ DANGER ZONE — rapid growth</div></div>
+          <div class="temp-row"><div class="temp-val" style="color:#7BC8F6;">5°C</div><div class="temp-label">Max fridge temp — slows growth</div></div>
+          <div class="temp-row"><div class="temp-val" style="color:#A5D6A7;">−18°C</div><div class="temp-label">Freezer — growth halted</div></div>
+          <div class="temp-row"><div class="temp-val" style="color:#FF6B6B;">75°C</div><div class="temp-label">Safe cooking core temp</div></div>
+        </div>
+        <div class="stat-row slide-in-r" style="animation-delay:0.2s;margin-top:6px;">
+          <div class="stat-box"><div class="s-num">1M+</div><div class="s-lbl">Bacteria from 1 in 10 hours</div></div>
+          <div class="stat-box"><div class="s-num">20</div><div class="s-lbl">Minutes to double at 37°C</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Key Pathogens</div>
+        <h2 class="slide-h2">Bacteria You Need to Know</h2>
+        <p class="slide-p">These are the food poisoning bacteria most relevant to nursery settings. Each has specific sources and risks for young children, who are in a high-risk group.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num" style="font-size:10px;">SAL</div><div class="step-body"><div class="step-title">Salmonella — raw poultry, eggs, raw meat</div><div class="step-desc">Causes severe vomiting, diarrhoea, fever. Destroyed by thorough cooking. Young children are highly vulnerable.</div></div></div>
+          <div class="step"><div class="step-num" style="font-size:10px;">ECO</div><div class="step-body"><div class="step-title">E.coli O157 — raw/undercooked beef, unpasteurised milk</div><div class="step-desc">Can cause kidney failure in children under 5. Extremely dangerous — very low infectious dose. Cross-contamination is a major risk.</div></div></div>
+          <div class="step"><div class="step-num" style="font-size:10px;">LIS</div><div class="step-body"><div class="step-title">Listeria — soft cheese, pâté, cooked meats, chilled foods</div><div class="step-desc">Grows in the fridge (unlike most bacteria). Particularly dangerous for pregnant women and young children.</div></div></step></div>
+          <div class="step"><div class="step-num" style="font-size:10px;">CLO</div><div class="step-body"><div class="step-title">Clostridium perfringens — cooked meat, stews, gravies</div><div class="step-desc">Forms heat-resistant spores that survive cooking. Risk when food is cooled slowly or reheated insufficiently.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">What Are Spores?</div>
+          <div class="slide-h3">Bacteria's Survival Shield</div>
+          <p class="slide-p" style="font-size:12px;">Some bacteria (like Clostridium and Bacillus cereus) can form spores — a dormant, protective state that survives high temperatures. When food cools, spores germinate and multiply. This is why rapid cooling and correct reheating are critical.</p>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r" style="animation-delay:0.2s">
+          <div class="hb-icon">👶</div>
+          <div class="hb-text">Children under 5 are in the HIGH RISK group — their immune systems cannot fight food poisoning as effectively as adults. Even small amounts of contaminated food can be life-threatening.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 2 -->
+    <div class="slide" data-lesson="2" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q">Which temperature range is known as the "Danger Zone" where bacteria multiply most rapidly?</div>
+        <div class="kc-opts" id="kc2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Not quite. 0°C to 100°C is simply the range between freezing and boiling water. The danger zone is a specific range linked to bacterial growth.')"><div class="kc-letter">A</div>0°C to 100°C</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Close, but too narrow. The full danger zone extends from 8°C up to 63°C — and bacteria can grow throughout this entire range.')"><div class="kc-letter">B</div>15°C to 45°C</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',true,'Correct! The danger zone is 8°C to 63°C. Bacteria multiply rapidly throughout this range. Food must be kept below 8°C or above 63°C to be safe.')"><div class="kc-letter">C</div>8°C to 63°C</div>
+        </div>
+        <div id="kc2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 3 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="big-icon">🔄</div>
+      <div class="lesson-label">Lesson 3 of 7</div>
+      <h1>Contamination & Cross-Contamination</h1>
+      <p class="lesson-intro">Contamination is one of the most common causes of food poisoning. Learn the four types of contamination, how cross-contamination occurs, and the colour-coded systems that prevent it.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Types of Contamination</div>
+        <h2 class="slide-h2">Four Ways Food Gets Contaminated</h2>
+        <p class="slide-p">Contamination occurs when a harmful substance enters food. There are four types — and all four must be controlled in a nursery kitchen.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">🦠</div><div class="step-body"><div class="step-title">Biological — the most dangerous</div><div class="step-desc">Bacteria, viruses (Norovirus, Hepatitis A), moulds and their toxins. Source: unwashed hands, raw foods, infected food handlers, pests.</div></div></div>
+          <div class="step"><div class="step-num">⚗️</div><div class="step-body"><div class="step-title">Chemical — often invisible</div><div class="step-desc">Cleaning fluids, sanitisers, pesticides, food-grade lubricants. Prevent by: rinsing surfaces after disinfecting, storing chemicals away from food areas, using food-safe products only.</div></div></step></div>
+          <div class="step"><div class="step-num">🔩</div><div class="step-body"><div class="step-title">Physical — visible but serious</div><div class="step-desc">Glass, metal, bone, packaging, jewellery, hair, pest droppings. Causes choking and injury. Report broken equipment, wear hair nets, no jewellery in kitchen.</div></div></div>
+          <div class="step"><div class="step-num">⚠️</div><div class="step-body"><div class="step-title">Allergenic — life-threatening</div><div class="step-desc">Traces of allergens transferred to allergen-free food. Even microscopic amounts can trigger anaphylaxis. Covered in detail in Lesson 6.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🚫</div>
+          <div class="scene-title">Contamination Is Usually Invisible</div>
+          <div class="scene-sub">Food that looks, smells and tastes fine can still be dangerously contaminated. Never rely on your senses alone.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Cross-Contamination</div>
+        <h2 class="slide-h2">Colour-Coded Boards & Utensils</h2>
+        <p class="slide-p">Cross-contamination is when harmful bacteria are transferred from one food or surface to another. The colour-coded system prevents this by keeping food types completely separate.</p>
+        <div class="board-grid slide-in" style="animation-delay:0.1s">
+          <div class="board-chip" style="background:#FDEAEA;color:#c0392b;">🔴 Red<br><small>Raw meat</small></div>
+          <div class="board-chip" style="background:#FFF3CD;color:#9b6500;">🟡 Yellow<br><small>Raw poultry</small></div>
+          <div class="board-chip" style="background:#E3F2FD;color:#1565C0;">🔵 Blue<br><small>Raw fish</small></div>
+          <div class="board-chip" style="background:#E8F5E9;color:#1B5E20;">🟢 Green<br><small>Salad/fruit/veg</small></div>
+          <div class="board-chip" style="background:#FFF8E1;color:#6D4C41;">🟤 Brown<br><small>Root veg/cooked</small></div>
+          <div class="board-chip" style="background:#F5F5F5;color:#424242;">⬜ White<br><small>Bakery/dairy</small></div>
+        </div>
+        <div class="bullet-list" style="margin-top:10px;">
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-red">🚿</div><div>Wash and sanitise boards between uses — even within the same colour</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-amber">📦</div><div>Raw meat must be stored <strong>below</strong> ready-to-eat food in the fridge — always on the lowest shelf</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-teal">🙌</div><div>Wash hands between handling raw and ready-to-eat foods — always, without exception</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Using a red board for vegetables after cutting raw chicken — even if it "looks clean" — is cross-contamination. It only takes invisible traces of bacteria to cause serious illness in a child.</div>
+        </div>
+        <div class="content-card green-card slide-in-r" style="margin-top:8px;">
+          <div class="card-label dark-l">Fridge Storage Order</div>
+          <div class="slide-p" style="font-size:12px;">Top shelf → ready-to-eat / dairy<br>Middle shelves → cooked food<br>Bottom shelf → raw meat/fish (in sealed containers)<br>Salad drawer → fruits and vegetables</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 3 -->
+    <div class="slide" data-lesson="3" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q">Which colour chopping board should be used for preparing raw chicken?</div>
+        <div class="kc-opts" id="kc3">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Red boards are for raw red meat such as beef, pork and lamb — not poultry. Using the wrong board risks cross-contamination between different raw protein types.')"><div class="kc-letter">A</div>Red</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',true,'Correct! Yellow boards are designated for raw poultry. Using the correct colour board and keeping it separate from other boards prevents cross-contamination.')"><div class="kc-letter">B</div>Yellow</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Blue boards are designated for raw fish. Always use the correct colour board for each food type to prevent cross-contamination.')"><div class="kc-letter">C</div>Blue</div>
+        </div>
+        <div id="kc3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 4 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="4" data-slide="0">
+      <div class="big-icon">🌡️</div>
+      <div class="lesson-label">Lesson 4 of 7</div>
+      <h1>Cooking, Chilling & Stock Control</h1>
+      <p class="lesson-intro">The 4 Cs of food safety are Contamination, Cooking, Chilling and Cleaning. This lesson covers cooking and chilling — the critical temperature controls that keep food safe.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="4" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Safe Cooking Temperatures</div>
+        <h2 class="slide-h2">Temperature Is Your Proof of Safety</h2>
+        <p class="slide-p">Visual checks alone are not enough — food can look fully cooked while still harbouring dangerous bacteria in the centre. A probe thermometer is the only reliable check.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Core temperature must reach 75°C</div><div class="step-desc">Insert a clean, sanitised probe into the thickest part of the food. Hold for 10 seconds. 75°C destroys most food poisoning bacteria including Salmonella and E.coli.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Poultry — no pink, juices run clear</div><div class="step-desc">Both visual and temperature checks required for poultry. Campylobacter (the most common cause of food poisoning in the UK) lives in chicken and requires thorough cooking.</div></div></step></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Reheating — 75°C minimum, once only</div><div class="step-desc">Food must reach 75°C when reheated. Food may only be reheated once — never reheat food that has already been reheated.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Record every temperature check</div><div class="step-desc">Log the food item, temperature achieved, time and your name. This is your legal HACCP record.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">Probe Hygiene</div>
+          <div class="slide-h3">Clean Probe = Accurate & Safe</div>
+          <p class="slide-p" style="font-size:12px;">A dirty probe can transfer bacteria directly into food. Always clean and sanitise the probe before use, between different foods, and after use. Use probe wipes or wash with hot soapy water then sanitise.</p>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r" style="animation-delay:0.2s">
+          <div class="hb-icon">🌡️</div>
+          <div class="hb-text">Campylobacter — found in raw chicken — causes more food poisoning cases in the UK than any other bacteria. It is destroyed by reaching 75°C throughout.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="4" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Chilling, Cooling & Stock Rotation</div>
+        <h2 class="slide-h2">Chill Fast, Store Smart</h2>
+        <p class="slide-p">Incorrect cooling is one of the most common causes of food poisoning outbreaks. Hot food left to cool slowly passes through the danger zone for hours — giving bacteria time to multiply dangerously.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-teal">⏱️</div><div>Cool hot food to below <strong>8°C within 90 minutes</strong> — divide into smaller portions, use shallow trays or ice baths to speed cooling</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-green">❄️</div><div>Never put large volumes of hot food directly into the fridge — it raises the fridge temperature, putting other food at risk</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-amber">🏷️</div><div><strong>FIFO — First In, First Out:</strong> Use older stock before newer. Label and date all opened/prepared food. Check use-by dates daily.</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-red">📦</div><div>Check all deliveries on arrival — reject anything past its use-by date, with damaged packaging, or delivered at the wrong temperature</div></div>
+          <div class="bullet light-c" style="animation-delay:0.5s"><div class="b-icon bi-white">🗑️</div><div><strong>Food waste:</strong> Food waste bins must be lined, covered, emptied regularly and cleaned. Never allow food waste to accumulate near food preparation areas</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">📦</div>
+          <div class="scene-title">FIFO — First In, First Out</div>
+          <div class="scene-sub">New stock goes behind old stock. Always use the oldest items first. Date every opened pack. Check the fridge every morning.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 4 -->
+    <div class="slide" data-lesson="4" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 4</div>
+        <div class="kc-q">You've cooked a large pot of soup for lunch. How should you cool it before refrigerating?</div>
+        <div class="kc-opts" id="kc4">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Putting a large pot of hot soup straight in the fridge will raise the fridge temperature and put other foods at risk — and the soup will cool very slowly, spending too long in the danger zone.')"><div class="kc-letter">A</div>Put the pot directly in the fridge and let it cool overnight</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Leaving hot food on the counter lets it sit in the danger zone for hours — giving bacteria time to multiply to dangerous levels before it even goes in the fridge.')"><div class="kc-letter">B</div>Leave it on the counter until it reaches room temperature, then refrigerate</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',true,'Correct! Divide into shallow containers to increase surface area, use an ice bath or blast chiller if available, and get it below 8°C within 90 minutes before refrigerating.')"><div class="kc-letter">C</div>Divide into shallow containers, cool rapidly using an ice bath, and refrigerate within 90 minutes</div>
+        </div>
+        <div id="kc4-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 5 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="5" data-slide="0">
+      <div class="big-icon">🧹</div>
+      <div class="lesson-label">Lesson 5 of 7</div>
+      <h1>Cleaning, Disinfecting & Pest Control</h1>
+      <p class="lesson-intro">Clean and disinfect are not the same thing. Learn the critical difference, how to do both correctly, what a cleaning schedule requires, and how to spot and report pest activity.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="5" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 5 · Clean vs Disinfect vs Sterilise</div>
+        <h2 class="slide-h2">Three Different Things</h2>
+        <p class="slide-p">These three terms are often confused but have very different meanings in food safety. Using the wrong process in the wrong area leaves surfaces contaminated even when they appear clean.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Cleaning — removes visible dirt and grease</div><div class="step-desc">Using detergent and water. Cleaning removes food residue and grease but does NOT kill bacteria. It is always the first step — you cannot disinfect a dirty surface effectively.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Disinfecting — kills bacteria to a safe level</div><div class="step-desc">Using a food-safe chemical disinfectant at the correct dilution and contact time. A surface must be clean first. Required on all food contact surfaces after cleaning.</div></div></step></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Sterilising — kills all microorganisms</div><div class="step-desc">Used in very high-risk areas (e.g. baby bottle preparation). Typically achieved by heat, steam or chemical sterilant. Not routinely required in food preparation but essential for baby feeding equipment.</div></div></div>
+        </div>
+        <div class="highlight-box hb-info slide-in" style="animation-delay:0.3s">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">The correct order is always: <strong>Clean → Rinse → Disinfect → Allow to dry</strong>. Disinfectant applied to a greasy surface is largely ineffective.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">Contact Time Matters</div>
+          <div class="slide-h3">Don't Wipe It Off Too Soon</div>
+          <p class="slide-p" style="font-size:12px;">Disinfectants need time to work. Always check the manufacturer's instructions for the required contact time — typically 30–60 seconds for spray disinfectants. Wiping immediately after spraying reduces effectiveness significantly.</p>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r" style="animation-delay:0.2s">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Never mix cleaning chemicals. Some combinations produce toxic gases. Always follow the manufacturer's instructions and use chemicals at the correct dilution.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="5" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 5 · Cleaning Schedules & Pest Control</div>
+        <h2 class="slide-h2">Schedules & Pest Awareness</h2>
+        <p class="slide-p">A cleaning schedule documents what must be cleaned, how often, by whom, and with what. It is a legal requirement under HACCP and will be inspected by EHOs.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-green">📋</div><div>Every task on the cleaning schedule must be signed off when completed — incomplete records = non-compliance</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">🧽</div><div>Cloths and sponges harbour bacteria — use colour-coded, disposable cloths where possible. Never use the same cloth for food surfaces and floors</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-amber">🚿</div><div>Dishcloths must be changed daily minimum, washed at 60°C, or single-use disposable</div></div>
+        </div>
+        <div class="pest-grid slide-in" style="animation-delay:0.3s">
+          <div class="pest-card"><div class="pest-title">🐭 Rodents</div><div class="pest-signs">Droppings, gnaw marks, greasy smear marks, nesting material, unusual smell</div></div>
+          <div class="pest-card"><div class="pest-title">🪳 Cockroaches</div><div class="pest-signs">Egg cases, black droppings, unpleasant smell, shed skins, live insects at night</div></div>
+          <div class="pest-card"><div class="pest-title">🪰 Flies</div><div class="pest-signs">Live/dead flies, maggots near waste, fly specks on surfaces, larvae in drains</div></div>
+          <div class="pest-card"><div class="pest-title">🐜 Ants/Stored Product</div><div class="pest-signs">Ant trails, webbing in dried goods, live insects in sealed packaging, unusual powder</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🚨</div>
+          <div class="scene-title">Pest Sighting = Report Immediately</div>
+          <div class="scene-sub">Any sign of pest activity must be reported to the manager the same day. Do not attempt to deal with it yourself. Food in the affected area must be quarantined until assessed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 5 -->
+    <div class="slide" data-lesson="5" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 5</div>
+        <div class="kc-q">What is the correct order for cleaning a food preparation surface?</div>
+        <div class="kc-opts" id="kc5">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc5',false,'Disinfecting before cleaning is ineffective — grease and food residue prevent disinfectant from reaching the surface and killing bacteria properly.')"><div class="kc-letter">A</div>Disinfect first, then clean with detergent</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc5',true,'Correct! Always clean with detergent first to remove dirt and grease, then rinse, then apply disinfectant and allow the correct contact time before allowing to air dry.')"><div class="kc-letter">B</div>Clean with detergent, rinse, disinfect, allow to air dry</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc5',false,'Using cleaning spray alone (combined cleaner/disinfectant) may be acceptable in some situations, but the full clean-rinse-disinfect-dry process is best practice and required in food businesses.')"><div class="kc-letter">C</div>Wipe with a multi-purpose cleaning spray and dry with a paper towel</div>
+        </div>
+        <div id="kc5-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 6 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="6" data-slide="0">
+      <div class="big-icon">⚠️</div>
+      <div class="lesson-label">Lesson 6 of 7</div>
+      <h1>Allergen Management</h1>
+      <p class="lesson-intro">Allergic reactions can be fatal. Learn the 14 major allergens in detail, your legal labelling duties, how to prevent cross-contact, and how to respond to a severe allergic reaction.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~7 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="6" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 6 · The 14 Major Allergens</div>
+        <h2 class="slide-h2">UK Law: Declare All 14</h2>
+        <p class="slide-p">Under UK food law (derived from EU Regulation 1169/2011), all food businesses must declare the presence of 14 major allergens. These must be highlighted on menus and available to parents on request.</p>
+        <div class="allergen-grid slide-in" style="animation-delay:0.1s">
+          <div class="allergen-chip"><span class="a-icon">🥜</span>Peanuts</div>
+          <div class="allergen-chip"><span class="a-icon">🌰</span>Tree Nuts</div>
+          <div class="allergen-chip"><span class="a-icon">🥛</span>Milk</div>
+          <div class="allergen-chip"><span class="a-icon">🥚</span>Eggs</div>
+          <div class="allergen-chip"><span class="a-icon">🌾</span>Gluten/Wheat</div>
+          <div class="allergen-chip"><span class="a-icon">🦐</span>Crustaceans</div>
+          <div class="allergen-chip"><span class="a-icon">🐟</span>Fish</div>
+          <div class="allergen-chip"><span class="a-icon">🦪</span>Molluscs</div>
+          <div class="allergen-chip"><span class="a-icon">🌱</span>Soya</div>
+          <div class="allergen-chip"><span class="a-icon">🌿</span>Celery</div>
+          <div class="allergen-chip"><span class="a-icon">🟡</span>Mustard</div>
+          <div class="allergen-chip"><span class="a-icon">🫘</span>Lupin</div>
+          <div class="allergen-chip"><span class="a-icon">🌻</span>Sesame</div>
+          <div class="allergen-chip"><span class="a-icon">🍷</span>Sulphites/SO₂</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">Cross-Contact — Different From Cross-Contamination</div>
+          <div class="slide-h3">Traces Are Enough to Kill</div>
+          <p class="slide-p" style="font-size:12px;">Cross-contact is when allergen traces transfer to allergen-free food. Unlike bacteria, allergens are NOT destroyed by cooking. A child with a peanut allergy can react to a board that was used to chop a peanut product — even if it was washed afterward.</p>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r" style="animation-delay:0.2s">
+          <div class="hb-icon">📋</div>
+          <div class="hb-text">Every child's allergen profile must be checked before their first day and when the menu changes. This is the responsibility of every member of room staff.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="6" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 6 · Anaphylaxis Response</div>
+        <h2 class="slide-h2">Recognise, Act, Call — In That Order</h2>
+        <p class="slide-p">Anaphylaxis is a severe, potentially life-threatening allergic reaction. It can develop within minutes of exposure. Every member of staff must know the signs and the response steps.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Recognise the signs</div><div class="step-desc">Hives, flushing, swelling of lips/face/throat, difficulty breathing/swallowing, vomiting, pale, floppy or unconscious. Act on ANY suspected sign — do not wait.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Shout for manager and first aider</div><div class="step-desc">Do not leave the child alone. Call for help immediately — you need two people minimum.</div></div></step></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Administer EpiPen per care plan</div><div class="step-desc">If the child has a prescribed adrenaline auto-injector, use it per their individual care plan. Know where it is stored before you ever need it — outer thigh, through clothing is acceptable in emergency.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Call 999 immediately</div><div class="step-desc">All anaphylactic reactions require emergency services — even after using the EpiPen. The EpiPen buys time but does not treat the reaction.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">🚫</div>
+          <div class="hb-text">Never give antihistamines as a first response to suspected anaphylaxis. They act too slowly. Antihistamines treat mild reactions only — anaphylaxis requires adrenaline and 999.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r" style="animation-delay:0.15s">
+          <div class="hb-icon">📍</div>
+          <div class="hb-text">EpiPens and inhalers are NEVER locked away. They are kept accessible in the child's room at all times. Speed of access can be the difference between life and death.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 6 -->
+    <div class="slide" data-lesson="6" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 6</div>
+        <div class="kc-q">A child with a known nut allergy has eaten food and is developing hives and lip swelling. Their EpiPen is in the room. What do you do FIRST?</div>
+        <div class="kc-opts" id="kc6">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc6',false,'Calling the parent is important but must not be your first action. The child is showing signs of anaphylaxis — getting a first aider and being prepared to use the EpiPen takes priority.')"><div class="kc-letter">A</div>Call the parent immediately to ask about the child's allergy history</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc6',false,'Antihistamines act too slowly for anaphylaxis and are not an appropriate first response. The child needs adrenaline and emergency services, not antihistamines.')"><div class="kc-letter">B</div>Give the child an antihistamine and monitor for 10 minutes</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc6',true,'Correct! Shout for your manager and a first aider immediately. Stay with the child. Be ready to use the EpiPen per the care plan and call 999. Do not leave the child alone.')"><div class="kc-letter">C</div>Shout for manager and first aider, stay with the child, prepare to administer EpiPen and call 999</div>
+        </div>
+        <div id="kc6-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ LESSON 7 ═══════════════════════════════════════ -->
+    <div class="slide sl-title" data-lesson="7" data-slide="0">
+      <div class="big-icon">💊</div>
+      <div class="lesson-label">Lesson 7 of 7</div>
+      <h1>Medication Management</h1>
+      <p class="lesson-intro">Administering medication to children in our care is a serious legal and professional responsibility. Learn what can and cannot be given, the two-staff procedure, and safe storage and disposal.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 mins</span><span class="t-pill">✅ 1 check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="7" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 7 · What We Can Administer</div>
+        <h2 class="slide-h2">Rules Before Any Medication Is Given</h2>
+        <p class="slide-p">Not all medication can be administered by nursery staff. Understanding these rules protects the child from harm and protects you from professional and legal liability.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-green">✅</div><div><strong>Prescribed medication</strong> — can be given with a completed, signed medication form and written parental consent</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-amber">⚠️</div><div><strong>Paracetamol / ibuprofen</strong> — only with GP prescription and written consent. Never administered "just in case" or to prevent fever</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-red">❌</div><div><strong>First dose of antibiotics</strong> — must always be given at home first. We administer subsequent doses only with signed consent and completed medication form</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-red">❌</div><div><strong>No verbal consent</strong> — a parent verbally saying "yes" at drop-off is never sufficient. The form must be signed before any medication is given</div></div>
+          <div class="bullet light-c" style="animation-delay:0.5s"><div class="b-icon bi-teal">💉</div><div><strong>EpiPens and inhalers</strong> — administered per individual child's care plan, regardless of consent form in an emergency</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">📝</div>
+          <div class="scene-title">No Form = No Medication</div>
+          <div class="scene-sub">Without a signed medication form, no medication may be given. Contact the parent before the dose is due if no form is present.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="7" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 7 · The Two-Staff Procedure & Storage</div>
+        <h2 class="slide-h2">Administering, Storing & Disposing Safely</h2>
+        <p class="slide-p">Every dose administered at Early Explorers must follow a strict procedure. Two members of staff must always be involved — one to administer, one to witness.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Check the form is complete</div><div class="step-desc">Child name, medication name, dose, time, duration, parent signature — all must be present before proceeding.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Check the medication — witnessed</div><div class="step-desc">Second staff member confirms: correct name, correct dose, expiry date not passed. Both staff sign the record immediately after administration.</div></div></step></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Storage: locked box or accessible</div><div class="step-desc">All medication → locked box in office. Exception: EpiPens and inhalers → always in the child's room, never locked away. Refrigerated medication → sealed labelled bag in fridge, separate from food.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Disposal: never in general waste</div><div class="step-desc">Unused/expired medication must be returned to parent or taken to a pharmacy. Record in medication log before disposal. Never pour liquids down the sink.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">👥</div>
+          <div class="hb-text">Two staff members is non-negotiable. If a second member of staff is not available, the medication cannot be administered until one is. Contact the manager.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r" style="animation-delay:0.15s">
+          <div class="hb-icon">📋</div>
+          <div class="hb-text">Always inform the parent at collection. They must sign to acknowledge the medication was given. This closes the record and provides legal protection for all parties.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 7 -->
+    <div class="slide" data-lesson="7" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 7</div>
+        <div class="kc-q">A child requires antibiotics at 12pm. The parent mentioned it at drop-off but hasn't completed a medication form. It is now 11:45am. What do you do?</div>
+        <div class="kc-opts" id="kc7">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc7',false,'Verbal consent at drop-off is never sufficient. Administering medication without a signed form is a serious breach of procedure and could have legal consequences.')"><div class="kc-letter">A</div>Administer it — the parent verbally consented and the child needs their medication</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc7',false,'Missing a dose without informing the parent is not appropriate. The parent needs to know so they can arrange to come in, or collect the child, or make alternative arrangements.')"><div class="kc-letter">B</div>Skip the dose and tell the parent at collection that it wasn't given</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc7',true,'Correct! Contact the parent now — before the dose is due — explain a signed form is required, and ask them to return to sign it, email a signed form, or collect the child to administer it themselves.')"><div class="kc-letter">C</div>Contact the parent immediately, explain a signed form is required before the dose can be given</div>
+        </div>
+        <div id="kc7-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="slide sl-summary" data-lesson="7" data-slide="4">
+      <div class="summary-icon">🏆</div>
+      <h2 class="summary-h">Level 2 Module Complete!</h2>
+      <p class="summary-p">You've completed Food Safety & Medication Management at Level 2 standard. You now have the knowledge to keep children safe from food hazards, allergens and medication errors.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">⚖️</div><div class="sk-title">Know the Law</div><div class="sk-sub">HACCP, Food Safety Act, four hazard types</div></div>
+        <div class="sk-card"><div class="sk-icon">🦠</div><div class="sk-title">Control Bacteria</div><div class="sk-sub">Danger zone 8–63°C, key pathogens, rapid cooling</div></div>
+        <div class="sk-card"><div class="sk-icon">🔄</div><div class="sk-title">Prevent Contamination</div><div class="sk-sub">Colour boards, fridge order, FIFO, cleaning procedure</div></div>
+        <div class="sk-card"><div class="sk-icon">⚠️</div><div class="sk-title">Allergen & Medication</div><div class="sk-sub">14 allergens, EpiPen response, two-staff rule</div></div>
+      </div>
+      <button class="btn-quiz" onclick="returnToLMSForQuiz()" style="margin-top:20px;">📝 Take the Quiz →</button>
+    </div>
+
+  </main>
+  <footer class="bottombar">
+    <div class="bb-left"><button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button></div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 4</div>
+    <div class="bb-right"><button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button></div>
+  </footer>
+</div>
+<script>
+const lessons=[
+  {title:"Food Safety Law & Your Responsibilities",slides:4},
+  {title:"Microbiological Hazards",slides:4},
+  {title:"Contamination & Cross-Contamination",slides:4},
+  {title:"Cooking, Chilling & Stock Control",slides:4},
+  {title:"Cleaning, Disinfecting & Pest Control",slides:4},
+  {title:"Allergen Management",slides:4},
+  {title:"Medication Management",slides:5}
+];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+
+function buildDots(){
+  const track=document.getElementById('prog-track');
+  lessons.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='pdot';d.dataset.lesson=i;
+    const tip=document.createElement('div');
+    tip.className='pdot-tip';
+    tip.textContent=`L${i+1}: ${l.title}`;
+    d.appendChild(tip);
+    d.onclick=()=>jumpToLesson(i);
+    track.appendChild(d);
+  });
+  updateDots();
+}
+function updateDots(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson)-1;
+  document.querySelectorAll('.pdot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<lessonNum)d.classList.add('done');
+    else if(i===lessonNum)d.classList.add('active');
+  });
+}
+function jumpToLesson(idx){
+  const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===idx);
+  if(target>=0)goTo(target);
+}
+function goTo(idx,direction=1){
+  if(idx<0||idx>=totalSlides)return;
+  const outSlide=allSlides[currentIndex];
+  const inSlide=allSlides[idx];
+  outSlide.classList.remove('active');
+  outSlide.classList.add('exit');
+  setTimeout(()=>{
+    outSlide.classList.remove('exit');
+    inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';
+  },50);
+  currentIndex=idx;
+  inSlide.classList.add('active');
+  setTimeout(()=>{
+    inSlide.querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*100);});
+    inSlide.querySelectorAll('.slide-in,.slide-in-r').forEach(s=>{s.style.opacity='1';s.style.transform='translateY(0)';});
+  },100);
+  updateUI();
+}
+function navigate(dir){goTo(currentIndex+dir,dir);}
+function updateUI(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson);
+  const slideNum=parseInt(slide.dataset.slide);
+  const lesson=lessons[lessonNum-1];
+  const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);
+  document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 7`;
+  document.getElementById('slide-indicator').textContent=`L${lessonNum}: ${lesson.title} · ${slideNum+1}/${lessonSlides.length}`;
+  document.getElementById('btn-prev').disabled=currentIndex===0;
+  const nextBtn=document.getElementById('btn-next');
+  if(currentIndex===totalSlides-1){
+    nextBtn.textContent='Return to LMS →';
+    nextBtn.onclick=returnToLMSForQuiz;
+  }else{
+    nextBtn.textContent='Next →';
+    nextBtn.onclick=()=>navigate(1);
+  }
+  const timeMap=[45,38,30,23,16,10,5];
+  document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;
+  updateDots();
+}
+function checkAnswer(el,kcId,isCorrect,feedbackText){
+  if(answered[kcId])return;
+  answered[kcId]=true;
+  const container=document.getElementById(kcId);
+  container.querySelectorAll('.kc-opt').forEach(opt=>opt.classList.add('locked'));
+  if(isCorrect){el.classList.add('correct');}
+  else{
+    el.classList.add('wrong');
+    container.querySelectorAll('.kc-opt').forEach(opt=>{
+      if(opt.getAttribute('onclick')&&opt.getAttribute('onclick').includes('true,'))opt.classList.add('correct');
+    });
+  }
+  const fb=document.getElementById(kcId+'-feedback');
+  fb.style.display='flex';
+  fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);
+});
+buildDots();updateUI();
+setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*100);});},300);
+function returnToLMSForQuiz(){
+  if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}
+  else{alert('LMS window not found. Please return to the main LMS window and click Take Quiz.');}
+}
+</script>
+<script>
+  window.MODULE_CODE="FH-01";
+  window.returnToLMSForQuiz=function(){
+    try{localStorage.setItem('ee_pending_quiz',window.MODULE_CODE||'FH-01');}catch(e){}
+    if(window.opener&&!window.opener.closed){
+      try{window.opener.focus();window.opener.startQuiz&&window.opener.startQuiz(window.MODULE_CODE||'FH-01');}catch(e){}
+      try{window.close();}catch(e){}
+    }else{
+      try{window.location.href='../index.html';}catch(e){alert('Please return to the main LMS window and click Take Quiz.');}
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+</body>
+</html>

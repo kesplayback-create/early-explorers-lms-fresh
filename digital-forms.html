@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Early Explorers — Staff Forms</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:       #3AAFA9;
+  --teal-dark:  #2B8A85;
+  --teal-deep:  #1D6B68;
+  --teal-light: #E8F7F6;
+  --coral:      #E8645A;
+  --amber:      #F5A623;
+  --sky:        #5BC8D3;
+  --ink:        #1C2B2A;
+  --muted:      #6B8A88;
+  --border:     #D0E8E6;
+  --white:      #ffffff;
+  --cream:      #F8FCFB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.header {
+  background: linear-gradient(135deg, var(--teal-deep), var(--teal-dark));
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.logo-puzzle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.logo-puzzle span {
+  border-radius: 3px;
+}
+.logo-text { line-height: 1.2; }
+.logo-text strong {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+}
+.logo-text small {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.header-title {
+  margin-left: auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-align: right;
+}
+.header-title strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+}
+
+/* ── Form selector tabs ───────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  background: var(--white);
+  border-bottom: 2px solid var(--border);
+  padding: 0 32px;
+}
+.tab-btn {
+  padding: 14px 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active {
+  color: var(--teal-deep);
+  border-bottom-color: var(--teal);
+}
+.tab-btn:hover:not(.active) { color: var(--ink); }
+
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+.container {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 0 20px 60px;
+}
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+
+/* ── Form card ────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  background: var(--teal-deep);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-header h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.card-header .badge {
+  margin-left: auto;
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.card-body { padding: 20px 24px; }
+
+/* ── Employee details grid ────────────────────────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.detail-grid .full { grid-column: 1 / -1; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 5px;
+}
+.field input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--cream);
+  transition: border 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--teal);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(58,175,169,0.12);
+}
+.field input[readonly] {
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  font-weight: 700;
+  border-color: var(--teal);
+}
+
+/* ── Info banner ──────────────────────────────────────────────────────────── */
+.info-banner {
+  background: var(--teal-light);
+  border: 1.5px solid var(--teal);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--teal-deep);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* ── Section label ────────────────────────────────────────────────────────── */
+.section-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Health Q table ───────────────────────────────────────────────────────── */
+.hq-table { width: 100%; border-collapse: collapse; }
+.hq-table thead th {
+  background: var(--teal-light);
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--teal);
+}
+.hq-table thead th:nth-child(2),
+.hq-table thead th:nth-child(3) { text-align: center; width: 52px; }
+.hq-table thead th:nth-child(4) { width: 36%; }
+
+.hq-table tbody tr { border-bottom: 1px solid var(--border); }
+.hq-table tbody tr:nth-child(even) { background: var(--cream); }
+.hq-table tbody tr:hover { background: var(--teal-light); }
+
+.hq-table td {
+  padding: 9px 12px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+.hq-table td:nth-child(2),
+.hq-table td:nth-child(3) { text-align: center; }
+
+/* ── Custom checkbox / radio ──────────────────────────────────────────────── */
+.yn-wrap { display: flex; align-items: center; justify-content: center; }
+.yn-wrap input[type="radio"] { display: none; }
+.yn-wrap label {
+  width: 30px; height: 30px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.yn-wrap input[type="radio"]:checked + label {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: white;
+}
+.yn-wrap.no input[type="radio"]:checked + label {
+  border-color: var(--coral);
+  background: var(--coral);
+}
+
+.additional-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--cream);
+  resize: none;
+  min-height: 36px;
+  outline: none;
+  transition: border 0.2s;
+}
+.additional-input:focus { border-color: var(--teal); background: var(--white); }
+
+/* ── Clause items ─────────────────────────────────────────────────────────── */
+.clause-item {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: border 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.clause-item:hover { border-color: var(--teal); background: var(--teal-light); }
+.clause-item.ticked { border-color: var(--teal); background: var(--teal-light); }
+
+.clause-check {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.clause-item.ticked .clause-check {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+.clause-num {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.clause-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  margin-bottom: 4px;
+}
+.clause-text { font-size: 13px; line-height: 1.5; color: var(--ink); }
+
+/* ── Signature pad ────────────────────────────────────────────────────────── */
+.sig-section {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.sig-header {
+  background: var(--teal-deep);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sig-header h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.sig-body { padding: 20px 24px; }
+
+.sig-declaration {
+  background: var(--teal-light);
+  border: 1.5px solid var(--teal);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--teal-deep);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.sig-canvas-wrap {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sig-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+  cursor: crosshair;
+  touch-action: none;
+}
+.sig-placeholder {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--border);
+  font-size: 14px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  text-align: center;
+}
+.sig-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.btn-clear {
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-clear:hover { border-color: var(--coral); color: var(--coral); }
+
+.sig-date { font-size: 12px; color: var(--muted); }
+
+/* ── Submit button ────────────────────────────────────────────────────────── */
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(58,175,169,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(58,175,169,0.45); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── Progress bar ─────────────────────────────────────────────────────────── */
+.progress-wrap {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.progress-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--sky));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.progress-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  white-space: nowrap;
+}
+
+/* ── Success state ────────────────────────────────────────────────────────── */
+.success-panel {
+  display: none;
+  text-align: center;
+  padding: 60px 20px;
+}
+.success-panel.show { display: block; }
+.success-icon { font-size: 64px; margin-bottom: 16px; }
+.success-panel h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--teal-deep);
+  margin-bottom: 8px;
+}
+.success-panel p { color: var(--muted); font-size: 14px; }
+
+/* ── Validation highlight ─────────────────────────────────────────────────── */
+.required-missing { border-color: var(--coral) !important; }
+.error-msg {
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 8px;
+  display: none;
+}
+.error-msg.show { display: block; }
+
+@media (max-width: 600px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .hq-table thead th:nth-child(4) { display: none; }
+  .hq-table td:nth-child(4) { display: none; }
+  .container { padding: 0 12px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo-puzzle">
+    <span style="background:#E8645A;"></span>
+    <span style="background:#F5A623;"></span>
+    <span style="background:#5BC8D3;"></span>
+    <span style="background:#3AAFA9;"></span>
+  </div>
+  <div class="logo-text">
+    <strong>Early Explorers</strong>
+    <small>CPD Academy</small>
+  </div>
+  <div class="header-title">
+    <strong>Staff Forms</strong>
+    Digital Signing Portal
+  </div>
+</div>
+
+<!-- Tab bar -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchForm('hq')">🏥 Health Questionnaire</button>
+  <button class="tab-btn" onclick="switchForm('dpa')">💷 Deductions from Pay</button>
+</div>
+
+<div class="container">
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- HEALTH QUESTIONNAIRE                                                  -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="panel-hq" class="form-panel active">
+
+    <div class="progress-wrap" id="hq-progress-wrap">
+      <span class="progress-label" id="hq-progress-label">0 of 21 answered</span>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="hq-progress-fill"></div></div>
+    </div>
+
+    <!-- Employee details -->
+    <div class="card">
+      <div class="card-header">
+        <span>👤</span>
+        <h2>Employee Details</h2>
+        <span class="badge">Private & Confidential</span>
+      </div>
+      <div class="card-body">
+        <div class="info-banner">
+          Please answer all questions honestly. If <strong>Yes</strong> to any question, provide details in the Additional Information box. Employment may be subject to satisfactory medical reports.
+        </div>
+        <div class="detail-grid">
+          <div class="field full"><label>Full Name</label><input id="hq-name" type="text" placeholder="Enter your full name"></div>
+          <div class="field"><label>Position Offered</label><input id="hq-position" type="text" placeholder="e.g. Room Leader"></div>
+          <div class="field"><label>Date</label><input id="hq-date" type="date"></div>
+          <div class="field"><label>Date of Birth</label><input id="hq-dob" type="date"></div>
+          <div class="field"><label>Ref. No (office use)</label><input id="hq-ref" type="text" placeholder="Leave blank"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical questions -->
+    <div class="card">
+      <div class="card-header">
+        <span>🩺</span>
+        <h2>Medical History</h2>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <table class="hq-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Yes</th>
+              <th>No</th>
+              <th>Additional Information (if Yes)</th>
+            </tr>
+          </thead>
+          <tbody id="hq-questions-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Additional -->
+    <div class="card">
+      <div class="card-header"><span>➕</span><h2>Additional Questions</h2></div>
+      <div class="card-body">
+        <div class="section-label">Lifestyle</div>
+
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;padding:10px 0;border-bottom:1px solid var(--border);">
+          <span style="flex:1;font-size:13px;">Do you smoke?</span>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="yn-wrap">
+              <input type="radio" name="hq-smoke" id="hq-smoke-y" value="yes">
+              <label for="hq-smoke-y">✓</label>
+            </div>
+            <span style="font-size:12px;color:var(--muted);">Yes</span>
+            <div class="yn-wrap no">
+              <input type="radio" name="hq-smoke" id="hq-smoke-n" value="no">
+              <label for="hq-smoke-n">✓</label>
+            </div>
+            <span style="font-size:12px;color:var(--muted);">No</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;padding:10px 0;">
+          <span style="flex:1;font-size:13px;">Units of alcohol per week?<br><small style="color:var(--muted);">1 unit = ½ pint beer / 1 glass wine / 1 single spirit</small></span>
+          <input id="hq-alcohol" type="number" min="0" max="200" placeholder="0" style="width:80px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'Nunito',sans-serif;text-align:center;outline:none;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Signature -->
+    <div class="sig-section">
+      <div class="sig-header"><span>✍️</span><h3>Declaration & Digital Signature</h3></div>
+      <div class="sig-body">
+        <div class="sig-declaration">
+          I declare that the information given above is <strong>true and complete</strong> to the best of my knowledge. I understand that any false or misleading information may result in the withdrawal of any offer of employment or dismissal.
+        </div>
+        <div class="sig-canvas-wrap" id="hq-sig-wrap">
+          <canvas id="hq-sig-canvas"></canvas>
+          <div class="sig-placeholder" id="hq-sig-placeholder">✍️ Sign here with your finger or mouse</div>
+        </div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearSig('hq')">✕ Clear signature</button>
+        </div>
+        <p class="sig-date" id="hq-sig-date"></p>
+        <div class="error-msg" id="hq-sig-error">Please add your signature before submitting.</div>
+        <div class="error-msg" id="hq-fields-error">Please fill in your name and answer all questions.</div>
+      </div>
+    </div>
+
+    <div id="hq-success" class="success-panel">
+      <div class="success-icon">✅</div>
+      <h2>Health Questionnaire Submitted</h2>
+      <p>Your form has been received and saved securely. Thank you.</p>
+    </div>
+
+    <button class="btn-submit" id="hq-submit-btn" onclick="submitHQ()">
+      <span>📋</span> Submit Health Questionnaire
+    </button>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- DEDUCTIONS FROM PAY AGREEMENT                                         -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="panel-dpa" class="form-panel">
+
+    <div class="progress-wrap" id="dpa-progress-wrap">
+      <span class="progress-label" id="dpa-progress-label">0 of 9 clauses confirmed</span>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="dpa-progress-fill"></div></div>
+    </div>
+
+    <!-- Employee details -->
+    <div class="card">
+      <div class="card-header"><span>👤</span><h2>Employee Details</h2><span class="badge">Form GOS010</span></div>
+      <div class="card-body">
+        <div class="info-banner">
+          This agreement forms part of your Contract of Employment with <strong>Crystal Nursery (UK) Limited t/a Early Explorers Day Nursery and Preschool</strong>. Please read each clause carefully and tick to confirm you have read and understood it, then sign below.
+        </div>
+        <div class="detail-grid">
+          <div class="field full"><label>Full Name</label><input id="dpa-name" type="text" placeholder="Enter your full name"></div>
+          <div class="field"><label>Job Title</label><input id="dpa-title" type="text" placeholder="e.g. Room Leader"></div>
+          <div class="field"><label>Start Date</label><input id="dpa-start" type="date"></div>
+          <div class="field"><label>Date Signed</label><input id="dpa-date" type="date"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clauses -->
+    <div class="card">
+      <div class="card-header"><span>📄</span><h2>Terms & Conditions</h2><span class="badge">Tick each to confirm</span></div>
+      <div class="card-body" id="dpa-clauses-body"></div>
+    </div>
+
+    <!-- Signature -->
+    <div class="sig-section">
+      <div class="sig-header"><span>✍️</span><h3>Digital Signature</h3></div>
+      <div class="sig-body">
+        <div class="sig-declaration">
+          By signing below you confirm your <strong>agreement to all of the above terms</strong> as part of your Contract of Employment. Your ticks above confirm you have read each clause individually.
+        </div>
+        <div class="sig-canvas-wrap" id="dpa-sig-wrap">
+          <canvas id="dpa-sig-canvas"></canvas>
+          <div class="sig-placeholder" id="dpa-sig-placeholder">✍️ Sign here with your finger or mouse</div>
+        </div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearSig('dpa')">✕ Clear signature</button>
+        </div>
+        <p class="sig-date" id="dpa-sig-date"></p>
+        <div class="error-msg" id="dpa-sig-error">Please add your signature before submitting.</div>
+        <div class="error-msg" id="dpa-fields-error">Please fill in your details and tick all clauses.</div>
+      </div>
+    </div>
+
+    <div id="dpa-success" class="success-panel">
+      <div class="success-icon">✅</div>
+      <h2>Deductions Agreement Submitted</h2>
+      <p>Your signed agreement has been saved securely to your staff record.</p>
+    </div>
+
+    <button class="btn-submit" id="dpa-submit-btn" onclick="submitDPA()">
+      <span>✍️</span> Sign & Submit Agreement
+    </button>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── URL params — pre-fill name & jump to correct form ─────────────────────────
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const form = p.get('form'); // 'hq' or 'dpa'
+  const name = p.get('name');
+  const uid  = p.get('uid');
+
+  // Store for later use after DOM is ready
+  window._urlForm = form;
+  window._urlName = decodeURIComponent(name || '');
+  window._urlUid  = uid;
+})();
+
+// ── Supabase ──────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://pwbmhszugdoauphbbida.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3Ym1oc3p1Z2RvYXVwaGJiaWRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTkxNzEsImV4cCI6MjA4NjkzNTE3MX0.aHvIhtcnVYqgAPIKLQ9kCOIl5IUc-l9aRX4RkkAkm4g';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchForm(id) {
+  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+  // Canvas getBoundingClientRect() returns 0 while panel is hidden,
+  // so defer DPA signature pad init until the tab is first made visible
+  if (id === 'dpa' && !dpaInited) {
+    dpaInited = true;
+    initSigPad('dpa');
+  }
+}
+
+// ── Health questionnaire questions ────────────────────────────────────────────
+const HQ_QUESTIONS = [
+  'Tuberculosis, asthma, bronchitis or chest problems?',
+  'Chest pain, heart condition or raised blood pressure?',
+  'Blackouts, fits or attacks of giddiness?',
+  'Depression, mental illness or nervous breakdown?',
+  'Rheumatism or arthritis?',
+  'Back trouble?',
+  'Typhoid, paratyphoid or other infectious disease?',
+  'Digestive or bowel disease?',
+  'Diabetes, thyroid or other gland trouble?',
+  'Bladder or kidney trouble?',
+  'Dermatitis or skin trouble?',
+  'Varicose veins?',
+  'Vision or hearing problems?',
+  'Any other accident, operation or illness?',
+  'Any reason to believe you may be infected with any communicable disease?',
+  'Any other current or recent medical condition or treatment which might affect your attendance or performance at work?',
+  'Do you intend to work night duties on a regular basis?',
+  'Any illness or medical condition that prevented you from attending work for more than one week in the past year?',
+  'Any physical or mental impairment with a substantial and long-term effect on your ability to carry out day to day activities? (If yes, please specify any adjustments required)',
+];
+
+// Build HQ table rows
+const tbody = document.getElementById('hq-questions-body');
+HQ_QUESTIONS.forEach((q, i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${q}</td>
+    <td>
+      <div class="yn-wrap">
+        <input type="radio" name="hq-q${i}" id="hq-q${i}-y" value="yes">
+        <label for="hq-q${i}-y">✓</label>
+      </div>
+    </td>
+    <td>
+      <div class="yn-wrap no">
+        <input type="radio" name="hq-q${i}" id="hq-q${i}-n" value="no">
+        <label for="hq-q${i}-n">✓</label>
+      </div>
+    </td>
+    <td><textarea class="additional-input" id="hq-q${i}-info" placeholder="Details if Yes…" rows="1"></textarea></td>
+  `;
+  tbody.appendChild(tr);
+
+  // Progress tracking
+  tr.querySelectorAll('input[type=radio]').forEach(r =>
+    r.addEventListener('change', () => updateHQProgress())
+  );
+});
+
+function updateHQProgress() {
+  const total = HQ_QUESTIONS.length + 1; // +1 for smoke
+  let answered = 0;
+  for (let i = 0; i < HQ_QUESTIONS.length; i++) {
+    if (document.querySelector(`input[name="hq-q${i}"]:checked`)) answered++;
+  }
+  if (document.querySelector('input[name="hq-smoke"]:checked')) answered++;
+  const pct = Math.round(answered / total * 100);
+  document.getElementById('hq-progress-fill').style.width = pct + '%';
+  document.getElementById('hq-progress-label').textContent = `${answered} of ${total} answered`;
+}
+document.querySelectorAll('input[name="hq-smoke"]').forEach(r =>
+  r.addEventListener('change', updateHQProgress)
+);
+
+// Set today's date
+document.getElementById('hq-date').value = new Date().toISOString().split('T')[0];
+document.getElementById('dpa-date').value = new Date().toISOString().split('T')[0];
+
+// ── DPA clauses ───────────────────────────────────────────────────────────────
+const DPA_CLAUSES = [
+  { title: 'Overpayment Recovery', text: 'If you are overpaid for any reason, the total amount of the overpayment will normally be deducted from your next payment. If this would cause hardship, arrangements may be made to recover the overpayment over a longer period.' },
+  { title: 'Late Arrival', text: 'If you arrive for work more than one hour late without having previously notified us, other arrangements may have been made to cover your duties and you may be sent off the premises for the remainder of the day without pay.' },
+  { title: 'Short Time Working & Lay Off', text: 'If there is a temporary shortage of work, we will try to maintain your continuity of employment, which may involve short time working or lay off. Short time working will reduce your pay according to time actually worked. Lay off will result in no pay other than statutory guarantee pay.' },
+  { title: 'Lateness & Absence', text: 'Lateness or absence may result in disciplinary action and/or loss of appropriate payment.' },
+  { title: 'Notice Period', text: 'If you terminate employment without giving or working the required notice period, an amount equal to any additional cost of covering your duties during the notice period not worked will be deducted from any termination pay due. You will also forfeit any contractual accrued holiday pay above statutory entitlement.' },
+  { title: 'Return of Company Property', text: 'On termination of your employment you must return all company property in your possession or for which you have responsibility. Failure to return such items will result in the cost being deducted from any monies outstanding to you.' },
+  { title: 'Damage to Property', text: 'Any damage to stock or property (including non-statutory safety equipment) resulting from your carelessness, negligence or deliberate vandalism will render you liable to pay the full or part of the cost of repair or replacement.' },
+  { title: 'Loss Due to Negligence', text: 'Any loss resulting from your failure to observe rules, procedures or instructions, or from negligent behaviour or unsatisfactory standards of work, will render you liable to reimburse the full or part of the cost. In the event of failure to pay, such costs will be deducted from your pay.' },
+  { title: 'Unfit for Work', text: 'If in our opinion you are not fit to work upon arrival, we reserve the right to exercise our duty of care and send you away for the remainder of the day with or without pay. Dependent on circumstances, you may also be liable to disciplinary action.' },
+];
+
+const clausesBody = document.getElementById('dpa-clauses-body');
+DPA_CLAUSES.forEach((clause, i) => {
+  const div = document.createElement('div');
+  div.className = 'clause-item';
+  div.id = `clause-${i}`;
+  div.innerHTML = `
+    <div class="clause-check" id="check-${i}"></div>
+    <div style="flex:1;">
+      <div class="clause-num">Clause ${i + 1}</div>
+      <div class="clause-title">${clause.title}</div>
+      <div class="clause-text">${clause.text}</div>
+    </div>
+  `;
+  div.onclick = () => toggleClause(i);
+  clausesBody.appendChild(div);
+});
+
+const clauseTicked = new Array(DPA_CLAUSES.length).fill(false);
+
+function toggleClause(i) {
+  clauseTicked[i] = !clauseTicked[i];
+  const item = document.getElementById(`clause-${i}`);
+  const check = document.getElementById(`check-${i}`);
+  item.classList.toggle('ticked', clauseTicked[i]);
+  check.textContent = clauseTicked[i] ? '✓' : '';
+  updateDPAProgress();
+}
+
+function updateDPAProgress() {
+  const ticked = clauseTicked.filter(Boolean).length;
+  const total = DPA_CLAUSES.length;
+  const pct = Math.round(ticked / total * 100);
+  document.getElementById('dpa-progress-fill').style.width = pct + '%';
+  document.getElementById('dpa-progress-label').textContent = `${ticked} of ${total} clauses confirmed`;
+}
+
+// ── Signature pads ────────────────────────────────────────────────────────────
+const sigState = {};
+
+function initSigPad(id) {
+  const canvas = document.getElementById(`${id}-sig-canvas`);
+  const placeholder = document.getElementById(`${id}-sig-placeholder`);
+  const wrap = document.getElementById(`${id}-sig-wrap`);
+
+  // Size canvas to its display size
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1C2B2A';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  let drawing = false;
+  let hasDrawn = false;
+  let lastX, lastY;
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return [touch.clientX - rect.left, touch.clientY - rect.top];
+  }
+
+  function start(e) {
+    e.preventDefault();
+    drawing = true;
+    [lastX, lastY] = getPos(e);
+  }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const [x, y] = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    [lastX, lastY] = [x, y];
+    if (!hasDrawn) {
+      hasDrawn = true;
+      placeholder.style.opacity = '0';
+      const now = new Date();
+      document.getElementById(`${id}-sig-date`).textContent =
+        'Signed: ' + now.toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}) +
+        ' at ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    }
+  }
+  function end() { drawing = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', end);
+  canvas.addEventListener('mouseleave', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+
+  sigState[id] = { canvas, ctx, placeholder, hasDrawn: () => hasDrawn, reset: () => {
+    resize();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawn = false;
+    placeholder.style.opacity = '1';
+    document.getElementById(`${id}-sig-date`).textContent = '';
+  }};
+}
+
+function clearSig(id) { sigState[id].reset(); }
+
+initSigPad('hq');
+
+// DPA panel is hidden on load — canvas.getBoundingClientRect() returns 0x0
+// so we defer init until the tab is first opened
+let dpaInited = false;
+
+// ── Apply URL params after DOM ready ──────────────────────────────────────────
+(function applyUrlParams() {
+  const form = window._urlForm;
+  const name = window._urlName;
+
+  // Pre-fill names
+  if (name) {
+    const hqName = document.getElementById('hq-name');
+    const dpaName = document.getElementById('dpa-name');
+    if (hqName)  { hqName.value = name; hqName.setAttribute('readonly', ''); }
+    if (dpaName) { dpaName.value = name; dpaName.setAttribute('readonly', ''); }
+  }
+
+  // Jump to correct tab
+  if (form === 'dpa') {
+    document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-dpa').classList.add('active');
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    if (!dpaInited) { dpaInited = true; initSigPad('dpa'); }
+  }
+})();
+
+// ── Submit HQ ─────────────────────────────────────────────────────────────────
+async function submitHQ() {
+  const name = document.getElementById('hq-name').value.trim();
+  const sigOk = sigState['hq'].hasDrawn();
+  let allAnswered = true;
+
+  for (let i = 0; i < HQ_QUESTIONS.length; i++) {
+    if (!document.querySelector(`input[name="hq-q${i}"]:checked`)) {
+      allAnswered = false; break;
+    }
+  }
+  if (!document.querySelector('input[name="hq-smoke"]:checked')) allAnswered = false;
+
+  document.getElementById('hq-fields-error').classList.toggle('show', !name || !allAnswered);
+  document.getElementById('hq-sig-error').classList.toggle('show', !sigOk);
+  if (!name || !allAnswered || !sigOk) return;
+
+  const btn = document.getElementById('hq-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Saving...';
+
+  // Build answers object
+  const answers = {};
+  HQ_QUESTIONS.forEach((q, i) => {
+    answers[`q${i}`] = {
+      question: q,
+      answer: document.querySelector(`input[name="hq-q${i}"]:checked`)?.value,
+      info: document.getElementById(`hq-q${i}-info`).value.trim()
+    };
+  });
+  answers.smoke = document.querySelector('input[name="hq-smoke"]:checked')?.value;
+  answers.alcohol_units = document.getElementById('hq-alcohol').value;
+
+  const signatureDataUrl = sigState['hq'].canvas.toDataURL('image/png');
+
+  // Save to Supabase — use uid from URL param (staff member may not be logged in directly)
+  const userId = window._urlUid;
+  if (!userId) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>📋</span> Submit Health Questionnaire';
+    alert('Error: no staff ID found. Please close and reopen this form.');
+    return;
+  }
+
+  try {
+    const { error } = await sb.from('staff_forms').upsert({
+      user_id: userId,
+      form_type: 'health_questionnaire',
+      form_data: answers,
+      signature: signatureDataUrl,
+      employee_name: name,
+      position: document.getElementById('hq-position').value.trim(),
+      submitted_at: new Date().toISOString(),
+      status: 'submitted'
+    }, { onConflict: 'user_id,form_type' });
+
+    if (error) throw error;
+
+    btn.style.display = 'none';
+    document.getElementById('hq-success').classList.add('show');
+    document.getElementById('hq-progress-wrap').style.display = 'none';
+    // Tell parent window to refresh the Forms tab status
+    window.parent.postMessage({ type: 'form_submitted', formType: 'health_questionnaire', userId }, '*');
+  } catch (err) {
+    console.error('Save error:', err);
+    btn.disabled = false;
+    btn.innerHTML = '<span>📋</span> Submit Health Questionnaire';
+    btn.style.background = 'linear-gradient(135deg,#E8645A,#c0392b)';
+    btn.insertAdjacentHTML('afterend', '<p style="color:#E8645A;font-size:13px;font-weight:700;margin-top:8px;">❌ Save failed: ' + (err.message || 'Unknown error') + '. Please try again.</p>');
+  }
+}
+
+// ── Submit DPA ────────────────────────────────────────────────────────────────
+async function submitDPA() {
+  const name = document.getElementById('dpa-name').value.trim();
+  const allTicked = clauseTicked.every(Boolean);
+  const sigOk = sigState['dpa'].hasDrawn();
+
+  document.getElementById('dpa-fields-error').classList.toggle('show', !name || !allTicked);
+  document.getElementById('dpa-sig-error').classList.toggle('show', !sigOk);
+  if (!name || !allTicked || !sigOk) return;
+
+  const btn = document.getElementById('dpa-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Saving...';
+
+  const signatureDataUrl = sigState['dpa'].canvas.toDataURL('image/png');
+
+  const userId = window._urlUid;
+  if (!userId) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>✍️</span> Sign & Submit Agreement';
+    alert('Error: no staff ID found. Please close and reopen this form.');
+    return;
+  }
+
+  try {
+    const { error } = await sb.from('staff_forms').upsert({
+      user_id: userId,
+      form_type: 'deductions_from_pay',
+      form_data: {
+        clauses_confirmed: DPA_CLAUSES.map((c, i) => ({ title: c.title, confirmed: clauseTicked[i] })),
+        job_title: document.getElementById('dpa-title').value.trim(),
+        start_date: document.getElementById('dpa-start').value,
+      },
+      signature: signatureDataUrl,
+      employee_name: name,
+      submitted_at: new Date().toISOString(),
+      status: 'submitted'
+    }, { onConflict: 'user_id,form_type' });
+
+    if (error) throw error;
+
+    btn.style.display = 'none';
+    document.getElementById('dpa-success').classList.add('show');
+    document.getElementById('dpa-progress-wrap').style.display = 'none';
+    // Tell parent window to refresh the Forms tab status
+    window.parent.postMessage({ type: 'form_submitted', formType: 'deductions_from_pay', userId }, '*');
+  } catch (err) {
+    console.error('Save error:', err);
+    btn.disabled = false;
+    btn.innerHTML = '<span>✍️</span> Sign & Submit Agreement';
+    btn.style.background = 'linear-gradient(135deg,#E8645A,#c0392b)';
+    btn.insertAdjacentHTML('afterend', '<p style="color:#E8645A;font-size:13px;font-weight:700;margin-top:8px;">❌ Save failed: ' + (err.message || 'Unknown error') + '. Please try again.</p>');
+  }
+}
+</script>
+</body>
+</html>

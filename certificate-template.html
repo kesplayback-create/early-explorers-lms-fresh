@@ -288,7 +288,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const userName = params.get('name') || localStorage.getItem('user_name') || 'Staff Member';
   const moduleName = params.get('module') || 'Training Module';
   const certDate = params.get('date') || new Date().toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
-  const certNumber = params.get('number') || 'EE-2026-XX-00000';
+  const certNumber = params.get('cert') || params.get('number') || 'EE-2026-XX-00000';
   
   document.getElementById('user-name').textContent = userName;
   document.getElementById('module-name').textContent = moduleName;

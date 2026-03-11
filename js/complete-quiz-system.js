@@ -97,6 +97,74 @@ if (typeof window.QUIZ_BANK === 'undefined') {
         {question: "If unsure about a policy:", options: ["Guess", "Ask room leader, manager, or check policy document", "Do what you think", "Ask parents"], correct: 1},
         {question: "Why is confidentiality important?", options: ["Just a rule", "Builds trust, legal duty, protects children and families", "Only protects setting", "It's optional"], correct: 1}
       ]
+    },
+    'GDPR-01': {
+      moduleCode: 'GDPR-01',
+      moduleName: 'Confidentiality & GDPR',
+      passMark: 80,
+      questions: [
+        {question: "Under GDPR, what is the legal basis most commonly used for processing staff and child data in a nursery setting?", options: ["Consent from every individual", "Legitimate interests and legal obligation", "Public interest only", "Contractual necessity only"], correct: 1},
+        {question: "A parent asks to see all the information you hold about their child. What is this called?", options: ["A freedom of information request", "A subject access request (SAR)", "A data audit", "A GDPR complaint"], correct: 1},
+        {question: "How long do you have to respond to a subject access request?", options: ["7 days", "14 days", "1 month", "3 months"], correct: 2},
+        {question: "A member of staff leaves a child's learning journal on a table visible to other parents during collection. This is:", options: ["Acceptable as parents are trusted", "A data breach that must be reported to the manager", "Only a problem if a parent complains", "Fine as the data isn't sensitive"], correct: 1},
+        {question: "Which organisation must be notified of a serious data breach within 72 hours?", options: ["Ofsted", "The Information Commissioner's Office (ICO)", "The local authority", "The DfE"], correct: 1},
+        {question: "A colleague asks you to share a child's address so they can send a birthday card. You should:", options: ["Share it — it's a kind gesture", "Refuse — personal data cannot be shared without proper justification", "Check with the child first", "Share it as long as no one finds out"], correct: 1},
+        {question: "Child records must be kept securely. Which of the following is NOT acceptable?", options: ["Password-protected digital files", "Locked filing cabinets", "Paper records left on a desk overnight", "Encrypted cloud storage"], correct: 2},
+        {question: "When a child leaves the setting, their records should be:", options: ["Immediately destroyed", "Retained for the required period (typically until the child is 25) then securely destroyed", "Kept forever", "Given to the parents to keep"], correct: 1},
+        {question: "You accidentally send a child's personal details to the wrong email address. What must you do?", options: ["Delete the sent email and say nothing", "Report it to the manager immediately as a potential data breach", "Wait to see if anyone notices", "Only report if the recipient contacts you"], correct: 1},
+        {question: "Confidentiality in early years settings has one key exception. Information must always be shared when:", options: ["A parent requests it", "There is a safeguarding concern — child safety overrides confidentiality", "A colleague asks", "Ofsted requests a file"], correct: 1}
+      ]
+    },
+    'PV-01': {
+      moduleCode: 'PV-01',
+      moduleName: 'Prevent Duty Awareness',
+      passMark: 80,
+      questions: [
+        {question: "What is the Prevent Duty?", options: ["A fire safety regulation", "The legal duty to have due regard to preventing people from being drawn into terrorism", "A safeguarding policy for domestic abuse", "An Ofsted inspection requirement only"], correct: 1},
+        {question: "Prevent is one part of the government's counter-terrorism strategy. What is that strategy called?", options: ["CONTEST", "CHANNEL", "WRAP", "PURSUE"], correct: 0},
+        {question: "Which of the following is a vulnerability factor that might indicate radicalisation risk?", options: ["Being shy or quiet", "A sense of grievance or injustice, identity crisis, or exposure to extremist ideology", "Missing one day of nursery", "Having strong cultural or religious beliefs"], correct: 1},
+        {question: "If you have a concern about a child or family member being radicalised, who should you report to first?", options: ["The police directly", "Your Designated Safeguarding Lead (DSL)", "Ofsted", "The local MP"], correct: 1},
+        {question: "What is the CHANNEL programme?", options: ["A TV education initiative", "A voluntary, confidential programme that provides support to people at risk of radicalisation", "A government database of extremists", "A police surveillance operation"], correct: 1},
+        {question: "Extremism includes which of the following?", options: ["Celebrating cultural festivals", "Vocal or active opposition to fundamental British values", "Disagreeing with a colleague's opinion", "Expressing religious faith openly"], correct: 1},
+        {question: "What are the four fundamental British Values promoted under Prevent?", options: ["Loyalty, tradition, respect, obedience", "Democracy, rule of law, individual liberty, mutual respect and tolerance", "Freedom, equality, justice, community", "Honesty, kindness, inclusion, diversity"], correct: 1},
+        {question: "A parent regularly makes comments about a particular religious or ethnic group that concern you. You should:", options: ["Ignore it — they have a right to their opinions", "Record your concerns and report to the DSL", "Challenge them directly in front of other parents", "Discuss it with other staff members only"], correct: 1},
+        {question: "Prevent training for early years staff is required:", options: ["Only for managers", "Only if the setting is in a high-risk area", "For all staff as part of their safeguarding responsibilities", "Only when Ofsted asks"], correct: 2},
+        {question: "Which statement about radicalisation is correct?", options: ["It only affects teenagers and adults", "It cannot happen to young children", "Children of any age can be affected by radicalisation in their home environment", "It is always obvious and easy to spot"], correct: 2}
+      ]
+    },
+    'CP-01': {
+      moduleCode: 'CP-01',
+      moduleName: 'Communication & Partnerships with Parents',
+      passMark: 80,
+      questions: [
+        {question: "What does the EYFS statutory framework say about partnerships with parents?", options: ["Parents should be kept at a distance to maintain professional boundaries", "Providers must maintain a policy of working in partnership with parents", "Parent engagement is optional but encouraged", "Parents should only be contacted when there is a problem"], correct: 1},
+        {question: "A parent becomes upset and raises their voice at drop-off in front of other families. What should you do first?", options: ["Ask them to leave immediately", "Match their energy to show you understand", "Calmly invite them to speak somewhere private", "Ignore it and continue the session"], correct: 2},
+        {question: "A parent shares that their child has been experiencing nightmares. Where should you record this information?", options: ["You do not need to record it", "In the child's daily log or communication diary", "On a sticky note on the board", "Tell your manager verbally only"], correct: 1},
+        {question: "A child's parent speaks limited English. Which of the following is the correct approach to communication?", options: ["Use the child to translate important messages", "Speak slowly and loudly", "Arrange a professional interpreter or use translated written materials", "Only communicate via written notes in English"], correct: 2},
+        {question: "Which of the following is a professional boundary you must always maintain?", options: ["Accepting small gifts from parents at Christmas", "Adding parents on your personal social media accounts", "Giving parents your personal mobile number for updates", "Sharing another child's information with a curious parent"], correct: 0},
+        {question: "A parent complains that their child hasn't been doing enough painting activities. The correct response is to:", options: ["Tell them the curriculum is set and cannot be changed", "Dismiss the concern as it is minor", "Listen, acknowledge, explain your approach, and follow up with the manager if needed", "Agree to change all activities immediately"], correct: 2},
+        {question: "Under the SEND Code of Practice, parents of children with SEND must be:", options: ["Informed only at annual reviews", "Actively involved in planning and reviewing their child's support at all times", "Kept separate from professional discussions", "Only involved if they request it"], correct: 1},
+        {question: "You overhear a colleague telling another parent details about a different family's situation. You should:", options: ["Ignore it as it is not your concern", "Join the conversation", "Speak to the colleague privately first, then report to your manager if it continues", "Immediately report it to Ofsted"], correct: 2},
+        {question: "When should you discuss sensitive information about a child with their parent?", options: ["Loudly at the door during busy drop-off", "At collection in front of other waiting parents", "In a private space away from other children and families", "Via a note in their bag"], correct: 2},
+        {question: "A parent asks for your personal opinion on whether their child should start school this year or defer. You should:", options: ["Give a clear personal recommendation", "Refuse to engage with the question at all", "Provide factual information about options and suggest they speak to the school, remaining neutral", "Tell them what the manager thinks"], correct: 2}
+      ]
+    },
+    'FH-01': {
+      moduleCode: 'FH-01',
+      moduleName: 'Food Safety & Medication Management (Level 2)',
+      passMark: 80,
+      questions: [
+        {question: "What does HACCP stand for?", options: ["Hygiene And Cleaning Control Procedures", "Hazard Analysis and Critical Control Points", "Health Assessment and Compliance Check Process", "Hazardous Area Control and Containment Plan"], correct: 1},
+        {question: "What is the temperature danger zone in which bacteria multiply most rapidly?", options: ["0°C to 100°C", "15°C to 45°C", "8°C to 63°C", "5°C to 75°C"], correct: 2},
+        {question: "Which colour chopping board should be used for raw poultry?", options: ["Red", "Yellow", "Blue", "Green"], correct: 1},
+        {question: "You have cooked chicken for lunch. What minimum core temperature must it reach to be safe to serve?", options: ["63°C", "70°C", "75°C", "82°C"], correct: 2},
+        {question: "Raw meat must be stored in the fridge:", options: ["On the top shelf above everything else", "In the middle shelf", "On the bottom shelf below all other foods", "It does not matter as long as it is sealed"], correct: 2},
+        {question: "A member of staff had diarrhoea and vomiting yesterday but feels better today. Can they handle food?", options: ["Yes — they feel well enough to work", "Yes — as long as 24 hours have passed", "No — they must be symptom-free for 48 hours before returning to food handling", "Only if they wear gloves"], correct: 2},
+        {question: "Which of the following is NOT one of the 14 major allergens under UK food law?", options: ["Lupin", "Sesame", "Garlic", "Sulphur dioxide"], correct: 2},
+        {question: "A child with a nut allergy is showing hives and lip swelling after eating. What is your first action?", options: ["Give an antihistamine and monitor", "Call the parent to ask about their allergy history", "Shout for manager and first aider, stay with child, prepare to use EpiPen and call 999", "Move the child to a quiet room and wait"], correct: 2},
+        {question: "A parent verbally asks you to give their child antibiotics at lunchtime but has not completed a medication form. You should:", options: ["Administer it — verbal consent is sufficient", "Skip the dose and mention it at collection", "Contact the parent before the dose is due and ask them to complete a signed medication form", "Ask another member of staff to give it instead"], correct: 2},
+        {question: "What is the correct order for cleaning a food preparation surface?", options: ["Disinfect, then clean with detergent", "Wipe with a damp cloth and leave to dry", "Clean with detergent, rinse, disinfect, allow to air dry", "Spray with disinfectant and wipe immediately"], correct: 2}
+      ]
     }
   };
 
@@ -138,33 +206,11 @@ if (typeof window.QUIZ_BANK === 'undefined') {
   // =====================================================
   // QUIZ UI
   // =====================================================
-  window.startQuiz = async function (moduleCode) {
+  window.startQuiz = function (moduleCode) {
     const quizData = window.QUIZ_BANK[moduleCode];
     if (!quizData) {
       alert('Quiz not available for this module yet');
       return;
-    }
-
-    // Check module completion before allowing quiz
-    const api = _api();
-    if (api) {
-      try {
-        const userId = await _getUserId(api);
-        if (userId) {
-          const moduleRow = await _getModuleRow(api, moduleCode);
-          if (moduleRow) {
-            const progress = await api.getModuleProgress(userId, moduleRow.id);
-            const pct = progress ? Number(progress.progress_percentage || 0) : 0;
-            if (pct < 100) {
-              alert(`⚠️ Please complete all lessons in "${quizData.moduleName}" before taking the quiz.\n\nYour progress: ${pct}%`);
-              return;
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Could not check module progress before quiz:', e);
-        // Allow through if check fails — don't block the user
-      }
     }
 
     window.currentQuizModule = moduleCode;
@@ -319,14 +365,11 @@ if (typeof window.QUIZ_BANK === 'undefined') {
             {
               user_id: userId,
               module_id: moduleRow.id,
-              score_percentage: scorePercent,
-              questions_correct: correct,
-              questions_total: window.currentQuizQuestions.length,
+              score: scorePercent,
               passed,
-              attempt_number: 1,
-              started_at: (window.quizStartTime || new Date()).toISOString(),
+              attempt_number: 1, // DB can handle if you later want increment
               completed_at: new Date().toISOString(),
-              time_taken_seconds: durationMinutes ? durationMinutes * 60 : null,
+              duration_minutes: durationMinutes,
             },
           ]);
         if (error) throw error;
@@ -337,14 +380,23 @@ if (typeof window.QUIZ_BANK === 'undefined') {
 
       // 2) Update module progress
       try {
-        await api.updateModuleProgress(userId, moduleRow.id, {
+        const nowIso = new Date().toISOString();
+        const progressUpdates = {
           status: passed ? 'completed' : 'in_progress',
           progress_percentage: passed ? 100 : 90,
-          completed_at: passed ? new Date().toISOString() : null,
-          last_accessed_at: new Date().toISOString(),
+          completed_at: passed ? nowIso : null,
+          last_accessed_at: nowIso,
           quiz_score: scorePercent,
           quiz_passed: passed,
-        });
+        };
+        if (passed) {
+          progressUpdates.last_completed_at = nowIso;
+          const renewalMonths = Number(moduleRow.renewal_months || 12);
+          const dueDate = new Date();
+          dueDate.setMonth(dueDate.getMonth() + renewalMonths);
+          progressUpdates.due_date = dueDate.toISOString().slice(0, 10);
+        }
+        await api.updateModuleProgress(userId, moduleRow.id, progressUpdates);
       } catch (e) {
         console.warn('Progress update failed:', e);
       }
@@ -387,6 +439,38 @@ if (typeof window.QUIZ_BANK === 'undefined') {
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitted';
+      }
+
+      // 4) Auto-tick linked induction checklist items on pass
+      if (passed && userId) {
+        try {
+          const { data: linkedItems } = await window.supabaseClient
+            .from('induction_checklist_items')
+            .select('id')
+            .eq('linked_module_code', window.currentQuizModule)
+            .eq('is_active', true);
+
+          if (linkedItems && linkedItems.length > 0) {
+            const nowIso = new Date().toISOString();
+            const upserts = linkedItems.map(item => ({
+              user_id: userId,
+              item_id: item.id,
+              completed: true,
+              completed_by: userId,
+              completed_at: nowIso,
+            }));
+            const { error: inductionError } = await window.supabaseClient
+              .from('induction_checklist_completions')
+              .upsert(upserts, { onConflict: 'user_id,item_id' });
+            if (inductionError) {
+              console.warn('Induction auto-tick failed:', inductionError);
+            } else {
+              console.log(`✅ Auto-ticked ${linkedItems.length} induction item(s) for ${window.currentQuizModule}`);
+            }
+          }
+        } catch (e) {
+          console.warn('Induction checklist auto-tick error:', e);
+        }
       }
 
       console.log('✅ Quiz submitted', { module: window.currentQuizModule, scorePercent, passed });

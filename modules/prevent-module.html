@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prevent Duty — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:#3AAFA9;--teal-d:#2B8A85;--teal-deep:#1A6562;--teal-l:#E8F7F6;--teal-pale:#F2FBFA;
+  --coral:#E07B5A;--coral-l:#FDF2EE;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;
+  --red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;
+  --white:#FFFFFF;--cream:#F8FCFB;
+  --prev:#1A4A2E;--prev-m:#2D7A4F;--prev-accent:#4CAF7D;--prev-pale:rgba(76,175,125,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--prev);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#1A4A2E 0%,#0F3020 50%,#071A10 100%);}
+
+.topnav{background:rgba(15,48,32,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+
+.progress-track{display:flex;align-items:center;gap:6px;}
+.pdot{width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#A8E6C3;}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+.pdot:hover .pdot-tip{opacity:1;}
+
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+
+.bottombar{background:rgba(15,48,32,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#2D7A4F,#1A4A2E);color:#fff;box-shadow:0 4px 16px rgba(45,122,79,0.5);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,122,79,0.6);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(76,175,125,0.2) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:#fff;margin-bottom:12px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#A8E6C3;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+
+.sl-two{gap:28px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:16px;}
+.sl-two .visual-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);color:var(--ink);}
+.content-card.green-card{background:linear-gradient(135deg,#1A4A2E,#0F3020);border-color:rgba(255,255,255,0.1);}
+
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.slide-h3.dark{color:var(--prev);}
+.slide-p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+
+.stat-row{display:flex;gap:12px;}
+.stat-box{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:13px;padding:16px 14px;text-align:center;}
+.stat-box .s-num{font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:#A8E6C3;}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:3px;}
+
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.dark{color:var(--ink-m);}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.bi-green{background:rgba(76,175,125,0.2);color:#A8E6C3;}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+.bi-red{background:#FFEAEA;color:#C9184A;}
+
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4CAF7D,#2D7A4F);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(76,175,125,0.4);}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+
+.highlight-box{border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.hb-warn{background:rgba(240,165,0,0.12);border:1.5px solid rgba(240,165,0,0.3);}
+.hb-info{background:rgba(76,175,125,0.15);border:1.5px solid rgba(76,175,125,0.3);}
+.hb-crit{background:rgba(224,90,90,0.15);border:1.5px solid rgba(224,90,90,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;}
+.hb-warn .hb-text{color:rgba(255,230,150,0.9);}
+.hb-info .hb-text{color:rgba(168,230,195,0.9);}
+.hb-crit .hb-text{color:rgba(255,180,180,0.9);}
+
+.scene-card{background:linear-gradient(135deg,rgba(76,175,125,0.2),rgba(26,74,46,0.6));border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 30% 70%,rgba(45,122,79,0.3),transparent 60%);}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+
+.kc-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;}
+.kc-tag{font-size:11px;font-weight:800;color:#A8E6C3;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{display:flex;align-items:center;gap:13px;padding:15px 18px;border:2px solid rgba(255,255,255,0.12);border-radius:13px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#A8E6C3;background:rgba(76,175,125,0.15);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#E05A5A;background:rgba(224,90,90,0.15);color:#FFB3B3;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#E05A5A;border-color:#E05A5A;color:#fff;}
+.kc-feedback{border-radius:13px;padding:15px 18px;display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(224,90,90,0.12);border:1.5px solid rgba(224,90,90,0.25);color:#FFB3B3;}
+
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 14px;text-align:center;}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.anim-delay-1{animation-delay:0.15s !important;}
+.anim-delay-2{animation-delay:0.3s !important;}
+.anim-delay-3{animation-delay:0.45s !important;}
+.anim-delay-4{animation-delay:0.6s !important;}
+.anim-delay-5{animation-delay:0.75s !important;}
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+.bg-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.deco-circle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(76,175,125,0.1),transparent);}
+.dc1{width:400px;height:400px;top:-100px;right:-80px;}
+.dc2{width:280px;height:280px;bottom:-60px;left:-40px;}
+
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:#A8E6C3;}
+
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dd-card{border-radius:16px;padding:18px;}
+.dd-do{background:var(--sage-l);border:1.5px solid #B8D8BB;}
+.dd-dont{background:var(--red-l);border:1.5px solid #F0B8B8;}
+.dd-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.dd-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;}
+.dd-do .dd-badge{background:var(--sage);color:#fff;}
+.dd-dont .dd-badge{background:var(--red);color:#fff;}
+.dd-items{display:flex;flex-direction:column;gap:8px;}
+.dd-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;}
+.dd-do .dd-item{color:#2D5C30;}
+.dd-dont .dd-item{color:#7A1F1F;}
+
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.value-card{background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.25);border-radius:12px;padding:14px;}
+.vc-icon{font-size:22px;margin-bottom:6px;}
+.vc-title{font-size:13px;font-weight:800;color:#A8E6C3;margin-bottom:4px;}
+.vc-desc{font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="topnav">
+    <div class="tn-brand">
+      <div class="tn-logo">🌱</div>
+      <div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div>
+    </div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Prevent Duty</div>
+    <div class="tn-meta">
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 3</div>
+      <div class="tn-sep"></div>
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">20:00</span></div>
+    </div>
+  </nav>
+
+  <main class="stage">
+    <div class="bg-deco"><div class="deco-circle dc1"></div><div class="deco-circle dc2"></div></div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 1 — WHAT IS PREVENT?
+    ════════════════════════════════════════════ -->
+
+    <!-- L1 S0 Title -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="big-icon">🛡️</div>
+      <div class="lesson-label">Lesson 1 of 3</div>
+      <h1>What is Prevent?</h1>
+      <p class="lesson-intro">Understanding the Prevent duty, what radicalisation means, and why early years settings have a legal responsibility to protect children from extremism.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~7 minutes</span>
+        <span class="t-pill">⚖️ Legal duty</span>
+      </div>
+    </div>
+
+    <!-- L1 S1 The Law -->
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · The Legal Duty</div>
+        <div class="slide-h2 slide-in anim-delay-1">Prevent is a legal duty for all early years settings</div>
+        <div class="content-card slide-in anim-delay-2">
+          <p class="slide-p">The <strong style="color:#A8E6C3;">Counter-Terrorism and Security Act 2015</strong> places a legal duty on all early years providers to have "due regard to the need to prevent people from being drawn into terrorism." This is known as the <strong style="color:#A8E6C3;">Prevent Duty</strong>.</p>
+        </div>
+        <div class="stat-row slide-in anim-delay-3">
+          <div class="stat-box"><div class="s-num">2015</div><div class="s-lbl">Act came into force</div></div>
+          <div class="stat-box"><div class="s-num">3+</div><div class="s-lbl">Age groups covered — including early years</div></div>
+          <div class="stat-box"><div class="s-num">Part 5</div><div class="s-lbl">Of KCSIE links Prevent to safeguarding</div></div>
+        </div>
+        <div class="highlight-box hb-info slide-in anim-delay-4">
+          <div class="hb-icon">⚖️</div>
+          <div class="hb-text">Prevent is part of the government's CONTEST counter-terrorism strategy. It sits alongside Pursue, Protect and Prepare. As an early years setting, Prevent is embedded in our safeguarding responsibilities.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🏛️</div>
+          <div class="scene-title">Part of Safeguarding</div>
+          <div class="scene-sub">Prevent is not separate from safeguarding — it is part of it. Protecting children from radicalisation is treated the same as protecting them from any other form of harm.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S2 What is radicalisation -->
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Key Definitions</div>
+        <div class="slide-h2 slide-in anim-delay-1">Understanding radicalisation and extremism</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-green">🎯</div><div><strong>Radicalisation</strong> — the process by which a person comes to support or engage in extremist ideologies or terrorism. It can happen gradually over time.</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">⚡</div><div><strong>Extremism</strong> — vocal or active opposition to fundamental British values, including democracy, rule of law, individual liberty, and mutual respect.</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-green">🌐</div><div><strong>Terrorism</strong> — the use or threat of action designed to influence government or intimidate the public for a political, religious or ideological cause.</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">👶</div><div><strong>In early years</strong> — children are unlikely to become terrorists themselves, but may be exposed to extremist views within the family or community that affect their development.</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Radicalisation is a form of child abuse. A child being exposed to extremist ideologies is being harmed, even if there is no physical violence. Report concerns to your DSL.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">🧠</div>
+          <div class="scene-title">It Can Affect Anyone</div>
+          <div class="scene-sub">Radicalisation is not linked to any one religion, culture or community. Extremist ideologies exist across many different groups and belief systems.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S3 British Values -->
+    <div class="slide sl-two" data-lesson="1" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · British Values in EYFS</div>
+        <div class="slide-h2 slide-in anim-delay-1">Promoting British Values at Early Explorers</div>
+        <div class="slide-p slide-in anim-delay-2">The EYFS requires all early years providers to actively promote British values as part of the Prevent duty. These are not abstract concepts — they come alive through everyday interactions.</div>
+        <div class="values-grid slide-in anim-delay-3">
+          <div class="value-card"><div class="vc-icon">🗳️</div><div class="vc-title">Democracy</div><div class="vc-desc">Children vote on activities, take turns leading, have their voices heard and respected</div></div>
+          <div class="value-card"><div class="vc-icon">⚖️</div><div class="vc-title">Rule of Law</div><div class="vc-desc">Clear consistent rules, understanding consequences, fairness and boundaries</div></div>
+          <div class="value-card"><div class="vc-icon">🙋</div><div class="vc-title">Individual Liberty</div><div class="vc-desc">Children make choices, express opinions, develop independence and confidence</div></div>
+          <div class="value-card"><div class="vc-icon">🤝</div><div class="vc-title">Mutual Respect</div><div class="vc-desc">Celebrating differences, kindness, inclusion — all children valued equally</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-info slide-in-r">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">You promote British values every day through circle time, choice boards, celebrating different cultures and festivals, and modelling respectful behaviour. It does not require a separate lesson.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 S4 KC -->
+    <div class="slide" data-lesson="1" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q slide-in anim-delay-1">Which piece of legislation places the Prevent duty on early years settings?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'The Children Act covers child welfare broadly but is not the legislation that created the Prevent duty.')"><div class="kc-letter">A</div>The Children Act 2004</div>
+          <div class="kc-opt" data-feedback="Correct. The Counter-Terrorism and Security Act 2015 places a legal duty on all early years providers to help prevent radicalisation." onclick="checkAnswer(this,'kc-1',true,this.dataset.feedback)"><div class="kc-letter">B</div>The Counter-Terrorism and Security Act 2015</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'The Equality Act covers discrimination and equality duties, not the Prevent duty specifically.')"><div class="kc-letter">C</div>The Equality Act 2010</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'GDPR is data protection legislation and has no connection to the Prevent duty.')"><div class="kc-letter">D</div>The UK GDPR 2018</div>
+        </div>
+        <div id="kc-1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 2 — SIGNS & INDICATORS
+    ════════════════════════════════════════════ -->
+
+    <!-- L2 S0 Title -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="big-icon">👁️</div>
+      <div class="lesson-label">Lesson 2 of 3</div>
+      <h1>Signs & Indicators</h1>
+      <p class="lesson-intro">What to look out for in children and families, what makes someone vulnerable to radicalisation, and what to do when you have a concern.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~7 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- L2 S1 Vulnerability factors -->
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Vulnerability</div>
+        <div class="slide-h2 slide-in anim-delay-1">What makes someone vulnerable to radicalisation?</div>
+        <div class="slide-p slide-in anim-delay-2">No single factor makes a child or family vulnerable. Radicalisation is complex and often involves a combination of personal, social and environmental factors.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">💔</div><div><strong>Identity crisis</strong> — struggling with personal identity, feeling excluded or marginalised from society</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">😞</div><div><strong>Personal grievance</strong> — a sense of injustice, feeling that the world is against them or their community</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">👥</div><div><strong>Social isolation</strong> — lack of positive social connections, susceptible to online grooming or extremist groups</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-green">🏠</div><div><strong>Family influence</strong> — exposure to extremist views at home; children internalising attitudes they hear from adults</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Having these risk factors does not mean a child or family is radicalised. They indicate vulnerability and need for support — not suspicion. Always approach with sensitivity.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">🤲</div>
+          <div class="scene-title">Support Not Suspicion</div>
+          <div class="scene-sub">Prevent is about early intervention and support for vulnerable individuals — not about treating communities as suspects.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S2 Indicators in children -->
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Indicators in Children</div>
+        <div class="slide-h2 slide-in anim-delay-1">Signs to look out for in young children</div>
+        <div class="slide-p slide-in anim-delay-2">Because of their age, signs in early years children are more likely to reflect exposure to extremist views at home rather than direct radicalisation of the child themselves.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">💬</div><div><strong>Language or drawings</strong> — using words or making drawings that reference violence, hatred of groups, or extreme ideologies unusual for their age</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-green">🚫</div><div><strong>Exclusionary attitudes</strong> — expressing that certain groups of people are bad, wrong or deserve harm</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">😰</div><div><strong>Fear or distress</strong> — anxiety linked to specific groups, events, or ideas that seems disproportionate or adult-influenced</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-amber">🔄</div><div><strong>Sudden changes</strong> — withdrawal, behavioural changes, or expressions of anger about political or religious topics</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-crit slide-in-r">
+          <div class="hb-icon">🚨</div>
+          <div class="hb-text">If a child makes a comment or drawing that concerns you, record the exact words or describe exactly what you saw, and report to the DSL immediately. Do not delay.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">👂</div>
+          <div class="scene-title">Listen and Record</div>
+          <div class="scene-sub">Write down exactly what the child said or did, as soon as possible after the incident. Use the child's own words. This is vital evidence for the DSL.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S3 What to do -->
+    <div class="slide sl-two" data-lesson="2" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · What to Do</div>
+        <div class="slide-h2 slide-in anim-delay-1">If you have a Prevent concern</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div><div class="step-title">Record what you saw or heard</div><div class="step-desc">Write it down immediately — exact words, time, date, who was present. Do not rely on memory.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div><div class="step-title">Report to your DSL straight away</div><div class="step-desc">Your Designated Safeguarding Lead handles all Prevent concerns. Do not try to manage this yourself.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div><div class="step-title">Do not contact the family</div><div class="step-desc">Unlike some safeguarding concerns, you must not alert the family. The DSL will advise on next steps.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div><div class="step-title">DSL may refer to Channel</div><div class="step-desc">Channel is a multi-agency safeguarding programme that provides support to vulnerable individuals. Your DSL manages this referral.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card green-card slide-in-r">
+          <div class="card-label dark-l">The Channel Programme</div>
+          <div class="slide-h3">Voluntary, confidential support</div>
+          <div class="slide-p" style="margin-top:8px;">Channel is not about criminalising individuals. It provides tailored support — mentoring, counselling, education — to help vulnerable people move away from extremist influence.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">🤫</div>
+          <div class="hb-text">Prevent referrals are confidential. Do not discuss your concerns with colleagues unnecessarily — only with the DSL. This protects the family and the integrity of any investigation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 S4 KC -->
+    <div class="slide" data-lesson="2" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q slide-in anim-delay-1">A 4-year-old repeatedly uses language that suggests their family holds extreme views about a particular group. What should you do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Challenging the child directly is not appropriate. This requires a sensitive safeguarding response via the DSL.')"><div class="kc-letter">A</div>Challenge the child and explain why the views are wrong</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Contacting the parents directly without telling the DSL could compromise the safeguarding process.')"><div class="kc-letter">B</div>Speak to the parents at pick-up time</div>
+          <div class="kc-opt" data-feedback="Correct. Record exactly what was said and when, then report to your DSL immediately. Do not contact the family. The DSL will decide on next steps." onclick="checkAnswer(this,'kc-2',true,this.dataset.feedback)"><div class="kc-letter">C</div>Record exactly what was said and report to the DSL immediately</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Children often repeat things they have heard at home. Even one concerning comment should be recorded and reported.')"><div class="kc-letter">D</div>Ignore it as children often say things they do not understand</div>
+        </div>
+        <div id="kc-2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         LESSON 3 — YOUR RESPONSIBILITIES
+    ════════════════════════════════════════════ -->
+
+    <!-- L3 S0 Title -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="big-icon">✅</div>
+      <div class="lesson-label">Lesson 3 of 3</div>
+      <h1>Your Responsibilities</h1>
+      <p class="lesson-intro">Your specific duties under Prevent, how it links to safeguarding, and what Early Explorers does to meet the legal duty.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">🏆 Module complete</span>
+      </div>
+    </div>
+
+    <!-- L3 S1 Your duties -->
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Your Duties</div>
+        <div class="slide-h2 slide-in anim-delay-1">What you are required to do</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-green">🎓</div><div><strong>Complete Prevent training</strong> — you are doing this now. All staff must complete Prevent awareness training.</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-green">👁️</div><div><strong>Remain vigilant</strong> — be aware of changes in children's behaviour, language, or drawings that may indicate concern</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-green">📋</div><div><strong>Report concerns</strong> — any Prevent concern goes directly to the DSL, not to colleagues or parents</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-green">🌍</div><div><strong>Promote British values</strong> — actively embed democracy, rule of law, liberty and mutual respect in daily practice</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-green">🔒</div><div><strong>Online safety</strong> — ensure internet-enabled devices in the setting have appropriate filters and that children are not exposed to extremist content</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🧑‍🏫</div>
+          <div class="scene-title">Every Member of Staff</div>
+          <div class="scene-sub">Prevent is not just for managers. Every person working at Early Explorers has a personal legal duty to be aware and to report concerns to the DSL.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 S2 Prevent & safeguarding link -->
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Prevent & Safeguarding</div>
+        <div class="slide-h2 slide-in anim-delay-1">How Prevent links to our safeguarding duty</div>
+        <div class="do-dont slide-in anim-delay-2">
+          <div class="dd-card dd-do">
+            <div class="dd-header"><span class="dd-badge">✓ Do</span></div>
+            <div class="dd-items">
+              <div class="dd-item">✅ Treat Prevent concerns the same as safeguarding concerns</div>
+              <div class="dd-item">✅ Record and report immediately to DSL</div>
+              <div class="dd-item">✅ Promote an inclusive, welcoming environment</div>
+              <div class="dd-item">✅ Challenge discriminatory language sensitively</div>
+              <div class="dd-item">✅ Celebrate diversity and different cultures</div>
+            </div>
+          </div>
+          <div class="dd-card dd-dont">
+            <div class="dd-header"><span class="dd-badge">✗ Never</span></div>
+            <div class="dd-items">
+              <div class="dd-item">❌ Target or profile families based on religion or ethnicity</div>
+              <div class="dd-item">❌ Contact the family about a Prevent concern</div>
+              <div class="dd-item">❌ Dismiss concerns because they seem unlikely</div>
+              <div class="dd-item">❌ Discuss concerns with other staff unnecessarily</div>
+              <div class="dd-item">❌ Investigate yourself — refer to DSL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-crit slide-in-r">
+          <div class="hb-icon">🚨</div>
+          <div class="hb-text">Do not contact the family when you have a Prevent concern. Unlike some safeguarding situations, alerting the family could compromise a referral or put others at risk.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 S3 Summary -->
+    <div class="slide sl-summary" data-lesson="3" data-slide="3">
+      <div class="summary-icon">🛡️</div>
+      <h2 class="summary-h">Module Complete — Key Points</h2>
+      <p class="summary-p">You have completed the Prevent Duty module. Carry these principles into your daily practice at Early Explorers.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">⚖️</div><div class="sk-title">Legal Duty</div><div class="sk-sub">Counter-Terrorism Act 2015 — applies to all early years settings</div></div>
+        <div class="sk-card"><div class="sk-icon">👁️</div><div class="sk-title">Stay Vigilant</div><div class="sk-sub">Watch for changes in language, drawings or behaviour</div></div>
+        <div class="sk-card"><div class="sk-icon">📋</div><div class="sk-title">Record & Report</div><div class="sk-sub">Exact words, straight to DSL — never to parents</div></div>
+        <div class="sk-card"><div class="sk-icon">🌍</div><div class="sk-title">British Values</div><div class="sk-sub">Democracy, law, liberty, mutual respect — every day</div></div>
+        <div class="sk-card"><div class="sk-icon">🤝</div><div class="sk-title">Support Not Suspicion</div><div class="sk-sub">Prevent is about protecting vulnerable people, not profiling</div></div>
+        <div class="sk-card"><div class="sk-icon">🔗</div><div class="sk-title">Part of Safeguarding</div><div class="sk-sub">Treat Prevent concerns exactly as safeguarding concerns</div></div>
+      </div>
+    </div>
+
+    <!-- L3 S4 KC -->
+    <div class="slide" data-lesson="3" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q slide-in anim-delay-1">A colleague tells you they think a child's parent may hold extremist views. What should you and your colleague do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-3">
+          <div class="kc-opt" data-feedback="Correct. Any Prevent concern must be reported to the DSL. Do not discuss amongst colleagues, do not contact the family, and do not investigate yourselves." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">A</div>Both report the concern to the DSL straight away and not discuss it further</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Discussing it with other staff spreads the concern unnecessarily and could compromise confidentiality. Report only to the DSL.')"><div class="kc-letter">B</div>Discuss it with the wider staff team to get more opinions</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Never contact the family about a Prevent concern. This could compromise the process and potentially put others at risk.')"><div class="kc-letter">C</div>Approach the parent and ask them about their views</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'A concern from a colleague is worth taking seriously. Report it to the DSL and let them assess it.')"><div class="kc-letter">D</div>Do nothing as it is based on a colleague opinion not direct evidence</div>
+        </div>
+        <div id="kc-3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- L3 S5 Ready for quiz -->
+    <div class="slide sl-title" data-lesson="3" data-slide="5">
+      <div class="big-icon" style="animation:pulse 2s ease-in-out infinite;">🏆</div>
+      <h1>Ready for Your Assessment?</h1>
+      <p class="lesson-intro">You have completed all 3 lessons. Take the 10-question assessment to receive your certificate. Pass mark: 80%.</p>
+      <div class="title-pills">
+        <span class="t-pill">❓ 10 questions</span>
+        <span class="t-pill">🎯 80% to pass</span>
+        <span class="t-pill">🏆 Certificate on completion</span>
+      </div>
+      <div style="margin-top:28px;animation:slideUp 0.5s ease 0.6s both;">
+        <button class="btn-nav btn-next-main" style="padding:15px 36px;font-size:15px;" onclick="returnToLMSForQuiz()">Return to LMS for Quiz →</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bottombar">
+    <div class="bb-left">
+      <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button>
+    </div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 5</div>
+    <div class="bb-right">
+      <button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const lessons=[
+  {title:"What is Prevent?",slides:5},
+  {title:"Signs & Indicators",slides:5},
+  {title:"Your Responsibilities",slides:6},
+];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+
+function buildDots(){
+  const track=document.getElementById('prog-track');
+  lessons.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='pdot';
+    const tip=document.createElement('div');
+    tip.className='pdot-tip';
+    tip.textContent=`Lesson ${i+1}: ${l.title}`;
+    d.appendChild(tip);
+    d.onclick=()=>jumpToLesson(i);
+    track.appendChild(d);
+  });
+  updateDots();
+}
+
+function updateDots(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson)-1;
+  document.querySelectorAll('.pdot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<lessonNum)d.classList.add('done');
+    else if(i===lessonNum)d.classList.add('active');
+  });
+}
+
+function jumpToLesson(idx){
+  const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===idx);
+  if(target>=0)goTo(target);
+}
+
+function goTo(idx,direction=1){
+  if(idx<0||idx>=totalSlides)return;
+  const out=allSlides[currentIndex];
+  const inn=allSlides[idx];
+  out.classList.remove('active');
+  out.classList.add('exit');
+  setTimeout(()=>{
+    out.classList.remove('exit');
+    inn.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';
+  },50);
+  currentIndex=idx;
+  inn.classList.add('active');
+  setTimeout(()=>{
+    inn.querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});
+  },100);
+  updateUI();
+}
+
+function navigate(dir){goTo(currentIndex+dir,dir);}
+
+function updateUI(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson);
+  const slideNum=parseInt(slide.dataset.slide);
+  const lesson=lessons[lessonNum-1];
+  const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);
+  document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 3`;
+  document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideNum+1} of ${lessonSlides.length}`;
+  document.getElementById('btn-prev').disabled=currentIndex===0;
+  const nextBtn=document.getElementById('btn-next');
+  if(currentIndex===totalSlides-1){
+    nextBtn.textContent='Return to LMS for Quiz →';
+    nextBtn.onclick=function(){returnToLMSForQuiz();};
+    nextBtn.disabled=false;
+  }else{
+    nextBtn.textContent='Next →';
+    nextBtn.onclick=function(){navigate(1);};
+    nextBtn.disabled=false;
+  }
+  updateDots();
+  const timeMap=[20,13,7];
+  document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;
+}
+
+function checkAnswer(el,kcId,isCorrect,feedbackText){
+  if(answered[kcId])return;
+  answered[kcId]=true;
+  const container=document.getElementById(kcId);
+  container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});
+  if(isCorrect){el.classList.add('correct');}
+  else{
+    el.classList.add('wrong');
+    container.querySelectorAll('.kc-opt').forEach(opt=>{
+      const oc=opt.getAttribute('onclick')||'';
+      if(oc.includes(',true,')||oc.includes(',true)')){opt.classList.add('correct');}
+    });
+  }
+  const fb=document.getElementById(kcId+'-feedback');
+  fb.style.display='flex';
+  fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;
+  setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);
+});
+
+buildDots();updateUI();
+setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});},300);
+</script>
+
+<script>
+window.MODULE_CODE="PD-01";
+window.returnToLMSForQuiz=function(){
+  try{localStorage.setItem('ee_pending_quiz',window.MODULE_CODE||'PD-01');}catch(e){}
+  if(window.opener&&!window.opener.closed){
+    try{window.opener.focus();window.opener.startQuiz&&window.opener.startQuiz(window.MODULE_CODE||'PD-01');}catch(e){}
+    try{window.close();}catch(e){}
+  }else{
+    try{window.location.href='../index.html';}catch(e){alert('Please return to the main LMS window and click Take Quiz.');}
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+
+</body>
+</html>

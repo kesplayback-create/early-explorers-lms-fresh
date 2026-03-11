@@ -13,7 +13,7 @@
 window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {
   url: 'https://pwbmhszugdoauphbbida.supabase.co',
   // NOTE: keep this as a PUBLIC anon key (safe to embed)
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm1oc3p1Z2RvYXVwaGJiaWRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTkxNzEsImV4cCI6MjA4NjkzNTE3MX0.aHvIhtcnVYqgAPIKLQ9kCOIl5IUc-l9aRX4RkkAkm4g',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3Ym1oc3p1Z2RvYXVwaGJiaWRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTkxNzEsImV4cCI6MjA4NjkzNTE3MX0.aHvIhtcnVYqgAPIKLQ9kCOIl5IUc-l9aRX4RkkAkm4g',
 };
 
 // ============================================
@@ -186,7 +186,7 @@ async function updateModuleProgress(userId, moduleId, updates) {
     ...updates,
   };
 
-  ['started_at', 'last_accessed_at', 'completed_at'].forEach((k) => {
+  ['started_at', 'last_accessed_at', 'completed_at', 'last_completed_at'].forEach((k) => {
     if (payload[k] instanceof Date) payload[k] = payload[k].toISOString();
   });
 

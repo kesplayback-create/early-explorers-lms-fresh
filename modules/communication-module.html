@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communication & Partnerships with Parents — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2E86AB;--primary-d:#1A5F7A;--primary-deep:#0D3B54;--primary-l:#E8F4F8;--teal:#3AAFA9;--teal-l:#E8F7F6;--coral:#E07B5A;--coral-l:#FDF2EE;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;--red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;--white:#FFFFFF;--cream:#F8FCFB;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#2E86AB 0%,#1A5F7A 50%,#0D3B54 100%);}
+.topnav{background:rgba(13,59,84,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+.progress-track{display:flex;align-items:center;gap:6px;}
+.pdot{width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#A8D8EA;}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+.pdot:hover .pdot-tip{opacity:1;}
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.bottombar{background:rgba(13,59,84,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#2E86AB,#1A5F7A);color:#fff;box-shadow:0 4px 16px rgba(46,134,171,0.4);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,134,171,0.5);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(168,216,234,0.15) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:#fff;margin-bottom:12px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#A8D8EA;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+.sl-two{gap:28px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:16px;}
+.sl-two .visual-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);color:var(--ink);}
+.content-card.blue-card{background:linear-gradient(135deg,#1A5F7A,#0D3B54);border-color:rgba(255,255,255,0.1);}
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.slide-h3.dark{color:#1A5F7A;}
+.slide-p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+.stat-row{display:flex;gap:12px;}
+.stat-box{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:13px;padding:16px 14px;text-align:center;}
+.stat-box .s-num{font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:#fff;}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:3px;}
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.dark{color:var(--ink-m);}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.bi-blue{background:var(--primary-l);color:var(--primary-d);}
+.bi-red{background:var(--red-l);color:var(--red);}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-teal{background:var(--teal-l);color:var(--teal);}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+.bi-sage{background:var(--sage-l);color:#2d7a4f;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2E86AB,#1A5F7A);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(46,134,171,0.4);}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+.highlight-box{border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.hb-info{background:rgba(46,134,171,0.2);border:1.5px solid rgba(168,216,234,0.3);}
+.hb-warn{background:rgba(224,90,90,0.15);border:1.5px solid rgba(224,90,90,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;color:rgba(255,240,210,0.9);}
+.hb-info .hb-text{color:rgba(168,216,234,0.9);}
+.scene-card{background:linear-gradient(135deg,rgba(168,216,234,0.15),rgba(13,59,84,0.4));border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 30% 70%,rgba(46,134,171,0.2),transparent 60%);}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+.kc-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;}
+.kc-tag{font-size:11px;font-weight:800;color:#A8D8EA;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{display:flex;align-items:center;gap:13px;padding:15px 18px;border:2px solid rgba(255,255,255,0.12);border-radius:13px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#A8D8EA;background:rgba(168,216,234,0.12);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#FF9D76;background:rgba(255,157,118,0.15);color:#FFD6A5;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#FF9D76;border-color:#FF9D76;color:#fff;}
+.kc-feedback{border-radius:13px;padding:15px 18px;display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(255,157,118,0.12);border:1.5px solid rgba(255,157,118,0.25);color:#FFD6A5;}
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 14px;text-align:center;}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:#A8D8EA;}
+.btn-quiz{background:linear-gradient(135deg,#2E86AB,#1A5F7A);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(46,134,171,0.4);transition:all 0.2s;animation:slideUp 0.5s ease 0.5s both;}
+.btn-quiz:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(46,134,171,0.5);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="topnav">
+    <div class="tn-brand"><div class="tn-logo">🌱</div><div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div></div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Communication & Partnerships with Parents</div>
+    <div class="tn-meta">
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 4</div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">20:00</span></div>
+    </div>
+  </nav>
+  <main class="stage">
+
+    <!-- LESSON 1 TITLE -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="big-icon">🤝</div>
+      <div class="lesson-label">Lesson 1 of 4</div>
+      <h1>Why Partnerships Matter</h1>
+      <p class="lesson-intro">Strong relationships with parents and carers are central to the EYFS framework. Learn why these partnerships are essential and what they mean in practice at Early Explorers.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~5 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · The EYFS Partnership Principle</div>
+        <h2 class="slide-h2">Parents Are Children's First Educators</h2>
+        <p class="slide-p">The EYFS framework places strong emphasis on working with parents. They know their child better than anyone — our role is to work alongside them, not in place of them.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-blue">📋</div><div>Share observations and progress regularly — not just at formal reviews</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">🔑</div><div>Parents have the right to be involved in decisions about their child's care and learning</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-sage">🌱</div><div>Two-way communication helps us spot changes in a child's wellbeing quickly</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-amber">⭐</div><div>A child who sees their parent and key person communicating warmly feels more secure</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">👨‍👩‍👧</div>
+          <div class="scene-title">The Triangle of Care</div>
+          <div class="scene-sub">Child · Parent · Practitioner — all three must communicate well for a child to thrive</div>
+        </div>
+        <div class="highlight-box hb-info slide-in-r" style="animation-delay:0.2s">
+          <div class="hb-icon">📌</div>
+          <div class="hb-text">EYFS 2024 requires settings to build and maintain "respectful and trusting" relationships with all parents and carers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Daily Communication</div>
+        <h2 class="slide-h2">Every Handover Matters</h2>
+        <p class="slide-p">Drop-off and pick-up are your most important daily communication moments. Even a brief, warm, informative handover builds trust over time.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Greet by name — child and parent</div><div class="step-desc">Use both names. It signals you see them as individuals, not just another family.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Share one specific observation</div><div class="step-desc">"She painted a rainbow today and was so proud" means more than "she was fine".</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Ask and listen</div><div class="step-desc">Has anything changed at home? Illness, a new sibling, a change in sleep? This affects behaviour and wellbeing.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Record important information</div><div class="step-desc">Verbal handover information must be recorded in the child's daily log same day.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card blue-card slide-in-r">
+          <div class="card-label dark-l">Remember</div>
+          <div class="slide-h3">Never Share Child Information at the Door</div>
+          <p class="slide-p" style="font-size:13px;">If you need to discuss something sensitive, ask the parent to step inside. Never discuss concerns, incidents or safeguarding matters in front of other families.</p>
+        </div>
+        <div class="stat-row slide-in-r" style="animation-delay:0.2s">
+          <div class="stat-box"><div class="s-num">83%</div><div class="s-lbl">of parents say daily updates are the most valued communication</div></div>
+          <div class="stat-box"><div class="s-num">2×</div><div class="s-lbl">more likely to raise concerns early when staff are approachable</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 1 -->
+    <div class="slide" data-lesson="1" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q">A parent shares that their child slept badly last night. What should you do?</div>
+        <div class="kc-opts" id="kc1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Good instinct — but sharing verbally at collection is not enough. It must be recorded in the child\'s daily log on the same day.')"><div class="kc-letter">A</div>Tell your colleague at handover time</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',true,'Correct! Important information shared by parents must be recorded in writing same day and passed on to anyone caring for that child.')"><div class="kc-letter">B</div>Note it in the child's daily log and ensure the room team knows</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'This is too passive. Even if the child seems fine, changes in sleep can affect mood, behaviour and wellbeing throughout the day.')"><div class="kc-letter">C</div>Keep an eye on the child but take no further action unless they seem upset</div>
+        </div>
+        <div id="kc1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 2 TITLE -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="big-icon">💬</div>
+      <div class="lesson-label">Lesson 2 of 4</div>
+      <h1>Difficult Conversations</h1>
+      <p class="lesson-intro">Every practitioner will face a conversation with a parent that feels uncomfortable. Learn how to approach these professionally, calmly and constructively.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~5 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Approaching Difficult Conversations</div>
+        <h2 class="slide-h2">Stay Calm, Stay Professional</h2>
+        <p class="slide-p">Difficult conversations might include concerns about a child's development, a behaviour incident, or a parent complaint. Your approach matters as much as the content.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-blue">🏠</div><div>Always move to a private space — never discuss concerns at the front door or in earshot of other families or children</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">😌</div><div>Use calm, neutral language — avoid accusatory or defensive tone</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-sage">👂</div><div>Listen fully before responding — let the parent finish speaking</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-amber">📝</div><div>Always follow up difficult conversations in writing and inform your manager same day</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🛑</div>
+          <div class="scene-title">When to Escalate Immediately</div>
+          <div class="scene-sub">Any threat, aggressive behaviour, or safeguarding concern — stop the conversation and get your manager straight away</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Handling Complaints</div>
+        <h2 class="slide-h2">Complaints Are Opportunities</h2>
+        <p class="slide-p">A complaint handled well can actually strengthen a parent's trust. A complaint handled poorly can end a relationship and damage the setting's reputation.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Acknowledge and thank them</div><div class="step-desc">"Thank you for raising this with us" — never be defensive. Their concern is valid even if you disagree.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Listen without interrupting</div><div class="step-desc">Take notes if needed. Don't make promises you can't keep.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Refer to the manager</div><div class="step-desc">Unless it's minor, formal complaints must be handled by the manager. Direct the parent accordingly.</div></div></step></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Follow the complaints policy</div><div class="step-desc">All complaints must be logged and a written response provided within the timeframe set in our policy.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Never discuss another child's behaviour with a parent as an explanation for an incident. This breaches confidentiality.</div>
+        </div>
+        <div class="content-card blue-card slide-in-r" style="margin-top:8px;">
+          <div class="card-label dark-l">Key Principle</div>
+          <div class="slide-h3">You Are Not Alone</div>
+          <p class="slide-p" style="font-size:13px;">If a conversation feels beyond your experience or becomes heated — stop and get your manager. You are never expected to handle serious complaints on your own.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 2 -->
+    <div class="slide" data-lesson="2" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q">A parent approaches you at pick-up, visibly upset, saying their child was hurt and nobody told them. What do you do first?</div>
+        <div class="kc-opts" id="kc2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Explaining immediately could come across as defensive and may escalate the situation. First, create the right environment.')"><div class="kc-letter">A</div>Explain what happened straight away so they have the full picture</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',true,'Correct! Move to a private space first, then listen fully, then inform your manager. Never discuss incidents at the door.')"><div class="kc-letter">B</div>Calmly invite them to step inside, listen to their concern, then inform your manager</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'This delays resolution and dismisses their concern. Parents deserve a timely, respectful response.')"><div class="kc-letter">C</div>Ask them to email their complaint so it is formally recorded</div>
+        </div>
+        <div id="kc2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 3 TITLE -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="big-icon">👶</div>
+      <div class="lesson-label">Lesson 3 of 4</div>
+      <h1>SEND & Inclusive Communication</h1>
+      <p class="lesson-intro">Communicating with parents of children with SEND requires additional sensitivity, consistency and collaboration. Learn what this looks like in practice.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~5 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Supporting SEND Families</div>
+        <h2 class="slide-h2">Parents of SEND Children Are Partners in Planning</h2>
+        <p class="slide-p">For children with identified or suspected SEND, parents must be actively involved in planning, reviewing and implementing support. This is a legal requirement under the SEND Code of Practice.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-blue">📋</div><div>Parents must be involved in creating and reviewing the child's SEND support plan</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">🗣️</div><div>Use accessible language — avoid jargon, acronyms or clinical terms without explanation</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-sage">📞</div><div>More frequent, informal check-ins help build the trust needed for difficult conversations later</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-amber">🤝</div><div>Always approach from a position of shared goals — you both want the best for the child</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">💙</div>
+          <div class="scene-title">The SENCO Is Your Ally</div>
+          <div class="scene-sub">If a parent raises SEND concerns or you observe developmental differences, refer to our SENCO immediately. Don't wait.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Language & Barriers</div>
+        <h2 class="slide-h2">Removing Communication Barriers</h2>
+        <p class="slide-p">Not all parents communicate in the same way or in English as a first language. Our duty is to ensure every family can access information and feel heard.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Identify barriers early</div><div class="step-desc">During settling-in, note language needs, literacy levels, or communication preferences.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Use visual supports</div><div class="step-desc">Photos, visual daily diaries, and Makaton symbols help where language is a barrier.</div></div></step></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Never use a child as an interpreter</div><div class="step-desc">This is inappropriate and puts unfair responsibility on the child. Contact the manager for support with translation needs.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Offer written summaries</div><div class="step-desc">Important information should be provided in writing so it can be translated or reviewed at home.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-info slide-in-r">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">The Equality Act 2010 requires us to make reasonable adjustments to ensure all parents can access our services equally — including communication.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 3 -->
+    <div class="slide" data-lesson="3" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q">A parent who speaks limited English needs important information about their child's SEND support plan. What is the best approach?</div>
+        <div class="kc-opts" id="kc3">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Using a child as an interpreter is never appropriate — it places unfair responsibility on them and may cause them distress.')"><div class="kc-letter">A</div>Ask the child to help translate for their parent</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Speaking slowly does not resolve a language barrier and may come across as patronising. A written summary alone is also insufficient for complex SEND information.')"><div class="kc-letter">B</div>Speak slowly and clearly, then give them a written copy to take home</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc3',true,'Correct! Inform your manager who can arrange appropriate translation support to ensure the parent can fully participate in their child\'s SEND planning.')"><div class="kc-letter">C</div>Inform the manager so translation support can be arranged</div>
+        </div>
+        <div id="kc3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 4 TITLE -->
+    <div class="slide sl-title" data-lesson="4" data-slide="0">
+      <div class="big-icon">📱</div>
+      <div class="lesson-label">Lesson 4 of 4</div>
+      <h1>Professional Boundaries & Confidentiality</h1>
+      <p class="lesson-intro">Building warm relationships with families is important — but maintaining professional boundaries protects everyone. Learn where the lines are.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~5 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="4" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Professional Boundaries</div>
+        <h2 class="slide-h2">Warm But Professional</h2>
+        <p class="slide-p">Parents will sometimes want to become friends with staff. Warmth is encouraged — but personal friendships with families can create conflicts of interest and safeguarding risks.</p>
+        <div class="bullet-list">
+          <div class="bullet light-c" style="animation-delay:0.1s"><div class="b-icon bi-blue">📵</div><div>Do not accept personal friend requests from parents on social media while employed here</div></div>
+          <div class="bullet light-c" style="animation-delay:0.2s"><div class="b-icon bi-teal">💬</div><div>Do not communicate with families via personal mobile numbers or messaging apps</div></div>
+          <div class="bullet light-c" style="animation-delay:0.3s"><div class="b-icon bi-amber">🎁</div><div>Gifts must be declared to the manager — refer to the Staff Code of Conduct</div></div>
+          <div class="bullet light-c" style="animation-delay:0.4s"><div class="b-icon bi-sage">🔒</div><div>Never share information about other children or families, even in casual conversation</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">⚖️</div>
+          <div class="scene-title">Why Boundaries Protect You</div>
+          <div class="scene-sub">Blurred boundaries can lead to allegations, unfair treatment of other families, or safeguarding concerns about the staff member</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="4" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Confidentiality in Practice</div>
+        <h2 class="slide-h2">What Stays In the Room</h2>
+        <p class="slide-p">Everything you learn about a child or family through your role is confidential. This includes development information, family circumstances, medical details and anything shared at handover.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Never discuss children outside work</div><div class="step-desc">Not to friends, family, or on social media — ever, even without using names.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Exceptions: safeguarding</div><div class="step-desc">Confidentiality is never a reason to withhold safeguarding concerns. The child's safety always comes first.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Data protection applies</div><div class="step-desc">Parent contact details, addresses and family information must not be shared or stored on personal devices.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="highlight-box hb-warn slide-in-r">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Breaching confidentiality is a serious disciplinary matter and may result in dismissal. When in doubt — say nothing and ask your manager.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KC 4 -->
+    <div class="slide" data-lesson="4" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag">🧠 Knowledge Check · Lesson 4</div>
+        <div class="kc-q">A parent you get on well with asks for your personal mobile number to keep in touch. What should you do?</div>
+        <div class="kc-opts" id="kc4">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Sharing personal contact details with parents is not appropriate and blurs professional boundaries, even if your intentions are good.')"><div class="kc-letter">A</div>Share it — you have a good relationship and want to be helpful</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'This is better but still risks boundary issues. Directing them to the nursery is the correct approach.')"><div class="kc-letter">B</div>Give them your number but only for nursery-related matters</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc4',true,'Correct! Politely explain that all communication goes through the nursery. This protects you and maintains professional boundaries.')"><div class="kc-letter">C</div>Politely decline and direct them to contact the nursery through official channels</div>
+        </div>
+        <div id="kc4-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="slide sl-summary" data-lesson="4" data-slide="4">
+      <div class="summary-icon">🏆</div>
+      <h2 class="summary-h">Module Complete!</h2>
+      <p class="summary-p">You've completed Communication & Partnerships with Parents. You now understand how to build strong, professional relationships with families while maintaining appropriate boundaries.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">🤝</div><div class="sk-title">Partnership First</div><div class="sk-sub">Parents are your partners — communicate daily, warmly and specifically</div></div>
+        <div class="sk-card"><div class="sk-icon">💬</div><div class="sk-title">Stay Professional</div><div class="sk-sub">Handle difficult conversations calmly, privately and with manager support</div></div>
+        <div class="sk-card"><div class="sk-icon">🔒</div><div class="sk-title">Boundaries Matter</div><div class="sk-sub">Warmth is encouraged — personal relationships with families are not appropriate</div></div>
+      </div>
+      <button class="btn-quiz" onclick="returnToLMSForQuiz()" style="margin-top:24px;">📝 Take the Quiz →</button>
+    </div>
+
+  </main>
+  <footer class="bottombar">
+    <div class="bb-left"><button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button></div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 4</div>
+    <div class="bb-right"><button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button></div>
+  </footer>
+</div>
+<script>
+const lessons=[{title:"Why Partnerships Matter",slides:4},{title:"Difficult Conversations",slides:4},{title:"SEND & Inclusive Communication",slides:4},{title:"Professional Boundaries & Confidentiality",slides:5}];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+function buildDots(){const track=document.getElementById('prog-track');lessons.forEach((l,i)=>{const d=document.createElement('div');d.className='pdot';d.dataset.lesson=i;const tip=document.createElement('div');tip.className='pdot-tip';tip.textContent=`Lesson ${i+1}: ${l.title}`;d.appendChild(tip);d.onclick=()=>jumpToLesson(i);track.appendChild(d);});updateDots();}
+function updateDots(){const slide=allSlides[currentIndex];const lessonNum=parseInt(slide.dataset.lesson)-1;document.querySelectorAll('.pdot').forEach((d,i)=>{d.classList.remove('active','done');if(i<lessonNum)d.classList.add('done');else if(i===lessonNum)d.classList.add('active');});}
+function jumpToLesson(lessonIdx){const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===lessonIdx);if(target>=0)goTo(target);}
+function goTo(idx,direction=1){if(idx<0||idx>=totalSlides)return;const outSlide=allSlides[currentIndex];const inSlide=allSlides[idx];outSlide.classList.remove('active');outSlide.classList.add('exit');setTimeout(()=>{outSlide.classList.remove('exit');inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';},50);currentIndex=idx;inSlide.classList.add('active');setTimeout(()=>{inSlide.querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});inSlide.querySelectorAll('.slide-in, .slide-in-r').forEach((s)=>{s.style.opacity='1';s.style.transform='translateY(0)';});},100);updateUI();}
+function navigate(dir){goTo(currentIndex+dir,dir);}
+function updateUI(){const slide=allSlides[currentIndex];const lessonNum=parseInt(slide.dataset.lesson);const slideNum=parseInt(slide.dataset.slide);const lesson=lessons[lessonNum-1];const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);const slideInLesson=slideNum+1;document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 4`;document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;document.getElementById('btn-prev').disabled=currentIndex===0;const nextBtn=document.getElementById('btn-next');if(currentIndex===totalSlides-1){nextBtn.textContent='Return to LMS →';nextBtn.onclick=returnToLMSForQuiz;nextBtn.disabled=false;}else{nextBtn.textContent='Next →';nextBtn.onclick=()=>navigate(1);nextBtn.disabled=false;}updateDots();const timeMap=[20,15,10,5];document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;}
+function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;answered[kcId]=true;const container=document.getElementById(kcId);container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});if(isCorrect){el.classList.add('correct');}else{el.classList.add('wrong');container.querySelectorAll('.kc-opt').forEach(opt=>{if(opt.getAttribute('onclick').includes('true,')){opt.classList.add('correct');}});}const fb=document.getElementById(kcId+'-feedback');fb.style.display='flex';fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);});
+buildDots();updateUI();setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});},300);
+function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
+</script>
+<script>
+  window.MODULE_CODE = "CP-01";
+  window.returnToLMSForQuiz = function(){
+    try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'CP-01'); }catch(e){}
+    if(window.opener && !window.opener.closed){
+      try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'CP-01'); }catch(e){}
+      try{ window.close(); }catch(e){}
+    }else{
+      try{ window.location.href = '../index.html'; }catch(e){ alert('Please return to the main LMS window and click Take Quiz.'); }
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+</body>
+</html>
