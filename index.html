@@ -412,6 +412,22 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
     <button class="btn-login" onclick="doLogin(this)">Sign In to Academy</button>
     <div class="demo-hint" style="display:none;">🔐 Demo mode — credentials pre-filled. Click Sign In to explore the platform.</div>
 
+    <div style="text-align:center;margin-top:14px;">
+      <button type="button" onclick="showForgotPassword()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:'Nunito',sans-serif;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Forgot your password?</button>
+    </div>
+
+    <!-- Forgot Password Panel -->
+    <div id="forgot-panel" style="display:none;margin-top:16px;background:rgba(255,255,255,0.12);border-radius:12px;padding:18px;backdrop-filter:blur(8px);">
+      <p style="color:#fff;font-size:13px;font-weight:700;margin:0 0 10px;">🔑 Reset your password</p>
+      <p style="color:rgba(255,255,255,0.75);font-size:12px;margin:0 0 12px;">Enter your email address and we'll send you a link to reset your password.</p>
+      <input id="reset-email" type="email" class="form-input" placeholder="your.email@earlyexplorers.org" style="margin-bottom:10px;">
+      <div style="display:flex;gap:8px;">
+        <button onclick="sendPasswordReset(this)" style="flex:1;padding:11px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Send Reset Link</button>
+        <button onclick="hideForgotPassword()" style="padding:11px 14px;background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+      </div>
+      <div id="reset-msg" style="margin-top:10px;font-size:12px;font-weight:700;text-align:center;"></div>
+    </div>
+
   </div>
 </div>
 
@@ -1567,6 +1583,60 @@ async function doLogout() {
 }
 
 // Toggle password visibility
+function showForgotPassword() {
+  const panel = document.getElementById('forgot-panel');
+  panel.style.display = 'block';
+  const email = document.getElementById('l-email').value;
+  if (email) document.getElementById('reset-email').value = email;
+  document.getElementById('reset-msg').innerHTML = '';
+}
+
+function hideForgotPassword() {
+  document.getElementById('forgot-panel').style.display = 'none';
+  document.getElementById('reset-email').value = '';
+  document.getElementById('reset-msg').innerHTML = '';
+}
+
+async function sendPasswordReset(btn) {
+  const email = document.getElementById('reset-email').value.trim();
+  const msg = document.getElementById('reset-msg');
+
+  if (!email) {
+    msg.innerHTML = '<span style="color:#ffcccc;">Please enter your email address.</span>';
+    return;
+  }
+
+  if (!window.supabaseClient) {
+    msg.innerHTML = '<span style="color:#ffcccc;">System not ready. Please refresh and try again.</span>';
+    return;
+  }
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://portal.earlyexplorersnursery.org'
+    });
+
+    if (error) throw error;
+
+    msg.innerHTML = '<span style="color:#b8f0b8;">✅ Reset link sent! Check your email inbox (and spam folder).</span>';
+    btn.textContent = 'Sent!';
+    setTimeout(() => {
+      hideForgotPassword();
+      btn.textContent = 'Send Reset Link';
+      btn.disabled = false;
+    }, 4000);
+
+  } catch(e) {
+    console.error('Password reset error:', e);
+    msg.innerHTML = '<span style="color:#ffcccc;">Error: ' + (e.message || 'Could not send reset email.') + '</span>';
+    btn.textContent = 'Send Reset Link';
+    btn.disabled = false;
+  }
+}
+
 function togglePassword() {
   const passInput = document.getElementById('l-pass');
   const eyeIcon = document.getElementById('eye-icon');
