@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safeguarding Level 1 Refresher — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:#3AAFA9;--teal-d:#2B8A85;--teal-deep:#1A6562;--teal-l:#E8F7F6;--teal-pale:#F2FBFA;
+  --coral:#E07B5A;--coral-l:#FDF2EE;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;
+  --red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;
+  --white:#FFFFFF;--cream:#F8FCFB;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#8B1538 0%,#6B0F2A 50%,#4A0A1C 100%);}
+
+/* TOP NAV */
+.topnav{background:rgba(107,15,42,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+
+.progress-track{display:flex;align-items:center;gap:6px;}
+.pdot{width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#FFB3C1;}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+.pdot:hover .pdot-tip{opacity:1;}
+
+/* STAGE */
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+
+/* BOTTOM BAR */
+.bottombar{background:rgba(107,15,42,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#C9184A,#8B1538);color:#fff;box-shadow:0 4px 16px rgba(201,24,74,0.4);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,24,74,0.5);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* SLIDE SYSTEM */
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+
+/* TITLE CARD */
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(255,179,193,0.15) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:#fff;margin-bottom:12px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#FFB3C1;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+
+/* TWO COLUMN */
+.sl-two{gap:28px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:16px;}
+.sl-two .visual-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+
+/* CONTENT CARD */
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);color:var(--ink);}
+.content-card.red-card{background:linear-gradient(135deg,#8B1538,#6B0F2A);border-color:rgba(255,255,255,0.1);}
+
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.slide-h3.dark{color:#8B1538;}
+.slide-p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+
+/* STAT BOXES */
+.stat-row{display:flex;gap:12px;}
+.stat-box{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:13px;padding:16px 14px;text-align:center;}
+.stat-box .s-num{font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:#fff;}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:3px;}
+
+/* BULLET LIST */
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.dark{color:var(--ink-m);}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.bi-red{background:#FFEAEA;color:#C9184A;}
+.bi-pink{background:#FFE0E8;color:#8B1538;}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+
+/* STEP SEQUENCE */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#C9184A,#8B1538);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(201,24,74,0.4);}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+
+/* HIGHLIGHT BOX */
+.highlight-box{border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.hb-warn{background:rgba(240,165,0,0.12);border:1.5px solid rgba(240,165,0,0.3);}
+.hb-crit{background:rgba(201,24,74,0.2);border:1.5px solid rgba(255,179,193,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;}
+.hb-warn .hb-text{color:rgba(255,230,150,0.9);}
+.hb-crit .hb-text{color:rgba(255,230,240,0.9);}
+
+/* SCENE CARD */
+.scene-card{background:linear-gradient(135deg,rgba(255,179,193,0.15),rgba(139,21,56,0.4));border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 30% 70%,rgba(201,24,74,0.2),transparent 60%);}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+
+/* KNOWLEDGE CHECK */
+.kc-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;}
+.kc-tag{font-size:11px;font-weight:800;color:#FFB3C1;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{display:flex;align-items:center;gap:13px;padding:15px 18px;border:2px solid rgba(255,255,255,0.12);border-radius:13px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#FFB3C1;background:rgba(255,179,193,0.12);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#FF6B9D;background:rgba(255,107,157,0.15);color:#FFB3C1;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#FF6B9D;border-color:#FF6B9D;color:#fff;}
+.kc-feedback{border-radius:13px;padding:15px 18px;display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(255,107,157,0.12);border:1.5px solid rgba(255,107,157,0.25);color:#FFB3C1;}
+
+/* SUMMARY */
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 14px;text-align:center;}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+
+/* ANIMATIONS */
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+.anim-delay-1{animation-delay:0.15s !important;}
+.anim-delay-2{animation-delay:0.3s !important;}
+.anim-delay-3{animation-delay:0.45s !important;}
+.anim-delay-4{animation-delay:0.6s !important;}
+.anim-delay-5{animation-delay:0.75s !important;}
+
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* BG DECO */
+.bg-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.deco-circle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(201,24,74,0.15),transparent);}
+.dc1{width:400px;height:400px;top:-100px;right:-80px;}
+.dc2{width:280px;height:280px;bottom:-60px;left:-40px;}
+
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:#FFB3C1;}
+
+/* DO/DON'T CARDS */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dd-card{border-radius:16px;padding:18px;}
+.dd-do{background:var(--sage-l);border:1.5px solid #B8D8BB;}
+.dd-dont{background:var(--red-l);border:1.5px solid #F0B8B8;}
+.dd-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.dd-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;}
+.dd-do .dd-badge{background:var(--sage);color:#fff;}
+.dd-dont .dd-badge{background:var(--red);color:#fff;}
+.dd-items{display:flex;flex-direction:column;gap:8px;}
+.dd-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;}
+.dd-do .dd-item{color:#2D5C30;}
+.dd-dont .dd-item{color:#7A1F1F;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <nav class="topnav">
+    <div class="tn-brand">
+      <div class="tn-logo">🌱</div>
+      <div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div>
+    </div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Safeguarding Level 1 Refresher</div>
+    <div class="tn-meta">
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 4</div>
+      <div class="tn-sep"></div>
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">25:00</span></div>
+    </div>
+  </nav>
+
+  <main class="stage" id="stage">
+    <div class="bg-deco">
+      <div class="deco-circle dc1"></div>
+      <div class="deco-circle dc2"></div>
+    </div>
+
+    <!-- LESSON 1: YOUR ROLE IN SAFEGUARDING -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 1 of 4</div>
+      <div class="big-icon">🛡️</div>
+      <h1>Your Role in Safeguarding</h1>
+      <p class="lesson-intro">Every member of staff has a responsibility to protect children. This lesson refreshes your understanding of what safeguarding means and your duty in keeping children safe.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · What is Safeguarding?</div>
+        <div class="slide-h2 slide-in anim-delay-1">Safeguarding is everyone's responsibility</div>
+        <div class="slide-p slide-in anim-delay-2">Safeguarding children means protecting them from maltreatment, preventing impairment of health and development, ensuring children grow up in safe and caring circumstances, and taking action to enable all children to have the best outcomes.</div>
+        <div class="stat-row slide-in anim-delay-3">
+          <div class="stat-box"><div class="s-num">4</div><div class="s-lbl">key areas of safeguarding</div></div>
+          <div class="stat-box"><div class="s-num">100%</div><div class="s-lbl">of staff must understand their duty</div></div>
+          <div class="stat-box"><div class="s-num">24/7</div><div class="s-lbl">safeguarding applies at all times</div></div>
+        </div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-red">🛡️</div><div><strong>Protecting from maltreatment</strong> — preventing abuse, neglect, domestic violence exposure</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-pink">💚</div><div><strong>Preventing impairment</strong> — ensuring access to healthcare, nutrition, safe environments</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-amber">🌱</div><div><strong>Ensuring safe circumstances</strong> — children grow up in environments that are caring and consistent</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon" style="animation:pulse 2.5s ease-in-out infinite;">👁️</div>
+          <div class="scene-title">It Could Be You</div>
+          <div class="scene-sub">You may be the only person who notices a sign of harm or hears a disclosure. Your vigilance can change — or even save — a child's life.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r anim-delay-2">
+          <div class="hb-icon">🚨</div>
+          <div class="hb-text"><strong>Critical:</strong> Safeguarding is not just about responding to abuse. It includes creating a culture where children feel safe, valued, and able to speak up.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Your Responsibilities</div>
+        <div class="slide-h2 slide-in anim-delay-1">As a practitioner at Early Explorers, you must:</div>
+        <div class="steps" id="resp-steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Know who the Designated Safeguarding Lead (DSL) is</div><div class="step-desc">At Early Explorers, this is [Manager Name]. Always report concerns directly to them.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Understand what constitutes abuse and neglect</div><div class="step-desc">Physical, emotional, sexual abuse, and neglect all require immediate action.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Recognize signs and indicators</div><div class="step-desc">Changes in behavior, unexplained injuries, disclosure — you must know what to look for.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Report concerns immediately — never delay</div><div class="step-desc">If you see something, say something. It is not your job to investigate — just to report.</div></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Maintain confidentiality appropriately</div><div class="step-desc">Share information only on a need-to-know basis with the DSL and relevant authorities.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card red-card slide-in-r">
+          <div class="card-label dark-l">Legal Duty</div>
+          <div class="slide-h3">Keeping Children Safe in Education (2023)</div>
+          <div class="slide-p" style="margin-top:8px;">All staff have a legal duty to safeguard and promote the welfare of children. Failure to report concerns can result in criminal prosecution under the Children Act 2004.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">⚖️</div>
+          <div class="scene-title">It Is Not Optional</div>
+          <div class="scene-sub">Safeguarding is embedded in law. You have a professional and legal duty to act when you have concerns about a child's welfare.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="1" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · What to Do & What NOT to Do</div>
+        <div class="slide-h2 slide-in anim-delay-1">Clear guidance on responding to concerns</div>
+        <div class="do-dont slide-in anim-delay-2">
+          <div class="dd-card dd-do">
+            <div class="dd-header"><span class="dd-badge">✓ Do</span></div>
+            <div class="dd-items">
+              <div class="dd-item">✅ Report concerns immediately to the DSL</div>
+              <div class="dd-item">✅ Listen carefully if a child discloses</div>
+              <div class="dd-item">✅ Write down exactly what was said</div>
+              <div class="dd-item">✅ Reassure the child they were right to tell</div>
+              <div class="dd-item">✅ Follow up to ensure action is taken</div>
+              <div class="dd-item">✅ Maintain professional boundaries at all times</div>
+            </div>
+          </div>
+          <div class="dd-card dd-dont">
+            <div class="dd-header"><span class="dd-badge">✗ Never</span></div>
+            <div class="dd-items">
+              <div class="dd-item">❌ Promise confidentiality to a child</div>
+              <div class="dd-item">❌ Investigate concerns yourself</div>
+              <div class="dd-item">❌ Contact parents before speaking to DSL</div>
+              <div class="dd-item">❌ Ask leading questions</div>
+              <div class="dd-item">❌ Delay reporting because you're "not sure"</div>
+              <div class="dd-item">❌ Discuss concerns with colleagues unnecessarily</div>
+            </div>
+          </div>
+        </div>
+        <div class="highlight-box hb-warn slide-in anim-delay-3">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">If you are ever in doubt — report it. It is always better to have raised a concern that turns out to be nothing than to miss something that could have protected a child.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">📝</div>
+          <div class="scene-title">Recording a Concern</div>
+          <div class="scene-sub">Write: Date, time, what you saw/heard (use child's exact words if disclosure), your name. Sign and date. Pass to DSL immediately.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" data-lesson="1" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q slide-in anim-delay-1">A child tells you something that concerns you about their home life. What should you do FIRST?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Never investigate yourself. Your role is to report, not investigate.')"><div class="kc-letter">A</div>Ask more questions to find out exactly what is happening</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! Listen, reassure the child, write down exactly what they said, and report immediately to the DSL.')"><div class="kc-letter">B</div>Listen carefully, reassure the child, and report immediately to the DSL</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Never contact parents before speaking to the DSL — this could put the child at further risk.')"><div class="kc-letter">C</div>Contact the parents to get their side of the story</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Delaying could put the child at continued risk. Report immediately.')"><div class="kc-letter">D</div>Wait until the end of the day to see if anything else happens</div>
+        </div>
+        <div id="kc-1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 2: TYPES OF ABUSE -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 2 of 4</div>
+      <div class="big-icon">⚠️</div>
+      <h1>Types of Abuse & Neglect</h1>
+      <p class="lesson-intro">Knowing what abuse looks like is essential to recognizing it. This lesson covers the four main categories and their indicators.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 6 slides</span>
+        <span class="t-pill">⏱ ~7 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Physical Abuse</div>
+        <div class="slide-h2 slide-in anim-delay-1">Physical abuse: causing physical harm to a child</div>
+        <div class="slide-p slide-in anim-delay-2">This includes hitting, shaking, throwing, poisoning, burning, scalding, drowning, suffocating, or otherwise causing physical harm. It also includes fabricated or induced illness.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-red">🩹</div><div><strong>Unexplained injuries</strong> — bruises, burns, fractures in unusual places or patterns</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-pink">😨</div><div><strong>Flinching or fear</strong> — child flinches when approached or shows fear of physical contact</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-amber">📖</div><div><strong>Inconsistent explanations</strong> — stories about injuries change or don't match the injury</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">👕</div><div><strong>Covering up</strong> — wearing inappropriate clothing to hide injuries (e.g., long sleeves in summer)</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🚨</div>
+          <div class="scene-title">Red Flag Injuries</div>
+          <div class="scene-sub">Bruises to babies who are not yet mobile, injuries to ears or soft tissue areas, fingertip bruising, patterned injuries (e.g., belt marks) — all require immediate DSL reporting.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Some injuries in very young children are almost never accidental. Any bruising to a non-mobile baby should be treated as a safeguarding concern.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Emotional Abuse</div>
+        <div class="slide-h2 slide-in anim-delay-1">Emotional abuse: persistent emotional maltreatment</div>
+        <div class="slide-p slide-in anim-delay-2">Conveying to children that they are worthless, unloved, inadequate, or valued only insofar as they meet another person's needs. It includes imposing age-inappropriate expectations, causing children to feel frightened or in danger, or exploiting or corrupting children.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-red">😔</div><div><strong>Low self-esteem</strong> — persistent feelings of worthlessness, being unloved or inadequate</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-pink">👥</div><div><strong>Attachment difficulties</strong> — struggles to form relationships, overly clingy or detached behavior</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-amber">😠</div><div><strong>Developmental delays</strong> — delayed speech, regression in milestones, age-inappropriate behavior</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">😨</div><div><strong>Anxiety & fear</strong> — excessive worry, fearfulness around adults, frequent nightmares</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">💔</div>
+          <div class="scene-title">The Hidden Harm</div>
+          <div class="scene-sub">Emotional abuse is often present alongside other types of abuse but can occur in isolation. It leaves no visible marks but causes profound long-term damage.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">Children who witness domestic abuse are experiencing emotional abuse — even if they are not directly harmed themselves.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Sexual Abuse</div>
+        <div class="slide-h2 slide-in anim-delay-1">Sexual abuse: forcing or enticing a child to take part in sexual activities</div>
+        <div class="slide-p slide-in anim-delay-2">This includes contact abuse (physical contact) and non-contact abuse (showing sexual images, grooming, online exploitation). Children cannot consent to sexual activity.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-red">🔞</div><div><strong>Inappropriate sexual knowledge</strong> — age-inappropriate understanding of sex or sexual language</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-pink">😨</div><div><strong>Behavioral changes</strong> — regression, nightmares, sudden fear of specific people or places</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-amber">🩹</div><div><strong>Physical signs</strong> — pain, bleeding, discharge, difficulty walking or sitting, recurrent UTIs</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">🚫</div><div><strong>Sexualized behavior</strong> — inappropriate touching of self or others, drawing sexual images</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon">🚨</div>
+          <div class="scene-title">Immediate Action Required</div>
+          <div class="scene-sub">Any suspicion or disclosure of sexual abuse must be reported to the DSL immediately. Do NOT investigate. This is a police matter.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text"><strong>Critical:</strong> Never ask a child to repeat a disclosure of sexual abuse. Write down exactly what they said the first time and report immediately.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="2" data-slide="4">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Neglect</div>
+        <div class="slide-h2 slide-in anim-delay-1">Neglect: persistent failure to meet a child's basic needs</div>
+        <div class="slide-p slide-in anim-delay-2">Neglect is the most common form of abuse in the UK. It includes failure to provide adequate food, shelter, clothing, supervision, medical care, or emotional support.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-red">🍽️</div><div><strong>Persistent hunger</strong> — child is always hungry, hoards food, significant weight loss or failure to thrive</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-pink">🧼</div><div><strong>Poor hygiene</strong> — persistently dirty, smelly, inappropriate clothing for weather, severe nappy rash</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-amber">🏥</div><div><strong>Untreated medical needs</strong> — persistent nits, dental decay, untreated infections, missed immunizations</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">👁️</div><div><strong>Lack of supervision</strong> — child left alone, wandering unsupervised, doesn't know where parents are</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">📊</div>
+          <div class="scene-title">Patterns Matter</div>
+          <div class="scene-sub">One instance of poor hygiene doesn't mean neglect. But persistent, ongoing patterns — especially when support is offered but not acted on — are a safeguarding concern.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">Neglect can coexist with love. Parents may care deeply for their children but struggle with addiction, mental health, or poverty. Report concerns — families may need support, not judgment.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" data-lesson="2" data-slide="5" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q slide-in anim-delay-1">A 3-year-old child uses sexually explicit language that is age-inappropriate. This is most likely an indicator of:</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Physical abuse typically presents with injuries. Inappropriate sexual knowledge suggests sexual abuse or exposure.')"><div class="kc-letter">A</div>Physical abuse</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct. Age-inappropriate sexual knowledge or language is a key indicator of sexual abuse or exposure to sexual content.')"><div class="kc-letter">B</div>Sexual abuse or exposure</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'While concerning, this specifically indicates sexual abuse or exposure to inappropriate sexual content.')"><div class="kc-letter">C</div>Emotional abuse</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Neglect involves failure to meet basic needs. This indicator is more specific to sexual abuse.')"><div class="kc-letter">D</div>Neglect</div>
+        </div>
+        <div id="kc-2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 3: SIGNS & DISCLOSURES -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 3 of 4</div>
+      <div class="big-icon">👂</div>
+      <h1>Recognizing Signs & Handling Disclosures</h1>
+      <p class="lesson-intro">Children rarely tell adults directly that they're being harmed. Learn to recognize behavioral signs and how to respond when a child does disclose.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Behavioral Signs</div>
+        <div class="slide-h2 slide-in anim-delay-1">Changes in behavior can indicate abuse</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-red">😔</div><div><strong>Withdrawn or anxious</strong> — becoming quiet, isolated, fearful of making mistakes</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-pink">😠</div><div><strong>Aggressive outbursts</strong> — sudden anger, violence toward other children or adults</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">🍼</div><div><strong>Regression</strong> — bedwetting, thumb-sucking, baby talk after being developmentally beyond it</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">😱</div><div><strong>Fearfulness</strong> — excessive fear of specific people, reluctance to go home, fear of adults generally</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-red">🛌</div><div><strong>Sleep issues</strong> — nightmares, trouble falling asleep, appearing tired constantly</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🧩</div>
+          <div class="scene-title">Context Is Key</div>
+          <div class="scene-sub">One sign alone rarely indicates abuse. Look for clusters of signs, sudden changes, or patterns over time. Trust your instincts — if something feels wrong, report it.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">Children may test you before making a disclosure. They might say something small to see if you're safe to tell. Always take children seriously.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · If a Child Discloses</div>
+        <div class="slide-h2 slide-in anim-delay-1">How to respond when a child tells you about abuse</div>
+        <div class="steps">
+          <div class="step visible"><div class="step-num">1</div><div class="step-body"><div class="step-title">Stay calm and listen</div><div class="step-desc">Do not show shock, anger or disbelief. Your reaction can affect whether they continue.</div></div></div>
+          <div class="step visible"><div class="step-num">2</div><div class="step-body"><div class="step-title">Let them speak without interruption</div><div class="step-desc">Do NOT ask leading questions. Use: "What happened next?" or "Is there anything else?"</div></div></div>
+          <div class="step visible"><div class="step-num">3</div><div class="step-body"><div class="step-title">Reassure them</div><div class="step-desc">Tell them: "You were right to tell me. This is not your fault. I will help you."</div></div></div>
+          <div class="step visible"><div class="step-num">4</div><div class="step-body"><div class="step-title">Do NOT promise confidentiality</div><div class="step-desc">Explain you need to tell someone who can help, but only those who need to know.</div></div></div>
+          <div class="step visible"><div class="step-num">5</div><div class="step-body"><div class="step-title">Write it down immediately</div><div class="step-desc">Use the child's exact words. Include date, time, who was present, any visible signs.</div></div></div>
+          <div class="step visible"><div class="step-num">6</div><div class="step-body"><div class="step-title">Report to the DSL immediately</div><div class="step-desc">Same day. Do not delay, even if the DSL is not immediately available — escalate.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">📝</div>
+          <div class="scene-title">Record Keeping</div>
+          <div class="scene-sub">Your written record may be used in court. Be factual, use quotes, avoid opinion. Write "Child said: 'Dad hit me with a belt'" NOT "I think dad is violent."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" data-lesson="3" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q slide-in anim-delay-1">A child starts to tell you something concerning but then stops and says "actually, never mind." What should you do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-3">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Never dismiss a child who has started a disclosure, even if they stop. This is still a safeguarding concern.')"><div class="kc-letter">A</div>Accept their decision and move on</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',true,'Correct. Gently encourage them, reassure them, but don't push. Then report the partial disclosure to the DSL immediately.')"><div class="kc-letter">B</div>Gently encourage them to continue, reassure them, and report even partial disclosures to the DSL</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Forcing a child to talk can be harmful and may contaminate evidence. Gentle encouragement and reassurance, then report.')"><div class="kc-letter">C</div>Insist they tell you what they were going to say</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Waiting could put the child at continued risk. Report immediately, even if the disclosure was incomplete.')"><div class="kc-letter">D</div>Wait to see if they bring it up again later</div>
+        </div>
+        <div id="kc-3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- LESSON 4: WIDER SAFEGUARDING -->
+    <div class="slide sl-title" data-lesson="4" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 4 of 4</div>
+      <div class="big-icon">🌐</div>
+      <h1>Wider Safeguarding Concerns</h1>
+      <p class="lesson-intro">Safeguarding extends beyond the four main abuse types. This lesson covers additional risks you must be aware of.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">🏆 Module complete</span>
+      </div>
+    </div>
+
+    <div class="slide sl-two" data-lesson="4" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Additional Risks</div>
+        <div class="slide-h2 slide-in anim-delay-1">Safeguarding includes awareness of these specific harms</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-red">🏠</div><div><strong>Domestic abuse</strong> — witnessing violence at home causes emotional harm and increases risk to the child</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-pink">💊</div><div><strong>Parental substance misuse</strong> — drugs/alcohol affecting parenting capacity and child safety</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">🧠</div><div><strong>Parental mental health</strong> — when mental illness impacts ability to care for children safely</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">📱</div><div><strong>Online safety</strong> — grooming, exploitation, inappropriate content, cyberbullying</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-red">✂️</div><div><strong>FGM & honour-based abuse</strong> — culturally-motivated harms that are illegal and constitute abuse</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🌍</div>
+          <div class="scene-title">Complex Families</div>
+          <div class="scene-sub">Many families face multiple challenges. Your role is not to judge but to recognize when those challenges put children at risk, and to report.</div>
+        </div>
+        <div class="highlight-box hb-crit slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">FGM is illegal and must be reported to the police. If you discover a girl under 18 has had FGM, or if you are told one is at risk, this is a mandatory reporting duty.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide sl-summary" data-lesson="4" data-slide="2">
+      <div class="summary-icon">🛡️</div>
+      <h2 class="summary-h">Module Complete — Key Principles</h2>
+      <p class="summary-p">You've completed Safeguarding Level 1 Refresher. Carry these principles into your daily practice.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">👁️</div><div class="sk-title">Be Vigilant</div><div class="sk-sub">Notice changes, trust your instincts</div></div>
+        <div class="sk-card"><div class="sk-icon">👂</div><div class="sk-title">Listen to Children</div><div class="sk-sub">Take them seriously, every time</div></div>
+        <div class="sk-card"><div class="sk-icon">📝</div><div class="sk-title">Record Everything</div><div class="sk-sub">Factual, detailed, immediate</div></div>
+        <div class="sk-card"><div class="sk-icon">🚨</div><div class="sk-title">Report Immediately</div><div class="sk-sub">Never delay, never investigate yourself</div></div>
+        <div class="sk-card"><div class="sk-icon">🤐</div><div class="sk-title">Maintain Confidentiality</div><div class="sk-sub">Share only with DSL and authorities</div></div>
+        <div class="sk-card"><div class="sk-icon">💚</div><div class="sk-title">It's Not Optional</div><div class="sk-sub">You have a legal duty to safeguard</div></div>
+      </div>
+    </div>
+
+    <div class="slide sl-title" data-lesson="4" data-slide="3">
+      <div class="big-icon" style="animation:pulse 2s ease-in-out infinite;">🏆</div>
+      <h1>Ready for Your Assessment?</h1>
+      <p class="lesson-intro">You've completed all 4 lessons. Take the 10-question assessment to receive your certificate. Pass mark: 80%.</p>
+      <div class="title-pills">
+        <span class="t-pill">❓ 10 questions</span>
+        <span class="t-pill">🎯 80% to pass</span>
+        <span class="t-pill">🏆 Certificate on completion</span>
+      </div>
+      <div style="margin-top:28px;animation:slideUp 0.5s ease 0.6s both;">
+        <button class="btn-nav btn-next-main" style="padding:15px 36px;font-size:15px;" onclick="returnToLMSForQuiz()">Return to LMS for Quiz →</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bottombar">
+    <div class="bb-left">
+      <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button>
+    </div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 5</div>
+    <div class="bb-right">
+      <button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const lessons=[
+  {title:"Your Role in Safeguarding",slides:5},
+  {title:"Types of Abuse & Neglect",slides:6},
+  {title:"Recognizing Signs & Handling Disclosures",slides:4},
+  {title:"Wider Safeguarding Concerns",slides:4},
+];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+
+function buildDots(){
+  const track=document.getElementById('prog-track');
+  lessons.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='pdot';
+    d.dataset.lesson=i;
+    const tip=document.createElement('div');
+    tip.className='pdot-tip';
+    tip.textContent=`Lesson ${i+1}: ${l.title}`;
+    d.appendChild(tip);
+    d.onclick=()=>jumpToLesson(i);
+    track.appendChild(d);
+  });
+  updateDots();
+}
+
+function updateDots(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson)-1;
+  document.querySelectorAll('.pdot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<lessonNum)d.classList.add('done');
+    else if(i===lessonNum)d.classList.add('active');
+  });
+}
+
+function jumpToLesson(lessonIdx){
+  const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===lessonIdx);
+  if(target>=0)goTo(target);
+}
+
+function goTo(idx,direction=1){
+  if(idx<0||idx>=totalSlides)return;
+  const outSlide=allSlides[currentIndex];
+  const inSlide=allSlides[idx];
+  outSlide.classList.remove('active');
+  outSlide.classList.add('exit');
+  setTimeout(()=>{
+    outSlide.classList.remove('exit');
+    inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';
+  },50);
+  currentIndex=idx;
+  inSlide.classList.add('active');
+  setTimeout(()=>{
+    inSlide.querySelectorAll('.step').forEach((s,i)=>{
+      setTimeout(()=>s.classList.add('visible'),i*120);
+    });
+    inSlide.querySelectorAll('.slide-in, .slide-in-r').forEach((s)=>{
+      s.style.opacity='1';
+      s.style.transform='translateY(0)';
+    });
+  },100);
+  updateUI();
+  
+  // Track lesson progress
+  if (typeof trackLessonComplete === "function") {
+    const lessonSlides = allSlides.filter(s => s.dataset.lesson && s.dataset.slide === "0");
+    const currentLesson = inSlide.dataset.lesson;
+    if (currentLesson && inSlide.dataset.slide === "0") {
+      trackLessonComplete(parseInt(currentLesson), lessonSlides.length).catch(e => console.error("Track error:", e));
+    }
+  }
+}
+
+function navigate(dir){goTo(currentIndex+dir,dir);}
+
+function updateUI(){
+  const slide=allSlides[currentIndex];
+  const lessonNum=parseInt(slide.dataset.lesson);
+  const slideNum=parseInt(slide.dataset.slide);
+  const lesson=lessons[lessonNum-1];
+  const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);
+  const slideInLesson=slideNum+1;
+  document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 4`;
+  document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;
+  document.getElementById('btn-prev').disabled=currentIndex===0;
+  const nextBtn=document.getElementById('btn-next');
+  if(currentIndex===totalSlides-1){
+    nextBtn.textContent='Return to LMS →';
+    nextBtn.disabled=false;
+  }else{
+    nextBtn.textContent='Next →';
+    nextBtn.disabled=false;
+  }
+  updateDots();
+  const timeMap=[25,18,12,6];
+  document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;
+}
+
+function checkAnswer(el,kcId,isCorrect,feedbackText){
+  if(answered[kcId])return;
+  answered[kcId]=true;
+  const container=document.getElementById(kcId);
+  container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});
+  if(isCorrect){el.classList.add('correct');}
+  else{
+    el.classList.add('wrong');
+    container.querySelectorAll('.kc-opt').forEach(opt=>{
+      if(opt.getAttribute('onclick').includes('true')){opt.classList.add('correct');}
+    });
+  }
+  const fb=document.getElementById(kcId+'-feedback');
+  fb.style.display='flex';
+  fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;
+  setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);
+});
+
+buildDots();updateUI();
+setTimeout(()=>{
+  allSlides[0].querySelectorAll('.step').forEach((s,i)=>{
+    setTimeout(()=>s.classList.add('visible'),i*120);
+  });
+},300);
+
+function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
+</script>
+
+<script>
+  // MUST be set before any tracking/quiz scripts run
+  window.MODULE_CODE = "SG-L1";
+
+  // Override returnToLMSForQuiz to work whether this module is opened as a popup or same tab
+  window.returnToLMSForQuiz = function(){
+    try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'SG-L1'); }catch(e){}
+    if(window.opener && !window.opener.closed){
+      try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'SG-L1'); }catch(e){}
+      try{ window.close(); }catch(e){}
+    }else{
+      try{ window.location.href = '../index.html'; }catch(e){ alert('Please return to the main LMS window and click Take Quiz.'); }
+    }
+  };
+</script>
+
+<!-- Supabase + LMS scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+
+</body>
+</html>

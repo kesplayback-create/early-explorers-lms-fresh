@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Policies & Procedures Overview — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#2E5090;--blue-mid:#4169B0;--blue-light:#6B8DD6;--blue-pale:#E8EDF7;--teal:#3AAFA9;--teal-l:#E8F7F6;--coral:#E07B5A;--coral-l:#FDF2EE;--amber:#F0A500;--amber-l:#FEF8EC;--sage:#7BAE7F;--sage-l:#EFF6F0;--red:#E05A5A;--red-l:#FDEAEA;--ink:#1C2B2A;--ink-m:#3D5250;--muted:#7A9694;--border:#D4E8E7;--white:#FFFFFF;--cream:#F8FCFB;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--blue);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:linear-gradient(145deg,#4169B0 0%,#2E5090 50%,#1E3A6F 100%);}
+.topnav{background:rgba(46,80,144,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;gap:16px;height:58px;flex-shrink:0;}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+.progress-track{display:flex;align-items:center;gap:6px;}
+.pdot{width:28px;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.2s;position:relative;}
+.pdot.done{background:#A8C5F0;}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+.pdot:hover .pdot-tip{opacity:1;}
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.bottombar{background:rgba(46,80,144,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+.btn-nav{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{background:linear-gradient(135deg,#4169B0,#2E5090);color:#fff;box-shadow:0 4px 16px rgba(65,105,176,0.4);}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(65,105,176,0.5);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.exit{opacity:0;transform:translateX(-60px);}
+.sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(168,197,240,0.15) 0%,transparent 70%);}
+.sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:#fff;margin-bottom:12px;animation:slideUp 0.6s ease 0.3s both;}
+.sl-title .lesson-label{font-size:12px;font-weight:800;color:#A8C5F0;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;animation:slideUp 0.6s ease 0.2s both;}
+.sl-title .lesson-intro{font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;font-weight:500;animation:slideUp 0.6s ease 0.4s both;}
+.sl-title .title-pills{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;animation:slideUp 0.6s ease 0.5s both;}
+.t-pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);}
+.sl-two{gap:28px;align-items:stretch;max-width:1100px;width:100%;}
+.sl-two .content-col{flex:1;display:flex;flex-direction:column;gap:16px;}
+.sl-two .visual-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+.content-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(8px);}
+.content-card.light{background:var(--white);border-color:var(--border);color:var(--ink);}
+.content-card.blue-card{background:linear-gradient(135deg,#4169B0,#2E5090);border-color:rgba(255,255,255,0.1);}
+.card-label{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+.slide-h2{font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.slide-h3.dark{color:var(--blue);}
+.slide-p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;}
+.slide-p.dark{color:var(--ink-m);}
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;animation:bulletIn 0.4s ease both;}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+.bi-blue{background:var(--blue-pale);color:var(--blue);}
+.bi-teal{background:var(--teal-l);color:var(--teal);}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);opacity:0;transform:translateY(8px);transition:opacity 0.4s ease,transform 0.4s ease;}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#6B8DD6,#4169B0);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(65,105,176,0.4);}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+.highlight-box{border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.hb-info{background:rgba(107,141,214,0.2);border:1.5px solid rgba(168,197,240,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;color:rgba(220,230,250,0.9);}
+.scene-card{background:linear-gradient(135deg,rgba(168,197,240,0.15),rgba(46,80,144,0.4));border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.scene-card::before{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 30% 70%,rgba(65,105,176,0.2),transparent 60%);}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+.kc-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;}
+.kc-tag{font-size:11px;font-weight:800;color:#A8C5F0;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.kc-q{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{display:flex;align-items:center;gap:13px;padding:15px 18px;border:2px solid rgba(255,255,255,0.12);border-radius:13px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.04);}
+.kc-opt:hover:not(.locked){border-color:#A8C5F0;background:rgba(168,197,240,0.12);color:#fff;}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:#9BB8E8;background:rgba(155,184,232,0.15);color:#A8C5F0;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong .kc-letter{background:#9BB8E8;border-color:#9BB8E8;color:#fff;}
+.kc-feedback{border-radius:13px;padding:15px 18px;display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:600;line-height:1.6;animation:slideUp 0.4s ease both;}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(155,184,232,0.12);border:1.5px solid rgba(155,184,232,0.25);color:#A8C5F0;}
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;animation:slideUp 0.5s ease 0.4s both;}
+.sk-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 14px;text-align:center;}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.anim-delay-1{animation-delay:0.15s !important;}
+.anim-delay-2{animation-delay:0.3s !important;}
+.anim-delay-3{animation-delay:0.45s !important;}
+.anim-delay-4{animation-delay:0.6s !important;}
+.anim-delay-5{animation-delay:0.75s !important;}
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.bg-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.deco-circle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(65,105,176,0.15),transparent);}
+.dc1{width:400px;height:400px;top:-100px;right:-80px;}
+.dc2{width:280px;height:280px;bottom:-60px;left:-40px;}
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:#A8C5F0;}
+.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.policy-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:18px;cursor:pointer;transition:all 0.2s;}
+.policy-card:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px);}
+.pc-icon{font-size:32px;margin-bottom:10px;}
+.pc-title{font-family:'Quicksand',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:5px;}
+.pc-desc{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="topnav">
+    <div class="tn-brand"><div class="tn-logo">🌱</div><div><div class="tn-name">Early Explorers</div><div class="tn-sub">CPD Academy</div></div></div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Policies & Procedures Overview</div>
+    <div class="tn-meta">
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 3</div>
+      <div class="tn-sep"></div>
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">20:00</span></div>
+    </div>
+  </nav>
+  <main class="stage" id="stage">
+    <div class="bg-deco"><div class="deco-circle dc1"></div><div class="deco-circle dc2"></div></div>
+    
+    <!-- LESSON 1: KEY POLICIES -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 1 of 3</div>
+      <div class="big-icon">📋</div>
+      <h1>Key Policies at Early Explorers</h1>
+      <p class="lesson-intro">Understanding our policies ensures you know what's expected, how decisions are made, and where to find guidance when you need it.</p>
+      <div class="title-pills"><span class="t-pill">📽 4 slides</span><span class="t-pill">⏱ ~7 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+    
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Why Policies Matter</div>
+        <div class="slide-h2 slide-in anim-delay-1">Policies protect everyone — children, staff, and the setting</div>
+        <div class="slide-p slide-in anim-delay-2">Policies are not just bureaucracy. They ensure consistency, meet legal requirements, and provide clear guidance in complex situations.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-blue">⚖️</div><div><strong>Legal compliance</strong> — Policies ensure we meet Ofsted, EYFS, and employment law requirements</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-teal">🤝</div><div><strong>Consistency</strong> — Everyone follows the same standards, creating fairness and predictability</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-amber">🛡️</div><div><strong>Protection</strong> — Clear policies protect staff from false allegations and children from harm</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">📖</div><div><strong>Guidance</strong> — When unsure, policies provide a clear framework for decision-making</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;"><div class="scene-big-icon">📚</div><div class="scene-title">Where to Find Policies</div><div class="scene-sub">All policies are in the staff room folder and on the shared drive. You should be familiar with policies relevant to your role.</div></div>
+        <div class="highlight-box hb-info slide-in-r anim-delay-2"><div class="hb-icon">💡</div><div class="hb-text">During induction, you'll review key policies with your manager. Ask questions if anything is unclear — it's better to clarify now than guess later.</div></div>
+      </div>
+    </div>
+    
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Core Policies You Must Know</div>
+        <div class="slide-h2 slide-in anim-delay-1">These 8 policies are essential for all staff</div>
+        <div class="policy-grid slide-in anim-delay-2">
+          <div class="policy-card"><div class="pc-icon">🛡️</div><div class="pc-title">Safeguarding & Child Protection</div><div class="pc-desc">How we keep children safe from harm</div></div>
+          <div class="policy-card"><div class="pc-icon">❤️</div><div class="pc-title">Health & Safety</div><div class="pc-desc">Risk assessments, accidents, emergencies</div></div>
+          <div class="policy-card"><div class="pc-icon">🌟</div><div class="pc-title">Behaviour Management</div><div class="pc-desc">Our positive approach to challenging behaviour</div></div>
+          <div class="policy-card"><div class="pc-icon">📱</div><div class="pc-title">Mobile Phones & Devices</div><div class="pc-desc">When and where phones can be used</div></div>
+          <div class="policy-card"><div class="pc-icon">👔</div><div class="pc-title">Staff Conduct & Dress Code</div><div class="pc-desc">Professional standards and appearance</div></div>
+          <div class="policy-card"><div class="pc-icon">🔒</div><div class="pc-title">Confidentiality & Data Protection</div><div class="pc-desc">Handling sensitive information correctly</div></div>
+          <div class="policy-card"><div class="pc-icon">🏥</div><div class="pc-title">Medication & Illness</div><div class="pc-desc">Administering medicine, exclusion periods</div></div>
+          <div class="policy-card"><div class="pc-icon">🤝</div><div class="pc-title">Equality & Inclusion</div><div class="pc-desc">Treating everyone fairly and respectfully</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;"><div class="scene-big-icon">✅</div><div class="scene-title">Annual Review</div><div class="scene-sub">Policies are reviewed annually. You'll be notified of any changes and asked to re-sign to confirm you've read updated versions.</div></div>
+      </div>
+    </div>
+    
+    <div class="slide" data-lesson="1" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q slide-in anim-delay-1">Where can you find Early Explorers' policies if you need to reference them?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Policies are internal documents for staff. They are not publicly available online.')"><div class="kc-letter">A</div>On the public Early Explorers website</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! Policies are in the staff room folder and on the shared drive for easy reference.')"><div class="kc-letter">B</div>In the staff room folder and on the shared drive</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'You should not need to ask the manager every time. Policies are accessible in the staff room and on the shared drive.')"><div class="kc-letter">C</div>By asking the manager each time you need one</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Policies are kept internally. Parents can request certain policies but staff access them in the staff room.')"><div class="kc-letter">D</div>In the parent notice board</div>
+        </div>
+        <div id="kc-1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+    
+    <!-- LESSON 2: PROCEDURES -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 2 of 3</div>
+      <div class="big-icon">⚙️</div>
+      <h1>Daily Procedures & Protocols</h1>
+      <p class="lesson-intro">Procedures turn policies into action. Learn the step-by-step processes you'll follow every day.</p>
+      <div class="title-pills"><span class="t-pill">📽 4 slides</span><span class="t-pill">⏱ ~7 minutes</span><span class="t-pill">✅ 1 knowledge check</span></div>
+    </div>
+    
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Opening & Closing Procedures</div>
+        <div class="slide-h2 slide-in anim-delay-1">Start and end of day procedures</div>
+        <div class="steps">
+          <div class="step visible"><div class="step-num">☀️</div><div class="step-body"><div class="step-title">Opening (7:00 AM)</div><div class="step-desc">Unlock, disarm alarm, complete safety check, turn on heating/lights, check registers, set up rooms</div></div></div>
+          <div class="step visible"><div class="step-num">👋</div><div class="step-body"><div class="step-title">Drop-off (7:30-9:30 AM)</div><div class="step-desc">Greet families warmly, sign children in, note any messages from parents, conduct visual health check</div></div></div>
+          <div class="step visible"><div class="step-num">🍽️</div><div class="step-body"><div class="step-title">Meal & Snack Times</div><div class="step-desc">Handwashing before and after, allergy awareness, supervise eating, record food intake for babies</div></div></div>
+          <div class="step visible"><div class="step-num">🚪</div><div class="step-body"><div class="step-title">Collection (3:00-6:00 PM)</div><div class="step-desc">Only release to authorized adults, share key info about the child's day, sign children out</div></div></div>
+          <div class="step visible"><div class="step-num">🌙</div><div class="step-body"><div class="step-title">Closing (6:00 PM)</div><div class="step-desc">All children collected, tidy and clean, complete daily sheets, lock up, set alarm</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;"><div class="scene-big-icon">🔐</div><div class="scene-title">Security Protocol</div><div class="scene-sub">Never prop doors open. All visitors must sign in and wear a visitor badge. Challenge anyone you don't recognize.</div></div>
+      </div>
+    </div>
+    
+    <div class="slide" data-lesson="2" data-slide="2" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q slide-in anim-delay-1">A parent's friend arrives to collect their child, but they are not on the authorized pick-up list. What should you do?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Never release a child to someone not on the authorized list, even if the child knows them.')"><div class="kc-letter">A</div>Release the child if the child recognizes the person</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct! Politely explain you cannot release the child. Contact the parent to get verbal authorization and add the person to the list.')"><div class="kc-letter">B</div>Politely refuse and contact the parent for authorization before releasing</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Seeing ID is not enough. They must be on the authorized list or the parent must give permission.')"><div class="kc-letter">C</div>Release them if they show photo ID</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'The child cannot override the authorized list. Only parents can give permission.')"><div class="kc-letter">D</div>Ask the child if they want to go with the person</div>
+        </div>
+        <div id="kc-2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+    
+    <!-- LESSON 3: YOUR RESPONSIBILITIES -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 3 of 3</div>
+      <div class="big-icon">✋</div>
+      <h1>Your Professional Responsibilities</h1>
+      <p class="lesson-intro">As an Early Years practitioner, you have legal and professional duties beyond just caring for children. This lesson clarifies what's expected of you.</p>
+      <div class="title-pills"><span class="t-pill">📽 3 slides</span><span class="t-pill">⏱ ~6 minutes</span><span class="t-pill">🏆 Module complete</span></div>
+    </div>
+    
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Professional Standards</div>
+        <div class="slide-h2 slide-in anim-delay-1">You are expected to uphold these standards at all times</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-blue">🤝</div><div><strong>Maintain professional boundaries</strong> — Friendly but not friends. No personal social media contact with parents</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-teal">🔒</div><div><strong>Confidentiality</strong> — Never discuss children or families outside work. No photos of children on personal devices</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">👔</div><div><strong>Professional appearance</strong> — Clean, appropriate clothing. Hair tied back. Minimal jewelry. Closed-toe shoes</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-white">📚</div><div><strong>Continuous development</strong> — Engage in training, reflective practice, and supervision</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-blue">⏰</div><div><strong>Punctuality & reliability</strong> — Arrive on time. Notify manager if sick or late. No unauthorized absences</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;"><div class="scene-big-icon">⚠️</div><div class="scene-title">Gross Misconduct</div><div class="scene-sub">Breaching confidentiality, inappropriate relationships with families, dishonesty, and safeguarding failures can result in immediate dismissal.</div></div>
+      </div>
+    </div>
+    
+    <div class="slide sl-summary" data-lesson="3" data-slide="2">
+      <div class="summary-icon">📋</div>
+      <h2 class="summary-h">Module Complete — Key Principles</h2>
+      <p class="summary-p">You now understand the policies and procedures that guide your work at Early Explorers. These frameworks protect everyone and ensure quality care.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">📚</div><div class="sk-title">Know Your Policies</div><div class="sk-sub">Staff room folder & shared drive</div></div>
+        <div class="sk-card"><div class="sk-icon">⚙️</div><div class="sk-title">Follow Procedures</div><div class="sk-sub">Step-by-step processes daily</div></div>
+        <div class="sk-card"><div class="sk-icon">🔐</div><div class="sk-title">Security First</div><div class="sk-sub">Only authorized pick-ups</div></div>
+        <div class="sk-card"><div class="sk-icon">🤝</div><div class="sk-title">Professional Boundaries</div><div class="sk-sub">Friendly but not friends</div></div>
+        <div class="sk-card"><div class="sk-icon">🔒</div><div class="sk-title">Confidentiality</div><div class="sk-sub">Never discuss children outside work</div></div>
+        <div class="sk-card"><div class="sk-icon">✅</div><div class="sk-title">Ask When Unsure</div><div class="sk-sub">Better to clarify than guess</div></div>
+      </div>
+    </div>
+    
+    <div class="slide sl-title" data-lesson="3" data-slide="3">
+      <div class="big-icon" style="animation:pulse 2s ease-in-out infinite;">🏆</div>
+      <h1>Ready for Your Assessment?</h1>
+      <p class="lesson-intro">Complete the 10-question quiz to receive your certificate. Pass mark: 80%.</p>
+      <div class="title-pills"><span class="t-pill">❓ 10 questions</span><span class="t-pill">🎯 80% to pass</span><span class="t-pill">🏆 Certificate on completion</span></div>
+      <div style="margin-top:28px;animation:slideUp 0.5s ease 0.6s both;">
+        <button class="btn-nav btn-next-main" style="padding:15px 36px;font-size:15px;" onclick="returnToLMSForQuiz()">Return to LMS for Quiz →</button>
+      </div>
+    </div>
+  </main>
+  <footer class="bottombar">
+    <div class="bb-left"><button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button></div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1</div>
+    <div class="bb-right"><button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button></div>
+  </footer>
+</div>
+<script>
+const lessons=[{title:"Key Policies at Early Explorers",slides:4},{title:"Daily Procedures & Protocols",slides:3},{title:"Your Professional Responsibilities",slides:4}];
+let currentIndex=0,answered={};
+const allSlides=Array.from(document.querySelectorAll('.slide'));
+const totalSlides=allSlides.length;
+function buildDots(){const track=document.getElementById('prog-track');lessons.forEach((l,i)=>{const d=document.createElement('div');d.className='pdot';d.dataset.lesson=i;const tip=document.createElement('div');tip.className='pdot-tip';tip.textContent=`Lesson ${i+1}: ${l.title}`;d.appendChild(tip);d.onclick=()=>jumpToLesson(i);track.appendChild(d);});updateDots();}
+function updateDots(){const slide=allSlides[currentIndex];const lessonNum=parseInt(slide.dataset.lesson)-1;document.querySelectorAll('.pdot').forEach((d,i)=>{d.classList.remove('active','done');if(i<lessonNum)d.classList.add('done');else if(i===lessonNum)d.classList.add('active');});}
+function jumpToLesson(lessonIdx){const target=allSlides.findIndex(s=>parseInt(s.dataset.lesson)-1===lessonIdx);if(target>=0)goTo(target);}
+function goTo(idx,direction=1){if(idx<0||idx>=totalSlides)return;const outSlide=allSlides[currentIndex];const inSlide=allSlides[idx];outSlide.classList.remove('active');outSlide.classList.add('exit');setTimeout(()=>{outSlide.classList.remove('exit');inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';},50);currentIndex=idx;inSlide.classList.add('active');setTimeout(()=>{inSlide.querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});inSlide.querySelectorAll('.slide-in, .slide-in-r').forEach((s)=>{s.style.opacity='1';s.style.transform='translateY(0)';});},100);updateUI();}
+function navigate(dir){goTo(currentIndex+dir,dir);}
+function updateUI(){const slide=allSlides[currentIndex];const lessonNum=parseInt(slide.dataset.lesson);const slideNum=parseInt(slide.dataset.slide);const lesson=lessons[lessonNum-1];const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);const slideInLesson=slideNum+1;document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 3`;document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;document.getElementById('btn-prev').disabled=currentIndex===0;const nextBtn=document.getElementById('btn-next');if(currentIndex===totalSlides-1){nextBtn.textContent='Return to LMS →';nextBtn.disabled=false;}else{nextBtn.textContent='Next →';nextBtn.disabled=false;}updateDots();const timeMap=[20,13,7];document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;}
+function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;answered[kcId]=true;const container=document.getElementById(kcId);container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});if(isCorrect){el.classList.add('correct');}else{el.classList.add('wrong');container.querySelectorAll('.kc-opt').forEach(opt=>{if(opt.getAttribute('onclick').includes('true')){opt.classList.add('correct');}});}const fb=document.getElementById(kcId+'-feedback');fb.style.display='flex';fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);});
+buildDots();updateUI();setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});},300);
+
+function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
+</script>
+
+<script>
+  // MUST be set before any tracking/quiz scripts run
+  window.MODULE_CODE = "PP-01";
+
+  // Override returnToLMSForQuiz to work whether this module is opened as a popup or same tab
+  window.returnToLMSForQuiz = function(){
+    try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'PP-01'); }catch(e){}
+    if(window.opener && !window.opener.closed){
+      try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'PP-01'); }catch(e){}
+      try{ window.close(); }catch(e){}
+    }else{
+      try{ window.location.href = '../index.html'; }catch(e){ alert('Please return to the main LMS window and click Take Quiz.'); }
+    }
+  };
+</script>
+
+<!-- Supabase + LMS scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Certificate</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #3AAFA9;
+  --teal-deep: #1A6562;
+  --amber: #F0A500;
+  --cream: #F8FCFB;
+}
+
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Nunito', sans-serif;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.certificate {
+  background: white;
+  width: 800px;
+  padding: 60px;
+  border: 12px solid var(--teal);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  position: relative;
+  background-image: 
+    linear-gradient(45deg, var(--cream) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--cream) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--cream) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--cream) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.certificate::before {
+  content: '🌱';
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  font-size: 48px;
+  opacity: 0.1;
+}
+
+.certificate::after {
+  content: '🌿';
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  font-size: 48px;
+  opacity: 0.1;
+}
+
+.cert-content {
+  background: white;
+  padding: 40px;
+  border-radius: 4px;
+  text-align: center;
+  position: relative;
+}
+
+.cert-logo {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+.cert-brand {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  margin-bottom: 4px;
+}
+
+.cert-tagline {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #999;
+  margin-bottom: 30px;
+}
+
+.cert-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+.cert-name {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  margin: 20px 0;
+  padding: 0 20px;
+  border-bottom: 3px solid var(--teal);
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+.cert-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin: 30px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cert-module {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal);
+  margin: 20px 0;
+}
+
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 2px solid #eee;
+}
+
+.cert-date, .cert-number {
+  text-align: left;
+}
+
+.cert-signature {
+  text-align: right;
+}
+
+.cert-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.cert-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal-deep);
+}
+
+.cert-signature-line {
+  width: 200px;
+  border-top: 2px solid var(--teal-deep);
+  margin-bottom: 8px;
+}
+
+.cert-seal {
+  position: absolute;
+  bottom: 40px;
+  right: 60px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber), #f5c000);
+  border: 4px solid var(--teal-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.seal-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.seal-text {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.print-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(58,175,169,0.3);
+}
+
+.print-btn:hover {
+  background: var(--teal-deep);
+}
+
+@media print {
+  body {
+    padding: 0;
+    background: white;
+  }
+  .certificate {
+    box-shadow: none;
+    border: 8px solid var(--teal);
+  }
+  .print-btn {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print Certificate</button>
+
+<div class="certificate">
+  <div class="cert-content">
+    <div class="cert-logo">🌱</div>
+    <div class="cert-brand">Early Explorers</div>
+    <div class="cert-tagline">CPD Academy</div>
+    
+    <div class="cert-title">Certificate of Completion</div>
+    
+    <div class="cert-text">This is to certify that</div>
+    
+    <div class="cert-name" id="user-name">Staff Member Name</div>
+    
+    <div class="cert-text">
+      has successfully completed the training module
+    </div>
+    
+    <div class="cert-module" id="module-name">Module Name</div>
+    
+    <div class="cert-text" style="font-size:14px;">
+      demonstrating knowledge and understanding of the key learning outcomes
+    </div>
+    
+    <div class="cert-footer">
+      <div class="cert-date">
+        <div class="cert-label">Date of Completion</div>
+        <div class="cert-value" id="cert-date">21 February 2026</div>
+      </div>
+      
+      <div class="cert-signature">
+        <div class="cert-signature-line"></div>
+        <div class="cert-label">Authorized Signature</div>
+        <div class="cert-value">Early Explorers Management</div>
+      </div>
+    </div>
+    
+    <div class="cert-number" style="margin-top:20px;text-align:center;">
+      <div class="cert-label">Certificate Number</div>
+      <div class="cert-value" id="cert-number">EE-2026-XX-00000</div>
+    </div>
+  </div>
+  
+  <div class="cert-seal">
+    <div class="seal-icon">✓</div>
+    <div class="seal-text">Certified</div>
+  </div>
+</div>
+
+<script>
+// Populate from URL parameters or localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  
+  const userName = params.get('name') || localStorage.getItem('user_name') || 'Staff Member';
+  const moduleName = params.get('module') || 'Training Module';
+  const certDate = params.get('date') || new Date().toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
+  const certNumber = params.get('number') || 'EE-2026-XX-00000';
+  
+  document.getElementById('user-name').textContent = userName;
+  document.getElementById('module-name').textContent = moduleName;
+  document.getElementById('cert-date').textContent = certDate;
+  document.getElementById('cert-number').textContent = certNumber;
+});
+</script>
+
+</body>
+</html>

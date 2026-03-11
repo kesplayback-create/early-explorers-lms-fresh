@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Moving & Handling — Early Explorers CPD Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+:root {
+  --teal:      #3AAFA9;
+  --teal-d:    #2B8A85;
+  --teal-deep: #1A6562;
+  --teal-l:    #E8F7F6;
+  --teal-pale: #F2FBFA;
+  --coral:     #E07B5A;
+  --coral-l:   #FDF2EE;
+  --amber:     #F0A500;
+  --amber-l:   #FEF8EC;
+  --sage:      #7BAE7F;
+  --sage-l:    #EFF6F0;
+  --red:       #E05A5A;
+  --red-l:     #FDEAEA;
+  --ink:       #1C2B2A;
+  --ink-m:     #3D5250;
+  --muted:     #7A9694;
+  --border:    #D4E8E7;
+  --white:     #FFFFFF;
+  --cream:     #F8FCFB;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--ink);color:var(--ink);height:100vh;overflow:hidden;user-select:none;}
+
+/* ═══════════════════════════════════════════
+   SHELL
+═══════════════════════════════════════════ */
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:var(--teal-deep);}
+
+/* ─── TOP NAV ─── */
+.topnav{
+  background:rgba(26,101,98,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:0 28px;
+  display:flex;align-items:center;gap:16px;
+  height:58px;flex-shrink:0;
+}
+.tn-brand{display:flex;align-items:center;gap:9px;margin-right:8px;}
+.tn-logo{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tn-name{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.2;}
+.tn-sub{font-size:10px;color:rgba(255,255,255,0.42);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.tn-sep{width:1px;height:28px;background:rgba(255,255,255,0.15);}
+.tn-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;}
+.tn-meta{display:flex;align-items:center;gap:14px;}
+.tn-lesson-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);}
+.tn-time{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;}
+
+/* ─── LESSON PROGRESS DOTS ─── */
+.progress-track{
+  display:flex;align-items:center;gap:6px;
+}
+.pdot{
+  width:28px;height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.15);
+  cursor:pointer;transition:all 0.2s;position:relative;
+}
+.pdot.done{background:var(--teal);}
+.pdot.active{background:#fff;width:36px;}
+.pdot:hover{background:rgba(255,255,255,0.4);}
+.pdot-tip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;
+  padding:4px 8px;border-radius:5px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity 0.15s;
+}
+.pdot:hover .pdot-tip{opacity:1;}
+
+/* ─── STAGE ─── */
+.stage{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ─── BOTTOM BAR ─── */
+.bottombar{
+  background:rgba(26,101,98,0.95);
+  backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;flex-shrink:0;
+}
+.bb-left{display:flex;align-items:center;gap:10px;}
+.bb-center{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);}
+.bb-right{display:flex;align-items:center;gap:10px;}
+
+.btn-nav{
+  display:flex;align-items:center;gap:7px;
+  padding:10px 20px;border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;border:none;transition:all 0.2s;
+}
+.btn-prev{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.btn-prev:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.btn-prev:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-next-main{
+  background:linear-gradient(135deg,var(--teal),var(--teal-d));
+  color:#fff;box-shadow:0 4px 16px rgba(58,175,169,0.4);
+}
+.btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(58,175,169,0.5);}
+.btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ═══════════════════════════════════════════
+   SLIDE SYSTEM
+═══════════════════════════════════════════ */
+.slide{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  transform:translateX(60px);
+  padding:28px;
+}
+.slide.active{
+  opacity:1;pointer-events:all;transform:translateX(0);
+}
+.slide.exit{
+  opacity:0;transform:translateX(-60px);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE LAYOUTS
+═══════════════════════════════════════════ */
+
+/* ── TITLE CARD ── */
+.sl-title{
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  background:radial-gradient(ellipse 80% 70% at 50% 40%, rgba(58,175,169,0.25) 0%, transparent 70%);
+}
+.sl-title .big-icon{
+  font-size:90px;margin-bottom:20px;
+  animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+}
+@keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sl-title h1{
+  font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;
+  color:#fff;margin-bottom:12px;
+  animation:slideUp 0.6s ease 0.3s both;
+}
+.sl-title .lesson-label{
+  font-size:12px;font-weight:800;color:var(--teal);letter-spacing:0.12em;
+  text-transform:uppercase;margin-bottom:16px;
+  animation:slideUp 0.6s ease 0.2s both;
+}
+.sl-title .lesson-intro{
+  font-size:17px;color:rgba(255,255,255,0.72);max-width:520px;line-height:1.7;
+  font-weight:500;animation:slideUp 0.6s ease 0.4s both;
+}
+.sl-title .title-pills{
+  display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;
+  animation:slideUp 0.6s ease 0.5s both;
+}
+.t-pill{
+  padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;
+  background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);
+  border:1px solid rgba(255,255,255,0.15);
+}
+
+/* ── TWO COLUMN CONTENT ── */
+.sl-two{
+  gap:28px;align-items:stretch;max-width:1100px;width:100%;
+}
+.sl-two .content-col{
+  flex:1;display:flex;flex-direction:column;gap:16px;
+}
+.sl-two .visual-col{
+  width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;
+}
+
+/* ── CONTENT CARD ── */
+.content-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;padding:24px;
+  backdrop-filter:blur(8px);
+}
+.content-card.light{
+  background:var(--white);border-color:var(--border);color:var(--ink);
+}
+.content-card.teal-card{
+  background:linear-gradient(135deg,var(--teal-deep),var(--teal-d));
+  border-color:rgba(255,255,255,0.1);
+}
+
+.card-label{
+  font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.card-label.light-l{color:var(--muted);}
+.card-label.dark-l{color:rgba(255,255,255,0.45);}
+
+.slide-h2{
+  font-family:'Quicksand',sans-serif;font-size:26px;font-weight:700;
+  color:#fff;margin-bottom:8px;line-height:1.3;
+}
+.slide-h2.dark{color:var(--ink);}
+.slide-h3{
+  font-family:'Quicksand',sans-serif;font-size:17px;font-weight:700;
+  color:#fff;margin-bottom:8px;
+}
+.slide-h3.dark{color:var(--teal-deep);}
+.slide-p{
+  font-size:14px;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:500;
+}
+.slide-p.dark{color:var(--ink-m);}
+
+/* ── STAT BOXES ── */
+.stat-row{display:flex;gap:12px;}
+.stat-box{
+  flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  border-radius:13px;padding:16px 14px;text-align:center;
+}
+.stat-box .s-num{
+  font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:#fff;
+}
+.stat-box .s-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:3px;}
+
+/* ── BULLET POINTS ── */
+.bullet-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.bullet{
+  display:flex;align-items:flex-start;gap:11px;
+  font-size:14px;font-weight:600;
+  animation:bulletIn 0.4s ease both;
+}
+.bullet.dark{color:var(--ink-m);}
+.bullet.light-c{color:rgba(255,255,255,0.8);}
+@keyframes bulletIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.b-icon{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;margin-top:1px;
+}
+.bi-teal{background:var(--teal-l);color:var(--teal-d);}
+.bi-coral{background:var(--coral-l);color:var(--coral);}
+.bi-amber{background:var(--amber-l);color:#9B6500;}
+.bi-red{background:var(--red-l);color:var(--red);}
+.bi-sage{background:var(--sage-l);color:var(--sage);}
+.bi-white{background:rgba(255,255,255,0.12);color:#fff;}
+
+/* ── VISUAL DIAGRAM CARDS ── */
+.diagram-card{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:18px;padding:20px;flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:8px;cursor:pointer;transition:all 0.2s;
+}
+.diagram-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(58,175,169,0.2);}
+.diagram-card .d-icon{font-size:44px;}
+.diagram-card .d-title{font-family:'Quicksand',sans-serif;font-size:14px;font-weight:700;color:var(--teal-deep);}
+.diagram-card .d-sub{font-size:12px;color:var(--muted);font-weight:500;line-height:1.4;}
+
+/* ── STEP SEQUENCE ── */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{
+  display:flex;gap:14px;padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  opacity:0;transform:translateY(8px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.step:last-child{border-bottom:none;}
+.step.visible{opacity:1;transform:translateY(0);}
+.step-num{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--teal-d));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#fff;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(58,175,169,0.4);
+}
+.step-body{}
+.step-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.step-desc{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.5;}
+
+/* ── DO / DON'T CARDS ── */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dd-card{border-radius:16px;padding:18px;}
+.dd-do{background:var(--sage-l);border:1.5px solid #B8D8BB;}
+.dd-dont{background:var(--red-l);border:1.5px solid #F0B8B8;}
+.dd-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.dd-badge{
+  padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.dd-do .dd-badge{background:var(--sage);color:#fff;}
+.dd-dont .dd-badge{background:var(--red);color:#fff;}
+.dd-items{display:flex;flex-direction:column;gap:8px;}
+.dd-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;}
+.dd-do .dd-item{color:#2D5C30;}
+.dd-dont .dd-item{color:#7A1F1F;}
+
+/* ── HIGHLIGHT BOX ── */
+.highlight-box{
+  border-radius:14px;padding:16px 18px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.hb-warn{background:rgba(240,165,0,0.12);border:1.5px solid rgba(240,165,0,0.3);}
+.hb-info{background:rgba(58,175,169,0.12);border:1.5px solid rgba(58,175,169,0.25);}
+.hb-good{background:rgba(123,174,127,0.12);border:1.5px solid rgba(123,174,127,0.3);}
+.hb-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.hb-text{font-size:13px;font-weight:600;line-height:1.6;}
+.hb-warn .hb-text{color:rgba(255,230,150,0.9);}
+.hb-info .hb-text{color:rgba(180,240,240,0.85);}
+.hb-good .hb-text{color:rgba(180,230,180,0.9);}
+
+/* ── BIG VISUAL SCENE ── */
+.scene-card{
+  background:linear-gradient(135deg,rgba(58,175,169,0.15),rgba(26,101,98,0.4));
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:28px;flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;position:relative;overflow:hidden;
+}
+.scene-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:radial-gradient(circle at 30% 70%,rgba(58,175,169,0.2),transparent 60%);
+}
+.scene-big-icon{font-size:80px;margin-bottom:12px;position:relative;z-index:1;}
+.scene-title{font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.scene-sub{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:6px;position:relative;z-index:1;line-height:1.5;}
+
+/* ── KNOWLEDGE CHECK ── */
+.kc-wrap{
+  max-width:680px;width:100%;display:flex;flex-direction:column;gap:20px;
+}
+.kc-tag{
+  font-size:11px;font-weight:800;color:var(--teal);letter-spacing:0.12em;
+  text-transform:uppercase;text-align:center;
+}
+.kc-q{
+  font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;
+  color:#fff;text-align:center;line-height:1.5;
+}
+.kc-opts{display:flex;flex-direction:column;gap:10px;}
+.kc-opt{
+  display:flex;align-items:center;gap:13px;
+  padding:15px 18px;border:2px solid rgba(255,255,255,0.12);
+  border-radius:13px;cursor:pointer;transition:all 0.2s;
+  font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);
+  background:rgba(255,255,255,0.04);
+}
+.kc-opt:hover:not(.locked){
+  border-color:var(--teal);background:rgba(58,175,169,0.12);color:#fff;
+}
+.kc-opt.correct{border-color:var(--sage);background:rgba(123,174,127,0.2);color:#B8EFBC;}
+.kc-opt.wrong{border-color:var(--red);background:rgba(224,90,90,0.15);color:#FFBBBB;}
+.kc-opt.locked{cursor:default;}
+.kc-letter{
+  width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;
+  flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s;
+}
+.kc-opt.correct .kc-letter{background:var(--sage);border-color:var(--sage);color:#fff;}
+.kc-opt.wrong   .kc-letter{background:var(--red);border-color:var(--red);color:#fff;}
+.kc-feedback{
+  border-radius:13px;padding:15px 18px;
+  display:flex;align-items:flex-start;gap:11px;
+  font-size:14px;font-weight:600;line-height:1.6;
+  animation:slideUp 0.4s ease both;
+}
+.kc-feedback.kc-pass{background:rgba(123,174,127,0.15);border:1.5px solid rgba(123,174,127,0.3);color:#B8EFBC;}
+.kc-feedback.kc-fail{background:rgba(224,90,90,0.12);border:1.5px solid rgba(224,90,90,0.25);color:#FFBBBB;}
+
+/* ── SUMMARY SLIDE ── */
+.sl-summary{flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.summary-icon{font-size:72px;margin-bottom:18px;animation:iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;}
+.summary-h{font-family:'Quicksand',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:10px;animation:slideUp 0.5s ease 0.2s both;}
+.summary-p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.7;font-weight:500;margin-bottom:28px;animation:slideUp 0.5s ease 0.3s both;}
+.summary-keys{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  max-width:700px;width:100%;
+  animation:slideUp 0.5s ease 0.4s both;
+}
+.sk-card{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px;padding:16px 14px;text-align:center;
+}
+.sk-icon{font-size:28px;margin-bottom:8px;}
+.sk-title{font-family:'Quicksand',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sk-sub{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4;}
+
+/* ─── ANIMATIONS ─── */
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes shimmer{
+  0%{background-position:-200% 0}
+  100%{background-position:200% 0}
+}
+
+.anim-delay-1{animation-delay:0.15s !important;}
+.anim-delay-2{animation-delay:0.3s !important;}
+.anim-delay-3{animation-delay:0.45s !important;}
+.anim-delay-4{animation-delay:0.6s !important;}
+.anim-delay-5{animation-delay:0.75s !important;}
+.anim-delay-6{animation-delay:0.9s !important;}
+
+.slide-in{animation:slideUp 0.5s ease both;}
+.slide-in-r{animation:slideInR 0.5s ease both;}
+@keyframes slideInR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ─── FLOATING DECORATION PARTICLES ─── */
+.bg-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.deco-circle{
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle,rgba(58,175,169,0.15),transparent);
+}
+.dc1{width:400px;height:400px;top:-100px;right:-80px;}
+.dc2{width:280px;height:280px;bottom:-60px;left:-40px;}
+.dc3{width:180px;height:180px;top:40%;right:15%;}
+
+/* ─── LESSON BADGE ─── */
+.lesson-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 14px;border-radius:20px;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  font-size:11px;font-weight:800;color:rgba(255,255,255,0.7);
+  letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;
+}
+.lb-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);}
+
+/* ─── FLIP CARD ─── */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.flip-card{
+  height:110px;perspective:800px;cursor:pointer;
+}
+.flip-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  transform-style:preserve-3d;
+}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{
+  position:absolute;inset:0;border-radius:13px;padding:14px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  backface-visibility:hidden;gap:6px;text-align:center;
+}
+.flip-front{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+}
+.flip-back{
+  background:linear-gradient(135deg,var(--teal-deep),var(--teal-d));
+  border:1px solid rgba(255,255,255,0.15);
+  transform:rotateY(180deg);
+}
+.flip-front .ff-icon{font-size:28px;}
+.flip-front .ff-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);}
+.flip-front .ff-hint{font-size:10px;color:rgba(255,255,255,0.35);font-weight:600;}
+.flip-back .fb-text{font-size:12px;font-weight:600;color:#fff;line-height:1.5;}
+
+/* ─── INJURY TRACKER ─── */
+.body-map{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.bm-figure{font-size:64px;filter:drop-shadow(0 4px 12px rgba(58,175,169,0.3));}
+.injury-zones{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
+.iz-tag{
+  padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;
+  background:rgba(224,90,90,0.2);color:#FFBBBB;border:1px solid rgba(224,90,90,0.3);
+  cursor:pointer;transition:all 0.2s;
+}
+.iz-tag:hover,.iz-tag.lit{background:rgba(224,90,90,0.35);color:#fff;transform:scale(1.05);}
+
+/* ─── PROGRESS RING ─── */
+.ring-wrap{display:flex;align-items:center;justify-content:center;margin:0 auto;}
+svg.ring{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:8;}
+.ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(0.34,1.56,0.64,1);}
+.ring-text{font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:middle;}
+.ring-sub{font-size:11px;fill:rgba(255,255,255,0.5);text-anchor:middle;dominant-baseline:middle;font-family:'Nunito',sans-serif;font-weight:600;}
+
+/* scroll lock for body when content overflows */
+.slide.active .content-card,.slide.active .scene-card{overflow-y:auto;max-height:calc(100vh - 200px);}
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <div class="tn-brand">
+      <div class="tn-logo">🌱</div>
+      <div>
+        <div class="tn-name">Early Explorers</div>
+        <div class="tn-sub">CPD Academy</div>
+      </div>
+    </div>
+    <div class="tn-sep"></div>
+    <div class="tn-title">Safe Moving &amp; Handling in Early Years</div>
+    <div class="tn-meta">
+      <div class="tn-lesson-count" id="lesson-count">Lesson 1 of 6</div>
+      <div class="tn-sep"></div>
+      <div class="progress-track" id="prog-track"></div>
+      <div class="tn-sep"></div>
+      <div class="tn-time">⏱ <span id="timer">35:00</span></div>
+    </div>
+  </nav>
+
+  <!-- STAGE -->
+  <main class="stage" id="stage">
+
+    <!-- BG DECO -->
+    <div class="bg-deco">
+      <div class="deco-circle dc1"></div>
+      <div class="deco-circle dc2"></div>
+      <div class="deco-circle dc3"></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 1 — WHY MANUAL HANDLING MATTERS
+    ══════════════════════════════════ -->
+
+    <!-- Slide 1-1: Title -->
+    <div class="slide sl-title active" data-lesson="1" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 1 of 6</div>
+      <div class="big-icon">🙌</div>
+      <h1>Why Manual Handling Matters</h1>
+      <p class="lesson-intro">Understanding the importance of safe lifting protects both you and the children in your care. Let's explore the risks and why this training is essential.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- Slide 1-2: The Reality -->
+    <div class="slide sl-two" data-lesson="1" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · The Reality</div>
+        <div class="slide-h2 slide-in anim-delay-1">Manual handling injuries are the #1 workplace risk in childcare</div>
+        <div class="slide-p slide-in anim-delay-2">Working in a nursery involves dozens of lifts every single day — from picking up babies, repositioning toddlers, to moving cots and equipment. Without correct technique, the cumulative strain causes serious, long-term injury.</div>
+        <div class="stat-row slide-in anim-delay-3">
+          <div class="stat-box"><div class="s-num">73%</div><div class="s-lbl">of nursery injuries are from manual handling</div></div>
+          <div class="stat-box"><div class="s-num">40+</div><div class="s-lbl">lifts performed by a typical practitioner daily</div></div>
+          <div class="stat-box"><div class="s-num">#1</div><div class="s-lbl">cause of long-term staff absence in early years</div></div>
+        </div>
+        <div class="highlight-box hb-warn slide-in anim-delay-4">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Back injuries from incorrect lifting rarely resolve quickly. Many practitioners who ignore technique develop chronic conditions that end their careers in childcare.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r">
+          <div class="scene-big-icon" style="animation:pulse 2s ease-in-out infinite;">🏥</div>
+          <div class="scene-title">The Hidden Cost</div>
+          <div class="scene-sub">Each avoidable injury affects the whole team — covering shifts, managing stress, and impacting the quality of care children receive.</div>
+        </div>
+        <div class="content-card slide-in-r anim-delay-2">
+          <div class="card-label dark-l">Did you know?</div>
+          <div class="slide-h3">Your spine takes 8x your body weight when lifting incorrectly.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 1-3: Who is at Risk -->
+    <div class="slide sl-two" data-lesson="1" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Who Is at Risk?</div>
+        <div class="slide-h2 slide-in anim-delay-1">Everyone who lifts is at risk — but some more than others</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-coral">👶</div><div><strong>Baby room staff</strong> — lifting newborns from low cots multiple times per hour creates repeated spinal loading</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">🧒</div><div><strong>Toddler room staff</strong> — toddlers are unpredictable movers; sudden shifts in weight are a common injury trigger</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-teal">🏋️</div><div><strong>Staff moving equipment</strong> — cots, chairs and sensory equipment are often heavy and awkward to manoeuvre</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-sage">🆕</div><div><strong>New staff</strong> — those without training are significantly more likely to injure themselves in their first 3 months</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card teal-card slide-in-r" style="flex:1;">
+          <div class="card-label dark-l">Legal Requirement</div>
+          <div class="slide-h3">The Manual Handling Operations Regulations 1992 (as amended 2002)</div>
+          <div class="slide-p" style="margin-top:8px;">Your employer must assess manual handling risks and provide training. <strong style="color:var(--teal);">You</strong> must follow that training and report any pain or concerns immediately.</div>
+        </div>
+        <div class="content-card slide-in-r anim-delay-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);">
+          <div class="card-label dark-l">Remember</div>
+          <div class="slide-h3">No child or piece of equipment is worth a permanent injury.</div>
+          <div class="slide-p" style="margin-top:6px;">If a situation feels unsafe — stop, assess, and ask for help.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 1-4: The TILE Framework -->
+    <div class="slide sl-two" data-lesson="1" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 1 · Risk Assessment</div>
+        <div class="slide-h2 slide-in anim-delay-1">Always assess using the TILE framework</div>
+        <div class="slide-p slide-in anim-delay-2">Before any lift, mentally run through TILE. It takes only seconds and can prevent a serious injury.</div>
+        <div class="steps" id="tile-steps">
+          <div class="step"><div class="step-num">T</div><div class="step-body"><div class="step-title">Task — What does the lift involve?</div><div class="step-desc">How far are you moving? How long will you hold? Is the path clear?</div></div></div>
+          <div class="step"><div class="step-num">I</div><div class="step-body"><div class="step-title">Individual — Are you fit to lift?</div><div class="step-desc">Are you pregnant? Do you have back pain? Have you lifted a lot today?</div></div></div>
+          <div class="step"><div class="step-num">L</div><div class="step-body"><div class="step-title">Load — What are you lifting?</div><div class="step-desc">How heavy is the child? Are they likely to wriggle or reach suddenly?</div></div></div>
+          <div class="step"><div class="step-num">E</div><div class="step-body"><div class="step-title">Environment — Is the space safe?</div><div class="step-desc">Is the floor wet? Is there room to move? Is lighting adequate?</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🧩</div>
+          <div class="scene-title">TILE in Practice</div>
+          <div class="scene-sub">Think of TILE as your mental checklist. Over time it becomes instinctive — taking just 2–3 seconds before every lift.</div>
+        </div>
+        <div class="highlight-box hb-good slide-in-r anim-delay-2">
+          <div class="hb-icon">✅</div>
+          <div class="hb-text">Practitioners who consistently use TILE reduce their injury risk by over 60%. Make it a habit from day one.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 1-5: Knowledge Check -->
+    <div class="slide" data-lesson="1" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
+        <div class="kc-q slide-in anim-delay-1">What does the "E" in the TILE risk assessment framework stand for?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-1">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">A</div>Experience of the lifter</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">B</div>Equipment being used</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! <strong>Environment</strong> — Is the floor clear? Is there room to move safely? Is lighting good?')"><div class="kc-letter">C</div>Environment — the space around you</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">D</div>Emergency procedure</div>
+        </div>
+        <div id="kc-1-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 2 — SAFE LIFTING TECHNIQUE
+    ══════════════════════════════════ -->
+
+    <!-- Slide 2-1: Title -->
+    <div class="slide sl-title" data-lesson="2" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 2 of 6</div>
+      <div class="big-icon">💪</div>
+      <h1>Safe Lifting Technique</h1>
+      <p class="lesson-intro">The foundation of all manual handling. Master this technique and you protect your spine for life. Every lift should follow these principles.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- Slide 2-2: The 6-Step Lift -->
+    <div class="slide sl-two" data-lesson="2" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · The 6-Step Lift</div>
+        <div class="slide-h2 slide-in anim-delay-1">The correct lift — step by step</div>
+        <div class="slide-p slide-in anim-delay-2">Follow these 6 steps every time. They should become second nature within your first week.</div>
+        <div class="steps" id="lift-steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Stop & assess</div><div class="step-desc">Run TILE. Is there a safer way? Do you need help?</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Position your feet</div><div class="step-desc">Shoulder-width apart, one foot slightly forward for stability.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Bend your knees — not your back</div><div class="step-desc">Squat down to the child's level. Keep your back straight and natural.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Get close to the load</div><div class="step-desc">The closer the child is to your centre of gravity, the less strain on your back.</div></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Lift smoothly using your legs</div><div class="step-desc">Drive upward through your legs. No jerking, twisting or rushing.</div></div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Move with control</div><div class="step-desc">Keep the child close. Move feet to change direction — never twist your spine.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon" style="animation:pulse 2.5s ease-in-out infinite;">🧍</div>
+          <div class="scene-title">Your Spine Under Load</div>
+          <div class="scene-sub">A straight back distributes load evenly. A bent back concentrates enormous force on a few vertebrae — multiplied by the weight you're carrying.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text"><strong>Never twist</strong> while holding a load. If you need to turn, move your feet first. Twisting under load is one of the most common causes of disc injury.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2-3: Do & Don't -->
+    <div class="slide sl-two" data-lesson="2" data-slide="2">
+      <div class="content-col" style="gap:18px;">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Do & Don't</div>
+        <div class="slide-h2 slide-in anim-delay-1">Lifting: what to do and what never to do</div>
+        <div class="do-dont slide-in anim-delay-2">
+          <div class="dd-card dd-do">
+            <div class="dd-header"><span class="dd-badge">✓ Do</span></div>
+            <div class="dd-items">
+              <div class="dd-item">✅ Keep your back straight and natural</div>
+              <div class="dd-item">✅ Bend at the knees</div>
+              <div class="dd-item">✅ Hold the child close to your body</div>
+              <div class="dd-item">✅ Move your feet to change direction</div>
+              <div class="dd-item">✅ Communicate with the child first</div>
+              <div class="dd-item">✅ Ask for help with heavier children</div>
+              <div class="dd-item">✅ Report pain immediately</div>
+            </div>
+          </div>
+          <div class="dd-card dd-dont">
+            <div class="dd-header"><span class="dd-badge">✗ Don't</span></div>
+            <div class="dd-items">
+              <div class="dd-item">❌ Bend from the waist</div>
+              <div class="dd-item">❌ Twist your spine under load</div>
+              <div class="dd-item">❌ Hold the child away from your body</div>
+              <div class="dd-item">❌ Rush or jerk the movement</div>
+              <div class="dd-item">❌ Lift when you're tired or in pain</div>
+              <div class="dd-item">❌ Ignore discomfort or 'push through'</div>
+              <div class="dd-item">❌ Lift alone if unsafe to do so</div>
+            </div>
+          </div>
+        </div>
+        <div class="highlight-box hb-info slide-in anim-delay-3">
+          <div class="hb-icon">💡</div>
+          <div class="hb-text">Print this Do/Don't list and display it in your staff room as a daily reminder until good technique becomes automatic.</div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">⚖️</div>
+          <div class="scene-title">Correct vs. Incorrect</div>
+          <div class="scene-sub">Correct technique takes the same amount of time as incorrect technique. There is no reason not to lift safely — every single time.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2-4: Flip Cards - Body Mechanics -->
+    <div class="slide sl-two" data-lesson="2" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 2 · Body Mechanics</div>
+        <div class="slide-h2 slide-in anim-delay-1">Tap each card to reveal the key principle</div>
+        <div class="slide-p slide-in anim-delay-2">Understanding <em>why</em> these rules exist helps you remember and follow them.</div>
+        <div class="flip-grid slide-in anim-delay-3">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front"><div class="ff-icon">🦵</div><div class="ff-label">Your Legs</div><div class="ff-hint">Tap to reveal</div></div>
+              <div class="flip-back"><div class="fb-text">Your leg muscles are the strongest in your body — 10x stronger than your back muscles. Always drive upward through your legs.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front"><div class="ff-icon">🔄</div><div class="ff-label">Twisting</div><div class="ff-hint">Tap to reveal</div></div>
+              <div class="flip-back"><div class="fb-text">Rotating your spine while under load compresses discs asymmetrically — the leading cause of slipped discs. Move your feet instead.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front"><div class="ff-icon">📏</div><div class="ff-label">Distance</div><div class="ff-hint">Tap to reveal</div></div>
+              <div class="flip-back"><div class="fb-text">Holding a load 30cm away from your body creates 10x more back strain than holding it close. Always bring the child in toward your centre.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front"><div class="ff-icon">😤</div><div class="ff-label">Fatigue</div><div class="ff-hint">Tap to reveal</div></div>
+              <div class="flip-back"><div class="fb-text">Muscle fatigue causes form to break down. Most lifting injuries happen in the afternoon. Stay aware of your technique even when tired.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="body-map slide-in-r">
+          <div class="bm-figure">🧍</div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;">Common injury sites — tap to highlight</div>
+          <div class="injury-zones">
+            <div class="iz-tag" onclick="this.classList.toggle('lit')">Lower Back</div>
+            <div class="iz-tag" onclick="this.classList.toggle('lit')">Shoulders</div>
+            <div class="iz-tag" onclick="this.classList.toggle('lit')">Neck</div>
+            <div class="iz-tag" onclick="this.classList.toggle('lit')">Wrists</div>
+            <div class="iz-tag" onclick="this.classList.toggle('lit')">Knees</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2-5: Knowledge Check -->
+    <div class="slide" data-lesson="2" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
+        <div class="kc-q slide-in anim-delay-1">When lifting a child, which muscles should be doing most of the work?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-2">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Your back muscles are not designed for heavy lifting. Use your legs — they are far stronger.')"><div class="kc-letter">A</div>Your back muscles</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'While arm strength helps you hold, the primary lifting power must come from your legs.')"><div class="kc-letter">B</div>Your arm and shoulder muscles</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct! Your leg muscles are the strongest in your body — always drive upward through your legs when lifting.')"><div class="kc-letter">C</div>Your leg muscles</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Core strength helps stability, but the primary power for lifting must always come from your legs.')"><div class="kc-letter">D</div>Your core muscles only</div>
+        </div>
+        <div id="kc-2-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 3 — LIFTING BABIES & TODDLERS
+    ══════════════════════════════════ -->
+
+    <!-- Slide 3-1: Title -->
+    <div class="slide sl-title" data-lesson="3" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 3 of 6</div>
+      <div class="big-icon">👶</div>
+      <h1>Lifting Babies &amp; Toddlers</h1>
+      <p class="lesson-intro">Young children present unique handling challenges. This lesson covers safe techniques specific to each age group in your care.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- Slide 3-2: Baby Handling -->
+    <div class="slide sl-two" data-lesson="3" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Babies (0–12 months)</div>
+        <div class="slide-h2 slide-in anim-delay-1">Handling babies requires head & neck support at all times</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-teal">👐</div><div><strong>Always support the head</strong> — a baby's head is proportionally very large and neck muscles are not fully developed until around 4 months</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-coral">🔔</div><div><strong>Signal before you lift</strong> — speak softly and make eye contact before picking up a baby to avoid startling them, which causes sudden movement</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">⬆️</div><div><strong>Lift from a kneeling or squatting position</strong> — never lean over a cot with your back bent; always lower the cot side and get close</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-sage">🤝</div><div><strong>Use both hands</strong> — one hand under the bottom for weight support, one cupped at the head and neck</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">💤</div><div><strong>Adjust cot heights</strong> — always raise/lower cot sides fully before lifting. Reaching over raised sides is one of the biggest baby room injury risks</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon" style="animation:pulse 3s ease-in-out infinite;">👶</div>
+          <div class="scene-title">Cot-to-Arm Transfer</div>
+          <div class="scene-sub">Lower cot side → Kneel alongside → Slide hands under → Support head → Lift close to chest → Stand using legs → Settle baby against your shoulder</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Never lift a baby from a full-height cot without lowering the side first. The resulting reach-and-twist causes shoulder and back injuries.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3-3: Toddler Handling -->
+    <div class="slide sl-two" data-lesson="3" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Toddlers (1–3 years)</div>
+        <div class="slide-h2 slide-in anim-delay-1">Toddlers are unpredictable — anticipate movement</div>
+        <div class="slide-p slide-in anim-delay-2">Unlike babies, toddlers actively contribute to their own movement — and resist it too. This unpredictability is the primary injury risk in the toddler room.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">🗣️</div><div><strong>Always give a verbal warning</strong> — "Up we go!" before lifting. Toddlers who know what's coming don't lunge unexpectedly</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-coral">🔒</div><div><strong>Hold securely at the torso</strong> — place hands firmly on both sides of the torso, not just one side. Toddlers twist suddenly</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-teal">📏</div><div><strong>Keep them close immediately</strong> — toddlers may reach for objects while airborne. Bringing them in close limits their range of movement</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">⚖️</div><div><strong>Know the weight limit guidance</strong> — if a toddler exceeds 15kg, consider whether a lift is necessary or a supported walk is safer</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card teal-card slide-in-r">
+          <div class="card-label dark-l">The Toddler Lunge Risk</div>
+          <div class="slide-h3">A sudden lunge from a 14kg toddler generates over 30kg of momentary force through your spine.</div>
+          <div class="slide-p" style="margin-top:8px;">The surprise, not just the weight, is what causes injury. Preparation and communication are your best protection.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">🧒</div>
+          <div class="scene-title">Safe Toddler Lift</div>
+          <div class="scene-sub">Verbal warning → Both hands on torso → Squat close → Smooth lift through legs → Hold close to chest → Watch for reaching</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3-4: Nappy Changes & Floor Work -->
+    <div class="slide sl-two" data-lesson="3" data-slide="3">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 3 · Nappy & Floor Work</div>
+        <div class="slide-h2 slide-in anim-delay-1">High-repetition tasks: nappy changes & floor-level care</div>
+        <div class="slide-p slide-in anim-delay-2">Nappy changes can happen 8–10 times per shift. The cumulative spinal load from poor posture adds up rapidly.</div>
+        <div class="steps">
+          <div class="step visible"><div class="step-num">✓</div><div class="step-body"><div class="step-title">Use a raised changing table</div><div class="step-desc">Always at waist height or above. Never change nappies on the floor if a table is available.</div></div></div>
+          <div class="step visible"><div class="step-num">✓</div><div class="step-body"><div class="step-title">Position yourself side-on</div><div class="step-desc">Stand alongside the change mat, not above it. This prevents the forward bend that strains your back.</div></div></div>
+          <div class="step visible"><div class="step-num">✓</div><div class="step-body"><div class="step-title">Floor play: use cushions or sit cross-legged</div><div class="step-desc">When floor-level care is necessary, sit rather than kneel or crouch to reduce prolonged spinal loading.</div></div></div>
+          <div class="step visible"><div class="step-num">✓</div><div class="step-body"><div class="step-title">Rotate positions regularly</div><div class="step-desc">Staying in one posture too long causes muscle fatigue. Change position at least every 20 minutes.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🔄</div>
+          <div class="scene-title">Posture Rotation</div>
+          <div class="scene-sub">No single posture is perfect for extended periods. Varying between standing, sitting and kneeling keeps muscles active and spine healthy.</div>
+        </div>
+        <div class="highlight-box hb-good slide-in-r anim-delay-2">
+          <div class="hb-icon">💚</div>
+          <div class="hb-text">Raising a change table by 10cm can reduce back muscle strain during nappy changes by up to 40%. Always adjust equipment to suit your height.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3-5: Knowledge Check -->
+    <div class="slide" data-lesson="3" data-slide="4" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
+        <div class="kc-q slide-in anim-delay-1">Why should you always give a verbal warning before lifting a toddler?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-3">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This is a secondary benefit. The primary reason is to prevent the toddler from making a sudden, unexpected movement that could injure you.')"><div class="kc-letter">A</div>It is a safeguarding requirement</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',true,'Correct! Toddlers who know what is coming do not lunge or twist unexpectedly — preventing sudden load shifts that cause injury.')"><div class="kc-letter">B</div>To prevent unexpected movement that could cause sudden load shifts</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'While communicating positively is good practice, the key reason here is preventing unexpected movement for safety.')"><div class="kc-letter">C</div>To build a positive relationship with the child</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This is not the primary reason. The focus is on preventing sudden movements that cause injury.')"><div class="kc-letter">D</div>To wake them up before lifting</div>
+        </div>
+        <div id="kc-3-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 4 — SUPPORTING CHILDREN SAFELY
+    ══════════════════════════════════ -->
+
+    <!-- Slide 4-1: Title -->
+    <div class="slide sl-title" data-lesson="4" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 4 of 6</div>
+      <div class="big-icon">🤲</div>
+      <h1>Supporting Children Safely</h1>
+      <p class="lesson-intro">Not all handling is a lift — supporting, steadying, and guiding children also carries injury risk when done incorrectly.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 4 slides</span>
+        <span class="t-pill">⏱ ~5 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- Slide 4-2: Types of Support -->
+    <div class="slide sl-two" data-lesson="4" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Types of Support</div>
+        <div class="slide-h2 slide-in anim-delay-1">Supporting children involves more than just lifting</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-teal">🚶</div><div><strong>Walking support</strong> — holding a child's hand or arm while they walk. Avoid pulling upward on arms — risk of shoulder dislocation in under-3s</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-coral">⬆️</div><div><strong>Stair assistance</strong> — stand one step below the child, hand on their lower back or holding their hand at a comfortable height (not raised)</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">🍽️</div><div><strong>Seating assistance</strong> — lowering a child into a high chair: hold at the torso, squat to lower, avoid leaning forward over the tray</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-sage">😴</div><div><strong>Settling to sleep</strong> — patting a baby in a cot: use a kneeling pad and kneel level with the cot rather than bending over the top</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">🤸</div><div><strong>Nappy / dressing assistance</strong> — for mobile children, consider doing this standing at a wall bar or on a mat, reducing the need for repeated lifting</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🤝</div>
+          <div class="scene-title">The "Nursemaid's Elbow" Risk</div>
+          <div class="scene-sub">Pulling sharply upward on a young child's hand or forearm can dislocate the elbow (nursemaid's elbow). Hold at the wrist or upper arm, never yank upward.</div>
+        </div>
+        <div class="highlight-box hb-warn slide-in-r anim-delay-2">
+          <div class="hb-icon">⚠️</div>
+          <div class="hb-text">Never lift a child by their hands, wrists or under their arms if they are twisting or pulling away. The injury risk — to you and the child — is high.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4-3: Distress & Resistance -->
+    <div class="slide sl-two" data-lesson="4" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 4 · Resisting Children</div>
+        <div class="slide-h2 slide-in anim-delay-1">What to do when a child resists being lifted</div>
+        <div class="slide-p slide-in anim-delay-2">A distressed, resisting child is one of the highest-risk lifting situations. Forcing a lift can injure both you and the child.</div>
+        <div class="steps">
+          <div class="step visible"><div class="step-num">1</div><div class="step-body"><div class="step-title">Pause — do not force the lift</div><div class="step-desc">Take a breath. A child actively resisting adds significant unpredictable force.</div></div></div>
+          <div class="step visible"><div class="step-num">2</div><div class="step-body"><div class="step-title">Communicate and distract</div><div class="step-desc">Use a toy, song or familiar routine to calm and engage before trying again.</div></div></div>
+          <div class="step visible"><div class="step-num">3</div><div class="step-body"><div class="step-title">Consider: is the lift necessary?</div><div class="step-desc">Can the child walk? Can you guide them safely without lifting? Choose the lowest-risk option.</div></div></div>
+          <div class="step visible"><div class="step-num">4</div><div class="step-body"><div class="step-title">Call for a colleague if needed</div><div class="step-desc">Two practitioners can assist far more safely than one struggling alone.</div></div></div>
+          <div class="step visible"><div class="step-num">5</div><div class="step-body"><div class="step-title">Document if the situation was hazardous</div><div class="step-desc">Log in the accident/near-miss book. This helps identify patterns and improve practice.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🆘</div>
+          <div class="scene-title">When to Say No to a Lift</div>
+          <div class="scene-sub">There is no situation where completing a lift outweighs serious injury risk to you or the child. Pausing is always the right choice.</div>
+        </div>
+        <div class="highlight-box hb-good slide-in-r anim-delay-2">
+          <div class="hb-icon">✅</div>
+          <div class="hb-text">Saying "I need help with this lift" is a sign of professionalism, not weakness. It protects children, colleagues, and yourself.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4-4: Knowledge Check -->
+    <div class="slide" data-lesson="4" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 4</div>
+        <div class="kc-q slide-in anim-delay-1">A toddler is actively resisting being lifted and beginning to arch their back. What should you do first?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-4">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Forcing a lift on a resisting child significantly increases injury risk for both the child and yourself.')"><div class="kc-letter">A</div>Complete the lift quickly before they resist further</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Calling for help may be needed, but the first step is to pause and stop the unsafe lift attempt.')"><div class="kc-letter">B</div>Immediately call for a colleague</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',true,'Correct! Pause and do not force the lift. Then communicate with the child and consider if the lift is necessary before trying again.')"><div class="kc-letter">C</div>Pause, do not force the lift, then communicate to calm the child</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Documenting comes later. The immediate priority is stopping the unsafe situation.')"><div class="kc-letter">D</div>Log it in the accident book and try again later</div>
+        </div>
+        <div id="kc-4-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 5 — MOVING EQUIPMENT
+    ══════════════════════════════════ -->
+
+    <!-- Slide 5-1: Title -->
+    <div class="slide sl-title" data-lesson="5" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 5 of 6</div>
+      <div class="big-icon">🪑</div>
+      <h1>Moving Nursery Equipment</h1>
+      <p class="lesson-intro">Cots, pushchairs, sensory equipment and furniture are a significant source of handling injuries. Learn how to move them safely.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 4 slides</span>
+        <span class="t-pill">⏱ ~5 minutes</span>
+        <span class="t-pill">✅ 1 knowledge check</span>
+      </div>
+    </div>
+
+    <!-- Slide 5-2: Equipment Rules -->
+    <div class="slide sl-two" data-lesson="5" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 5 · Equipment Handling</div>
+        <div class="slide-h2 slide-in anim-delay-1">Key rules for moving nursery equipment safely</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-1"><div class="b-icon bi-teal">👀</div><div><strong>Always check the path first</strong> — ensure the route is clear of children, wet floors, and obstacles before moving any equipment</div></div>
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-amber">⚖️</div><div><strong>Know the weight before you lift</strong> — cots empty may be 20kg+; sensory equipment and storage units can exceed safe solo lift thresholds</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-coral">👫</div><div><strong>Two-person lifts for heavy items</strong> — never attempt to move a laden cot, heavy storage unit, or large sensory equipment alone</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-sage">🛞</div><div><strong>Use wheels and handles when available</strong> — push rather than carry where possible. Pushing uses far less spinal force than lifting</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-white">🔧</div><div><strong>Report faulty or missing wheels/handles</strong> — a broken castor on a cot forces unsafe manual lifting. Report immediately and label as out of use</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🛏️</div>
+          <div class="scene-title">The Empty Cot Problem</div>
+          <div class="scene-sub">An empty nursery cot can weigh up to 25kg and is awkward to grip. Always use two people — one at each end — and communicate throughout the move.</div>
+        </div>
+        <div class="stat-row slide-in-r anim-delay-2">
+          <div class="stat-box"><div class="s-num">25kg</div><div class="s-lbl">Typical cot weight</div></div>
+          <div class="stat-box"><div class="s-num">2×</div><div class="s-lbl">Always two people for cot moves</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5-3: Pushchair & Pram Handling -->
+    <div class="slide sl-two" data-lesson="5" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 5 · Pushchairs & Prams</div>
+        <div class="slide-h2 slide-in anim-delay-1">Pushchairs and prams — a daily handling risk</div>
+        <div class="slide-p slide-in anim-delay-2">Loaded pushchairs, especially twin buggies, are among the heaviest items moved daily in nurseries. Steps, ramps, and tight spaces increase risk significantly.</div>
+        <div class="do-dont slide-in anim-delay-3">
+          <div class="dd-card dd-do">
+            <div class="dd-header"><span class="dd-badge">✓ Safe Practice</span></div>
+            <div class="dd-items">
+              <div class="dd-item">✅ Tilt back, not lift, for kerbs</div>
+              <div class="dd-item">✅ Use ramps wherever available</div>
+              <div class="dd-item">✅ Get help for steps with passengers</div>
+              <div class="dd-item">✅ Adjust handle height to your waist</div>
+              <div class="dd-item">✅ Communicate when moving in pairs</div>
+            </div>
+          </div>
+          <div class="dd-card dd-dont">
+            <div class="dd-header"><span class="dd-badge">✗ Avoid</span></div>
+            <div class="dd-items">
+              <div class="dd-item">❌ Carrying a loaded pushchair</div>
+              <div class="dd-item">❌ Pushing with a bent-forward posture</div>
+              <div class="dd-item">❌ One-handed steering of heavy buggies</div>
+              <div class="dd-item">❌ Moving loaded prams up steps alone</div>
+              <div class="dd-item">❌ Using a pushchair as a storage trolley</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon">🚼</div>
+          <div class="scene-title">Handle Height Matters</div>
+          <div class="scene-sub">Pushing a pram with handles too low causes you to lean forward and round your back — multiplying spinal strain with every push. Always adjust handles to your waist height.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5-4: Knowledge Check -->
+    <div class="slide" data-lesson="5" data-slide="3" style="align-items:center;justify-content:center;">
+      <div class="kc-wrap">
+        <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 5</div>
+        <div class="kc-q slide-in anim-delay-1">A colleague asks you to help move a full cot to another room. What is the safest approach?</div>
+        <div class="kc-opts slide-in anim-delay-2" id="kc-5">
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'Even with correct technique, a full cot (mattress, bedding, possibly 25kg+) is too heavy and awkward for one person to move safely.')"><div class="kc-letter">A</div>Move it alone using correct lifting technique</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'This is incorrect. Children should never be inside a cot while it is being moved.')"><div class="kc-letter">B</div>Move it with the child still inside to save time</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',true,'Correct! Remove contents to reduce weight, then two people move it together — one at each end — communicating throughout.')"><div class="kc-letter">C</div>Remove contents, then move as a two-person lift with communication</div>
+          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'Dragging risks floor damage and uncontrolled movement. Always carry using correct two-person technique.')"><div class="kc-letter">D</div>Drag it across the floor to avoid lifting</div>
+        </div>
+        <div id="kc-5-feedback" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LESSON 6 — PREVENTING STAFF INJURY
+    ══════════════════════════════════ -->
+
+    <!-- Slide 6-1: Title -->
+    <div class="slide sl-title" data-lesson="6" data-slide="0">
+      <div class="lesson-badge"><div class="lb-dot"></div>Lesson 6 of 6</div>
+      <div class="big-icon">🛡️</div>
+      <h1>Preventing Staff Injury</h1>
+      <p class="lesson-intro">The final lesson — putting it all together and ensuring you have the knowledge to protect yourself, your colleagues, and the children in your care every single day.</p>
+      <div class="title-pills">
+        <span class="t-pill">📽 5 slides</span>
+        <span class="t-pill">⏱ ~6 minutes</span>
+        <span class="t-pill">🏆 Module complete</span>
+      </div>
+    </div>
+
+    <!-- Slide 6-2: The Long Game -->
+    <div class="slide sl-two" data-lesson="6" data-slide="1">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 6 · Long-Term Health</div>
+        <div class="slide-h2 slide-in anim-delay-1">Protecting your body is a long-term commitment</div>
+        <div class="slide-p slide-in anim-delay-2">Most serious handling injuries are not caused by a single dramatic event — they are the result of repeated small stresses building up over months and years.</div>
+        <div class="bullet-list">
+          <div class="bullet light-c slide-in anim-delay-2"><div class="b-icon bi-teal">🔁</div><div><strong>Every lift counts</strong> — cumulative strain from incorrect technique affects spinal discs gradually. The damage accumulates long before pain appears</div></div>
+          <div class="bullet light-c slide-in anim-delay-3"><div class="b-icon bi-amber">🏋️</div><div><strong>Core strength helps</strong> — simple core exercises (recommended by physiotherapists) can significantly reduce your injury risk over time</div></div>
+          <div class="bullet light-c slide-in anim-delay-4"><div class="b-icon bi-coral">🧘</div><div><strong>Stretch and recover</strong> — end-of-shift back stretches take 5 minutes and dramatically reduce next-day stiffness and long-term injury risk</div></div>
+          <div class="bullet light-c slide-in anim-delay-5"><div class="b-icon bi-sage">🩺</div><div><strong>Report early warning signs</strong> — stiffness, aching and mild pain are your body's early warning system. Do not ignore them or they will become serious</div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="scene-card slide-in-r" style="flex:1;">
+          <div class="scene-big-icon" style="animation:pulse 2.5s ease-in-out infinite;">💚</div>
+          <div class="scene-title">Your Career, Your Health</div>
+          <div class="scene-sub">Practitioners who follow correct technique and take care of their bodies work comfortably in childcare for decades. Those who don't often leave the profession early due to injury.</div>
+        </div>
+        <div class="highlight-box hb-good slide-in-r anim-delay-2">
+          <div class="hb-icon">✅</div>
+          <div class="hb-text">You are the most important piece of equipment in this nursery. Protecting yourself is not optional — it is your professional responsibility.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6-3: Reporting -->
+    <div class="slide sl-two" data-lesson="6" data-slide="2">
+      <div class="content-col">
+        <div class="lesson-badge slide-in"><div class="lb-dot"></div>Lesson 6 · Reporting</div>
+        <div class="slide-h2 slide-in anim-delay-1">When and how to report pain or incidents</div>
+        <div class="slide-p slide-in anim-delay-2">At Early Explorers, all staff have a responsibility to report handling incidents, near-misses and pain. This is not about blame — it is about improving safety for everyone.</div>
+        <div class="steps">
+          <div class="step visible"><div class="step-num">1</div><div class="step-body"><div class="step-title">Report any pain immediately to your manager</div><div class="step-desc">Do not wait until the end of the shift. Early reporting allows early intervention and prevents minor issues becoming serious.</div></div></div>
+          <div class="step visible"><div class="step-num">2</div><div class="step-body"><div class="step-title">Record in the accident/incident book</div><div class="step-desc">Date, time, what happened, what you were lifting, and any witnesses. Be factual and specific.</div></div></div>
+          <div class="step visible"><div class="step-num">3</div><div class="step-body"><div class="step-title">Report near-misses too</div><div class="step-desc">A near-miss today is an accident waiting to happen. Reporting them helps prevent future injury.</div></div></div>
+          <div class="step visible"><div class="step-num">4</div><div class="step-body"><div class="step-title">Follow any adjusted duties advice</div><div class="step-desc">If advised to avoid lifting after an injury, follow that advice fully — returning too early extends recovery time significantly.</div></div></div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <div class="content-card teal-card slide-in-r">
+          <div class="card-label dark-l">RIDDOR</div>
+          <div class="slide-h3">Certain manual handling injuries must be reported to the HSE under RIDDOR.</div>
+          <div class="slide-p" style="margin-top:8px;">Your manager will handle this. Your role is to report promptly and accurately so they can do so.</div>
+        </div>
+        <div class="scene-card slide-in-r anim-delay-2" style="flex:1;">
+          <div class="scene-big-icon">📋</div>
+          <div class="scene-title">Document Everything</div>
+          <div class="scene-sub">A well-documented accident book protects you, protects Early Explorers, and builds the evidence base for improving safety across the setting.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6-4: Module Summary -->
+    <div class="slide sl-summary" data-lesson="6" data-slide="3">
+      <div class="summary-icon">🌿</div>
+      <h2 class="summary-h">Module Complete — Key Takeaways</h2>
+      <p class="summary-p">You've completed all 6 lessons of Safe Moving & Handling in Early Years. Here are the 6 principles to carry into your practice every day.</p>
+      <div class="summary-keys">
+        <div class="sk-card"><div class="sk-icon">🧩</div><div class="sk-title">Use TILE</div><div class="sk-sub">Assess every lift before you do it</div></div>
+        <div class="sk-card"><div class="sk-icon">🦵</div><div class="sk-title">Lift with your legs</div><div class="sk-sub">Knees bend, back stays straight</div></div>
+        <div class="sk-card"><div class="sk-icon">🗣️</div><div class="sk-title">Communicate first</div><div class="sk-sub">Always warn children before lifting</div></div>
+        <div class="sk-card"><div class="sk-icon">🤝</div><div class="sk-title">Ask for help</div><div class="sk-sub">Two people is always safer than one</div></div>
+        <div class="sk-card"><div class="sk-icon">🔔</div><div class="sk-title">Report pain early</div><div class="sk-sub">Never ignore discomfort or push through</div></div>
+        <div class="sk-card"><div class="sk-icon">🔁</div><div class="sk-title">Every lift matters</div><div class="sk-sub">Good technique every time protects your career</div></div>
+      </div>
+    </div>
+
+    <!-- Slide 6-5: Ready for Quiz -->
+    <div class="slide sl-title" data-lesson="6" data-slide="4">
+      <div class="big-icon" style="animation:pulse 2s ease-in-out infinite;">🏆</div>
+      <h1>Ready for Your Assessment?</h1>
+      <p class="lesson-intro">You've completed all 6 lessons. You're now ready to take the 10-question module assessment. You need 80% or above to receive your certificate.</p>
+      <div class="title-pills">
+        <span class="t-pill">❓ 10 questions</span>
+        <span class="t-pill">🎯 80% to pass</span>
+        <span class="t-pill">🏆 Certificate on completion</span>
+      </div>
+      <div style="margin-top:28px;animation:slideUp 0.5s ease 0.6s both;">
+        <button class="btn-nav btn-next-main" style="padding:15px 36px;font-size:15px;" onclick="returnToLMSForQuiz()">Return to LMS for Quiz →</button>
+      </div>
+    </div>
+
+  </main><!-- /stage -->
+
+  <!-- BOTTOM BAR -->
+  <footer class="bottombar">
+    <div class="bb-left">
+      <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>← Previous</button>
+    </div>
+    <div class="bb-center" id="slide-indicator">Lesson 1 · Slide 1 of 5</div>
+    <div class="bb-right">
+      <button class="btn-nav btn-next-main" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </footer>
+
+</div><!-- /shell -->
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const lessons = [
+  { title:"Why Manual Handling Matters",  slides:5 },
+  { title:"Safe Lifting Technique",        slides:5 },
+  { title:"Lifting Babies & Toddlers",     slides:5 },
+  { title:"Supporting Children Safely",    slides:4 },
+  { title:"Moving Nursery Equipment",      slides:4 },
+  { title:"Preventing Staff Injury",       slides:5 },
+];
+
+let currentIndex = 0; // global slide index
+let answered = {};
+
+// Build flat slide list
+const allSlides = Array.from(document.querySelectorAll('.slide'));
+const totalSlides = allSlides.length;
+
+/* ═══════════════════════════════════════
+   PROGRESS DOTS
+═══════════════════════════════════════ */
+function buildDots() {
+  const track = document.getElementById('prog-track');
+  lessons.forEach((l, i) => {
+    const d = document.createElement('div');
+    d.className = 'pdot';
+    d.dataset.lesson = i;
+    const tip = document.createElement('div');
+    tip.className = 'pdot-tip';
+    tip.textContent = `Lesson ${i+1}: ${l.title}`;
+    d.appendChild(tip);
+    d.onclick = () => jumpToLesson(i);
+    track.appendChild(d);
+  });
+  updateDots();
+}
+
+function updateDots() {
+  const slide = allSlides[currentIndex];
+  const lessonNum = parseInt(slide.dataset.lesson) - 1;
+  document.querySelectorAll('.pdot').forEach((d, i) => {
+    d.classList.remove('active','done');
+    if (i < lessonNum) d.classList.add('done');
+    else if (i === lessonNum) d.classList.add('active');
+  });
+}
+
+function jumpToLesson(lessonIdx) {
+  // find first slide of that lesson
+  const target = allSlides.findIndex(s => parseInt(s.dataset.lesson) - 1 === lessonIdx);
+  if (target >= 0) goTo(target);
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function goTo(idx, direction = 1) {
+  if (idx < 0 || idx >= totalSlides) return;
+
+  const outSlide = allSlides[currentIndex];
+  const inSlide  = allSlides[idx];
+
+  // Exit animation
+  outSlide.classList.remove('active');
+  outSlide.classList.add('exit');
+
+  // Remove exit class after animation
+  setTimeout(() => {
+    outSlide.classList.remove('exit');
+    // Reset incoming slide position
+    inSlide.style.transform = direction > 0 ? 'translateX(60px)' : 'translateX(-60px)';
+  }, 50);
+
+  currentIndex = idx;
+  inSlide.classList.add('active');
+
+  // Animate steps in the new slide
+  setTimeout(() => {
+    inSlide.querySelectorAll('.step').forEach((s, i) => {
+      setTimeout(() => s.classList.add('visible'), i * 120);
+    });
+  }, 100);
+
+  updateUI();
+  
+  // Track lesson progress
+  if (typeof trackLessonComplete === "function") {
+    const lessonSlides = allSlides.filter(s => s.dataset.lesson && s.dataset.slide === "0");
+    const currentLesson = inSlide.dataset.lesson;
+    if (currentLesson && inSlide.dataset.slide === "0") {
+      trackLessonComplete(parseInt(currentLesson), lessonSlides.length).catch(e => console.error("Track error:", e));
+    }
+  }
+}
+
+function navigate(dir) {
+  goTo(currentIndex + dir, dir);
+}
+
+function updateUI() {
+  const slide     = allSlides[currentIndex];
+  const lessonNum = parseInt(slide.dataset.lesson);
+  const slideNum  = parseInt(slide.dataset.slide);
+  const lesson    = lessons[lessonNum - 1];
+
+  // Count slides in this lesson
+  const lessonSlides = allSlides.filter(s => parseInt(s.dataset.lesson) === lessonNum);
+  const slideInLesson = slideNum + 1;
+
+  document.getElementById('lesson-count').textContent = `Lesson ${lessonNum} of 6`;
+  document.getElementById('slide-indicator').textContent = `Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+
+  const nextBtn = document.getElementById('btn-next');
+  if (currentIndex === totalSlides - 1) {
+    nextBtn.textContent = 'Start Quiz →';
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.textContent = 'Next →';
+    nextBtn.disabled = false;
+  }
+
+  updateDots();
+
+  // Timer hint based on lesson
+  const timeMap = [35, 29, 23, 17, 11, 5];
+  document.getElementById('timer').textContent = `${timeMap[lessonNum-1]}:00`;
+}
+
+/* ═══════════════════════════════════════
+   KNOWLEDGE CHECKS
+═══════════════════════════════════════ */
+function checkAnswer(el, kcId, isCorrect, feedbackText) {
+  if (answered[kcId]) return;
+  answered[kcId] = true;
+
+  const container = document.getElementById(kcId);
+  container.querySelectorAll('.kc-opt').forEach(opt => {
+    opt.classList.add('locked');
+  });
+
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    // Highlight correct one
+    container.querySelectorAll('.kc-opt').forEach(opt => {
+      if (opt.getAttribute('onclick').includes('true')) {
+        opt.classList.add('correct');
+      }
+    });
+  }
+
+  const fb = document.getElementById(kcId + '-feedback');
+  fb.style.display = 'flex';
+  fb.innerHTML = `
+    <div class="kc-feedback ${isCorrect ? 'kc-pass' : 'kc-fail'}">
+      <span>${isCorrect ? '✅' : '❌'}</span>
+      <span>${feedbackText}</span>
+    </div>
+  `;
+
+  // Auto-enable next after answer
+  setTimeout(() => {
+    document.getElementById('btn-next').disabled = false;
+  }, 600);
+}
+
+/* ═══════════════════════════════════════
+   KEYBOARD NAVIGATION
+═══════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+});
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+buildDots();
+updateUI();
+
+// Animate first slide steps
+setTimeout(() => {
+  allSlides[0].querySelectorAll('.step').forEach((s, i) => {
+    setTimeout(() => s.classList.add('visible'), i * 120);
+  });
+}, 300);
+
+function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
+</script>
+
+<script>
+  // MUST be set before any tracking/quiz scripts run
+  window.MODULE_CODE = "MH-01";
+
+  // Override returnToLMSForQuiz to work whether this module is opened as a popup or same tab
+  window.returnToLMSForQuiz = function(){
+    try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'MH-01'); }catch(e){}
+    if(window.opener && !window.opener.closed){
+      try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'MH-01'); }catch(e){}
+      try{ window.close(); }catch(e){}
+    }else{
+      try{ window.location.href = '../index.html'; }catch(e){ alert('Please return to the main LMS window and click Take Quiz.'); }
+    }
+  };
+</script>
+
+<!-- Supabase + LMS scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/ee-api.js"></script>
+<script src="../js/progress-tracking.js"></script>
+<script src="../js/complete-quiz-system.js"></script>
+
+</body>
+</html>
