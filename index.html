@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EE Portal v2.9 - Forms iframe absolute URL fix - 05 Mar 2026 -->
+<!-- EE Portal v3.2 - Inlined JS, forgot password, inline login error - 17 Mar 2026 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -394,12 +394,12 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
     <p class="login-p">Sign in to your staff training portal</p>
     <div class="form-group">
       <label class="form-label">Email address</label>
-      <input id="l-email" type="email" class="form-input" placeholder="your.email@earlyexplorers.org">
+      <input id="l-email" type="email" class="form-input" placeholder="your.email@earlyexplorers.org" oninput="document.getElementById('login-error-msg').style.display='none'">
     </div>
     <div class="form-group">
       <label class="form-label">Password</label>
       <div style="position:relative;">
-        <input id="l-pass" type="password" class="form-input" placeholder="Enter your password" style="padding-right:45px;">
+        <input id="l-pass" type="password" class="form-input" placeholder="Enter your password" style="padding-right:45px;" oninput="document.getElementById('login-error-msg').style.display='none'">
         <button type="button" onclick="togglePassword()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;opacity:0.6;transition:opacity 0.2s;padding:5px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
           <span id="eye-icon">👁️</span>
         </button>
@@ -410,23 +410,8 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
       <label for="remember-me" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;user-select:none;">Remember my email</label>
     </div>
     <button class="btn-login" onclick="doLogin(this)">Sign In to Academy</button>
+    <div id="login-error-msg" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.3);border-radius:10px;color:#fca5a5;font-size:13px;font-weight:600;text-align:center;line-height:1.5;"></div>
     <div class="demo-hint" style="display:none;">🔐 Demo mode — credentials pre-filled. Click Sign In to explore the platform.</div>
-
-    <div style="text-align:center;margin-top:14px;">
-      <button type="button" onclick="showForgotPassword()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:'Nunito',sans-serif;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Forgot your password?</button>
-    </div>
-
-    <!-- Forgot Password Panel -->
-    <div id="forgot-panel" style="display:none;margin-top:16px;background:rgba(255,255,255,0.12);border-radius:12px;padding:18px;backdrop-filter:blur(8px);">
-      <p style="color:#fff;font-size:13px;font-weight:700;margin:0 0 10px;">🔑 Reset your password</p>
-      <p style="color:rgba(255,255,255,0.75);font-size:12px;margin:0 0 12px;">Enter your email address and we'll send you a link to reset your password.</p>
-      <input id="reset-email" type="email" class="form-input" placeholder="your.email@earlyexplorers.org" style="margin-bottom:10px;">
-      <div style="display:flex;gap:8px;">
-        <button onclick="sendPasswordReset(this)" style="flex:1;padding:11px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Send Reset Link</button>
-        <button onclick="hideForgotPassword()" style="padding:11px 14px;background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
-      </div>
-      <div id="reset-msg" style="margin-top:10px;font-size:12px;font-weight:700;text-align:center;"></div>
-    </div>
 
   </div>
 </div>
@@ -1190,7 +1175,11 @@ async function doLogin(btn) {
     
   } catch (error) {
     console.error('Login failed:', error);
-    alert('Login failed: ' + (error.message || 'Please check your email and password'));
+    const errMsg = document.getElementById('login-error-msg');
+    if (errMsg) {
+      errMsg.style.display = 'block';
+      errMsg.innerHTML = '❌ Incorrect email or password.<br><span style="font-weight:400;opacity:0.85;">Forgotten it? <a href="#" onclick="showForgotPassword();return false;" style="color:#7dd3fc;text-decoration:underline;font-weight:700;">Reset your password</a></span>';
+    }
     btn.textContent = 'Sign In to Academy';
     btn.style.opacity = '1';
     btn.disabled = false;
@@ -1583,60 +1572,6 @@ async function doLogout() {
 }
 
 // Toggle password visibility
-function showForgotPassword() {
-  const panel = document.getElementById('forgot-panel');
-  panel.style.display = 'block';
-  const email = document.getElementById('l-email').value;
-  if (email) document.getElementById('reset-email').value = email;
-  document.getElementById('reset-msg').innerHTML = '';
-}
-
-function hideForgotPassword() {
-  document.getElementById('forgot-panel').style.display = 'none';
-  document.getElementById('reset-email').value = '';
-  document.getElementById('reset-msg').innerHTML = '';
-}
-
-async function sendPasswordReset(btn) {
-  const email = document.getElementById('reset-email').value.trim();
-  const msg = document.getElementById('reset-msg');
-
-  if (!email) {
-    msg.innerHTML = '<span style="color:#ffcccc;">Please enter your email address.</span>';
-    return;
-  }
-
-  if (!window.supabaseClient) {
-    msg.innerHTML = '<span style="color:#ffcccc;">System not ready. Please refresh and try again.</span>';
-    return;
-  }
-
-  btn.textContent = 'Sending…';
-  btn.disabled = true;
-
-  try {
-    const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://portal.earlyexplorersnursery.org'
-    });
-
-    if (error) throw error;
-
-    msg.innerHTML = '<span style="color:#b8f0b8;">✅ Reset link sent! Check your email inbox (and spam folder).</span>';
-    btn.textContent = 'Sent!';
-    setTimeout(() => {
-      hideForgotPassword();
-      btn.textContent = 'Send Reset Link';
-      btn.disabled = false;
-    }, 4000);
-
-  } catch(e) {
-    console.error('Password reset error:', e);
-    msg.innerHTML = '<span style="color:#ffcccc;">Error: ' + (e.message || 'Could not send reset email.') + '</span>';
-    btn.textContent = 'Send Reset Link';
-    btn.disabled = false;
-  }
-}
-
 function togglePassword() {
   const passInput = document.getElementById('l-pass');
   const eyeIcon = document.getElementById('eye-icon');
