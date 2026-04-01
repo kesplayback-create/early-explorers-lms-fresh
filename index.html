@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EE Portal v3.6 - Forgot password label and instructions - 18 Mar 2026 -->
+<!-- EE Portal v3.7 - Password recovery handler added - 18 Mar 2026 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -3499,6 +3499,121 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('remember-me').checked = true;
   }
 });
+</script>
+
+<!-- ══ SET NEW PASSWORD MODAL (shown after clicking reset email link) ══ -->
+<div id="set-password-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center;">
+  <div style="background:#1e293b;border-radius:16px;padding:36px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">🔐</div>
+      <h3 style="color:#fff;font-size:22px;font-weight:800;margin:0 0 6px;">Set New Password</h3>
+      <p style="color:rgba(255,255,255,0.55);font-size:14px;margin:0;">Choose a new password for your account</p>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;color:rgba(255,255,255,0.8);font-size:13px;font-weight:700;margin-bottom:6px;">New Password</label>
+      <input id="new-password" type="password" placeholder="Enter new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;color:rgba(255,255,255,0.8);font-size:13px;font-weight:700;margin-bottom:6px;">Confirm New Password</label>
+      <input id="confirm-password" type="password" placeholder="Confirm new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
+    </div>
+    <div id="set-password-msg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
+    <button id="set-password-btn" onclick="submitNewPassword(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#3aafa9,#2a9d8f);border:none;border-radius:8px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(58,175,169,0.4);">Update Password</button>
+  </div>
+</div>
+
+<script>
+// ══ PASSWORD RECOVERY HANDLER ══
+// Runs on page load — detects Supabase reset token in URL hash or query params
+(async function handlePasswordRecovery() {
+  // Wait for supabase to be ready
+  let attempts = 0;
+  while (!window.supabaseClient && attempts < 50) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+  if (!window.supabaseClient) return;
+
+  // Listen for PASSWORD_RECOVERY auth event
+  window.supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      showSetPasswordModal();
+    }
+  });
+
+  // Also check URL hash directly (for cases where event fires before listener is set)
+  const hash = window.location.hash;
+  const params = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(hash.replace('#', ''));
+
+  const type = hashParams.get('type') || params.get('type');
+  const accessToken = hashParams.get('access_token') || params.get('access_token');
+
+  if (type === 'recovery' && accessToken) {
+    // Set the session from the token in the URL
+    try {
+      const { error } = await window.supabaseClient.auth.setSession({
+        access_token: accessToken,
+        refresh_token: hashParams.get('refresh_token') || params.get('refresh_token') || ''
+      });
+      if (!error) showSetPasswordModal();
+    } catch(e) {
+      console.log('Recovery token handling:', e);
+    }
+  }
+})();
+
+function showSetPasswordModal() {
+  const modal = document.getElementById('set-password-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    // Clear URL hash so token isn't visible
+    window.history.replaceState(null, '', window.location.pathname);
+  }
+}
+
+async function submitNewPassword(btn) {
+  const newPass = document.getElementById('new-password').value;
+  const confirmPass = document.getElementById('confirm-password').value;
+  const msgEl = document.getElementById('set-password-msg');
+
+  // Validation
+  if (!newPass || newPass.length < 6) {
+    msgEl.style.cssText = 'display:block;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);';
+    msgEl.textContent = '⚠️ Password must be at least 6 characters.';
+    return;
+  }
+  if (newPass !== confirmPass) {
+    msgEl.style.cssText = 'display:block;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);';
+    msgEl.textContent = '⚠️ Passwords do not match.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Updating...';
+  msgEl.style.display = 'none';
+
+  try {
+    const { error } = await window.supabaseClient.auth.updateUser({ password: newPass });
+    if (error) throw error;
+
+    msgEl.style.cssText = 'display:block;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;background:rgba(58,175,169,0.15);color:#6ee7e4;border:1px solid rgba(58,175,169,0.3);';
+    msgEl.textContent = '✅ Password updated! You can now log in with your new password.';
+    btn.textContent = '✓ Done';
+
+    // Close modal and go to login after 2 seconds
+    setTimeout(() => {
+      document.getElementById('set-password-modal').style.display = 'none';
+      window.supabaseClient.auth.signOut();
+    }, 2500);
+
+  } catch(err) {
+    msgEl.style.cssText = 'display:block;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);';
+    msgEl.textContent = '❌ ' + (err.message || 'Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Update Password';
+  }
+}
 </script>
 </body>
 </html>
