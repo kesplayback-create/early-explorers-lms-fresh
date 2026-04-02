@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EE Portal v3.8 - PKCE recovery flow fix - 18 Mar 2026 -->
+<!-- EE Portal v3.9 - Fix duplicate password field IDs in reset modal - 18 Mar 2026 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -3511,11 +3511,11 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
     <div style="margin-bottom:14px;">
       <label style="display:block;color:rgba(255,255,255,0.8);font-size:13px;font-weight:700;margin-bottom:6px;">New Password</label>
-      <input id="new-password" type="password" placeholder="Enter new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
+      <input id="reset-new-password" type="password" placeholder="Enter new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
     </div>
     <div style="margin-bottom:20px;">
       <label style="display:block;color:rgba(255,255,255,0.8);font-size:13px;font-weight:700;margin-bottom:6px;">Confirm New Password</label>
-      <input id="confirm-password" type="password" placeholder="Confirm new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
+      <input id="reset-confirm-password" type="password" placeholder="Confirm new password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;box-sizing:border-box;outline:none;">
     </div>
     <div id="set-password-msg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
     <button id="set-password-btn" onclick="submitNewPassword(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#3aafa9,#2a9d8f);border:none;border-radius:8px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(58,175,169,0.4);">Update Password</button>
@@ -3595,8 +3595,8 @@ function showSetPasswordModal() {
 }
 
 async function submitNewPassword(btn) {
-  const newPass = document.getElementById('new-password').value;
-  const confirmPass = document.getElementById('confirm-password').value;
+  const newPass = document.getElementById('reset-new-password').value;
+  const confirmPass = document.getElementById('reset-confirm-password').value;
   const msgEl = document.getElementById('set-password-msg');
 
   // Validation
