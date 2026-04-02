@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EE Portal v3.9 - Fix duplicate password field IDs in reset modal - 18 Mar 2026 -->
+<!-- EE Portal v4.1 - Training tab cert lock + duplicate cert prevention -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1247,6 +1247,7 @@ async function doLogin(btn) {
     
     // Load dashboard data
     await loadDashboardData();
+    await applyTrainingLocks();
     
   } catch (error) {
     console.error('Login failed:', error);
@@ -1416,6 +1417,38 @@ async function loadDashboardData() {
           else lastSpan.textContent = `📈 ${pct}%`;
         }
       }
+
+      // ── CERTIFICATE LOCK: disable View Module button for 12 months after cert issued ──
+      const viewBtn = card.querySelector('button.btn-teal');
+      if (viewBtn) {
+        // Find cert for this module
+        const moduleForCard = (modules || []).find(m => String(m.code) === String(code));
+        const certForModule = moduleForCard
+          ? (certificates || []).find(c => c.module_id === moduleForCard.id)
+          : null;
+
+        if (certForModule && certForModule.issued_date) {
+          const certDate = new Date(certForModule.issued_date);
+          const renewalDate = new Date(certDate);
+          renewalDate.setFullYear(renewalDate.getFullYear() + 1);
+          const now = new Date();
+          const daysUntilRenewal = Math.ceil((renewalDate - now) / (1000 * 60 * 60 * 24));
+
+          if (now < renewalDate) {
+            // Still locked — disable button and show renewal date
+            viewBtn.disabled = true;
+            viewBtn.onclick = null;
+            viewBtn.style.cssText = 'padding:8px 16px;font-size:13px;background:rgba(0,0,0,0.08);color:#999;border:1.5px solid #ddd;cursor:not-allowed;border-radius:8px;font-weight:700;';
+            const renewStr = renewalDate.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            viewBtn.textContent = `🔒 Available ${renewStr}`;
+            viewBtn.title = `Certificate earned ${certDate.toLocaleDateString('en-GB')}. Renewal available ${renewStr}.`;
+          } else {
+            // Renewal due — unlock and prompt refresh
+            viewBtn.style.cssText = 'padding:8px 16px;font-size:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;';
+            viewBtn.textContent = '🔄 Renewal Due';
+          }
+        }
+      }
     });
 
     // --- Dashboard refresh alert banner ---
@@ -1570,7 +1603,90 @@ async function loadDashboardPolicyProgress(userId) {
 }
 function selectRole(el,r){document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');cRole=r;const b=document.getElementById('btn-cont');b.disabled=false;const l={unqualified:'New / Unqualified',l23:'Level 2/3 Qualified',senior:'Senior / Room Leader'};b.textContent=`Continue as ${l[r]} →`;document.getElementById('sb-role').textContent=l[r];}
 function doContinue(){if(!cRole)return;showScreen('screen-app');showTab('dashboard',null);}
+
+// ══ CERTIFICATE LOCK: Lock module cards in My Training for 12 months after cert issued ══
+async function applyTrainingLocks() {
+  try {
+    const userId = localStorage.getItem('user_id');
+    if (!userId) return;
+
+    // Get all certs for this user
+    const { data: certs } = await window.supabaseClient
+      .from('certificates')
+      .select('module_id, issued_date, modules:module_id(code)')
+      .eq('user_id', userId)
+      .eq('is_valid', true);
+
+    if (!certs || certs.length === 0) return;
+
+    // Build map of module_code -> earliest cert date (in case of duplicates use latest)
+    const certMap = {};
+    certs.forEach(c => {
+      const code = c.modules?.code;
+      if (!code) return;
+      if (!certMap[code] || new Date(c.issued_date) > new Date(certMap[code])) {
+        certMap[code] = c.issued_date;
+      }
+    });
+
+    const now = new Date();
+
+    // Find all module cards with data-module-code
+    document.querySelectorAll('[data-module-code]').forEach(card => {
+      const code = card.getAttribute('data-module-code');
+      const issuedDate = certMap[code];
+      if (!issuedDate) return;
+
+      const certDate = new Date(issuedDate);
+      const renewalDate = new Date(certDate);
+      renewalDate.setFullYear(renewalDate.getFullYear() + 1);
+      const daysUntilRenewal = Math.ceil((renewalDate - now) / (1000 * 60 * 60 * 24));
+
+      if (now < renewalDate) {
+        // LOCKED — disable View Module and Take Quiz buttons
+        const renewStr = renewalDate.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+        
+        card.querySelectorAll('button').forEach(btn => {
+          if (btn.textContent.includes('View Module') || btn.textContent.includes('Take Quiz') || btn.textContent.includes('Retry Quiz')) {
+            btn.disabled = true;
+            btn.onclick = null;
+            btn.style.cssText = 'padding:8px 16px;font-size:13px;background:rgba(0,0,0,0.06);color:#aaa;border:1.5px solid #e5e7eb;cursor:not-allowed;border-radius:8px;font-weight:700;';
+            if (btn.textContent.includes('View Module')) {
+              btn.textContent = `🔒 Locked until ${renewStr}`;
+              btn.title = `Certificate earned ${certDate.toLocaleDateString('en-GB')}. Available for renewal ${renewStr}.`;
+            } else {
+              btn.textContent = `🔒 Locked`;
+              btn.title = `Quiz locked until ${renewStr}`;
+            }
+          }
+        });
+
+        // Add a renewal badge to the card
+        if (!card.querySelector('.renewal-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'renewal-badge';
+          badge.style.cssText = 'margin-top:8px;padding:6px 10px;background:#fef3c7;border:1px solid #fbbf24;border-radius:6px;font-size:11px;font-weight:700;color:#92400e;text-align:center;';
+          badge.textContent = `✅ Certified · Renewal due ${renewStr}`;
+          card.appendChild(badge);
+        }
+      } else {
+        // RENEWAL DUE — highlight as needing refresh
+        card.querySelectorAll('button').forEach(btn => {
+          if (btn.textContent.includes('View Module')) {
+            btn.style.cssText = 'padding:8px 16px;font-size:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;';
+            btn.textContent = '🔄 Renewal Due';
+          }
+        });
+      }
+    });
+
+  } catch(e) {
+    console.log('applyTrainingLocks error:', e);
+  }
+}
+
 function showTab(id,nav){
+  if (id === 'training') { setTimeout(applyTrainingLocks, 100); }
   document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
   const p=document.getElementById('tab-'+id);if(p)p.classList.add('active');
   const ttls={dashboard:'My Dashboard',courses:'My Training',certs:'My Certificates',compliance:'Compliance Report',staff:'Staff Overview',policies:'Policies & Documents',addstaff:'Add Staff',settings:'Account Settings'};
