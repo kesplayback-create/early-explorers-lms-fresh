@@ -365,11 +365,11 @@ if (typeof window.QUIZ_BANK === 'undefined') {
             {
               user_id: userId,
               module_id: moduleRow.id,
-              score: scorePercent,
+              score_percentage: scorePercent,
               passed,
-              attempt_number: 1, // DB can handle if you later want increment
+              attempt_number: 1,
               completed_at: new Date().toISOString(),
-              duration_minutes: durationMinutes,
+              time_taken_seconds: durationMinutes ? durationMinutes * 60 : null,
             },
           ]);
         if (error) throw error;
@@ -386,8 +386,6 @@ if (typeof window.QUIZ_BANK === 'undefined') {
           progress_percentage: passed ? 100 : 90,
           completed_at: passed ? nowIso : null,
           last_accessed_at: nowIso,
-          quiz_score: scorePercent,
-          quiz_passed: passed,
         };
         if (passed) {
           progressUpdates.last_completed_at = nowIso;
@@ -411,7 +409,6 @@ if (typeof window.QUIZ_BANK === 'undefined') {
             userId,
             moduleId: moduleRow.id,
             certificateNumber: certNumber,
-            score: scorePercent,
           });
         } catch (e) {
           console.warn('Certificate insert failed (may already exist):', e);
