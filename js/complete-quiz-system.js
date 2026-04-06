@@ -115,8 +115,8 @@ if (typeof window.QUIZ_BANK === 'undefined') {
         {question: "Confidentiality in early years settings has one key exception. Information must always be shared when:", options: ["A parent with parental responsibility formally requests it", "There is a safeguarding concern — child safety overrides confidentiality", "A trusted colleague with relevant experience asks for guidance", "Ofsted requests sight of a specific child's file during inspection"], correct: 1}
       ]
     },
-    'PV-01': {
-      moduleCode: 'PV-01',
+    'PD-01': {
+      moduleCode: 'PD-01',
       moduleName: 'Prevent Duty Awareness',
       passMark: 80,
       questions: [
