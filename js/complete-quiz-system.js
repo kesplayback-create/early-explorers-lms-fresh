@@ -366,6 +366,8 @@ if (typeof window.QUIZ_BANK === 'undefined') {
               user_id: userId,
               module_id: moduleRow.id,
               score_percentage: scorePercent,
+              questions_correct: correct,
+              questions_total: window.currentQuizQuestions.length,
               passed,
               attempt_number: 1,
               completed_at: new Date().toISOString(),
