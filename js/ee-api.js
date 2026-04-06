@@ -270,13 +270,12 @@ async function getUserCertificates(userId) {
   return data || [];
 }
 
-async function issueCertificate({ userId, moduleId, certificateNumber, score }) {
+async function issueCertificate({ userId, moduleId, certificateNumber }) {
   _ensureClient();
   const payload = {
     user_id: userId,
     module_id: moduleId,
     certificate_number: certificateNumber,
-    score,
     issued_date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
     is_valid: true,
   };
