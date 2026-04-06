@@ -56,9 +56,9 @@ body{font-family:'Nunito',sans-serif;background:var(--gdpr);color:var(--ink);hei
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* SLIDE SYSTEM */
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 
 /* TITLE CARD */
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(74,144,217,0.2) 0%,transparent 70%);}
@@ -317,10 +317,10 @@ body{font-family:'Nunito',sans-serif;background:var(--gdpr);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q slide-in anim-delay-1">A parent asks you to share another child's allergy information with them. What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Sharing one child\&#39;s data with another parent is a GDPR breach. Each family\&#39;s information is confidential.')"><div class="kc-letter">A</div>Share it — parents have a right to know about risks in the room</div>
-          <div class="kc-opt" data-feedback="Correct. Medical and allergy data is special category data. You must never share one child's personal data with another family." onclick="checkAnswer(this,'kc-1',true,this.dataset.feedback)"><div class="kc-letter">B</div>Decline politely and explain you cannot share other children's information</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Only sharing with the manager is still a breach if not necessary. The answer is to decline the request entirely.')"><div class="kc-letter">C</div>Tell the manager and let them decide</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Sharing is still a breach regardless of who requests it. Decline the request and explain confidentiality.')"><div class="kc-letter">D</div>Share it only if the parent seems genuinely concerned</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Sharing one child\&#39;s data with another parent is a GDPR breach. Each family\&#39;s information is confidential."><div class="kc-letter">A</div>Share it — parents have a right to know about risks in the room</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="true" data-feedback="Correct. Medical and allergy data is special category data. You must never share one child's personal data with another family."><div class="kc-letter">B</div>Decline politely and explain you cannot share other children's information</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Only sharing with the manager is still a breach if not necessary. The answer is to decline the request entirely."><div class="kc-letter">C</div>Tell the manager and let them decide</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Sharing is still a breach regardless of who requests it. Decline the request and explain confidentiality."><div class="kc-letter">D</div>Share it only if the parent seems genuinely concerned</div>
         </div>
         <div id="kc-1-feedback" style="display:none;"></div>
       </div>
@@ -427,10 +427,10 @@ body{font-family:'Nunito',sans-serif;background:var(--gdpr);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q slide-in anim-delay-1">You accidentally send a child's medical report to the wrong parent by email. What should you do first?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Waiting until the end of the day delays reporting. Data breaches must be reported immediately.')"><div class="kc-letter">A</div>Wait until the end of the day and mention it in handover</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Contacting the parent first without telling your manager is not the correct procedure. Report to your manager immediately.')"><div class="kc-letter">B</div>Email the wrong parent and ask them to delete it</div>
-          <div class="kc-opt" data-feedback="Correct. Report to your manager immediately. They will manage the breach process, contact the ICO if needed, and advise on next steps." onclick="checkAnswer(this,'kc-2',true,this.dataset.feedback)"><div class="kc-letter">C</div>Report to your manager immediately and follow the breach procedure</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Hoping no one notices is never acceptable. All breaches must be reported regardless of perceived impact.')"><div class="kc-letter">D</div>Hope the wrong parent does not read it and do nothing</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Waiting until the end of the day delays reporting. Data breaches must be reported immediately."><div class="kc-letter">A</div>Wait until the end of the day and mention it in handover</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Contacting the parent first without telling your manager is not the correct procedure. Report to your manager immediately."><div class="kc-letter">B</div>Email the wrong parent and ask them to delete it</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="true" data-feedback="Correct. Report to your manager immediately. They will manage the breach process, contact the ICO if needed, and advise on next steps."><div class="kc-letter">C</div>Report to your manager immediately and follow the breach procedure</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Hoping no one notices is never acceptable. All breaches must be reported regardless of perceived impact."><div class="kc-letter">D</div>Hope the wrong parent does not read it and do nothing</div>
         </div>
         <div id="kc-2-feedback" style="display:none;"></div>
       </div>
@@ -518,10 +518,10 @@ body{font-family:'Nunito',sans-serif;background:var(--gdpr);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q slide-in anim-delay-1">A colleague asks you about a child&#39;s family situation that you know from their confidential records. What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-3">
-          <div class="kc-opt" data-feedback="Correct. Share information only with those who need it for their role. Even colleagues have no automatic right to confidential family information." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">A</div>Only share if it is directly relevant to their role with that child</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Colleagues do not automatically have the right to all information. Only share on a need-to-know basis.')"><div class="kc-letter">B</div>Share it — they are a trusted colleague</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This avoids the issue but does not address the principle. The correct answer is to only share on a need-to-know basis.')"><div class="kc-letter">C</div>Change the subject without explaining why</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Sharing outside work is a serious breach. Confidentiality applies everywhere, not just in the setting.')"><div class="kc-letter">D</div>Tell them outside of work where it is more private</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="true" data-feedback="Correct. Share information only with those who need it for their role. Even colleagues have no automatic right to confidential family information."><div class="kc-letter">A</div>Only share if it is directly relevant to their role with that child</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Colleagues do not automatically have the right to all information. Only share on a need-to-know basis."><div class="kc-letter">B</div>Share it — they are a trusted colleague</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="This avoids the issue but does not address the principle. The correct answer is to only share on a need-to-know basis."><div class="kc-letter">C</div>Change the subject without explaining why</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Sharing outside work is a serious breach. Confidentiality applies everywhere, not just in the setting."><div class="kc-letter">D</div>Tell them outside of work where it is more private</div>
         </div>
         <div id="kc-3-feedback" style="display:none;"></div>
       </div>
@@ -691,7 +691,24 @@ setTimeout(()=>{
 <script>
   window.MODULE_CODE = "GDPR-01";
 
-  window.returnToLMSForQuiz = function(){
+  
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
+
+window.returnToLMSForQuiz = function(){
     try{ localStorage.setItem('ee_pending_quiz', window.MODULE_CODE || 'GDPR-01'); }catch(e){}
     if(window.opener && !window.opener.closed){
       try{ window.opener.focus(); window.opener.startQuiz && window.opener.startQuiz(window.MODULE_CODE || 'GDPR-01'); }catch(e){}

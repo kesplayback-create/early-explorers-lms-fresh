@@ -39,9 +39,9 @@ body{font-family:'Nunito',sans-serif;background:var(--blue);color:var(--ink);hei
 .btn-next-main{background:linear-gradient(135deg,#4169B0,#2E5090);color:#fff;box-shadow:0 4px 16px rgba(65,105,176,0.4);}
 .btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(65,105,176,0.5);}
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(168,197,240,0.15) 0%,transparent 70%);}
 .sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
 @keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
@@ -207,10 +207,10 @@ body{font-family:'Nunito',sans-serif;background:var(--blue);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q slide-in anim-delay-1">Where can you find Early Explorers' policies if you need to reference them?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Policies are internal documents for staff. They are not publicly available online.')"><div class="kc-letter">A</div>On the public Early Explorers website</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! Policies are in the staff room folder and on the shared drive for easy reference.')"><div class="kc-letter">B</div>In the staff room folder and on the shared drive</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'You should not need to ask the manager every time. Policies are accessible in the staff room and on the shared drive.')"><div class="kc-letter">C</div>By asking the manager each time you need one</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Policies are kept internally. Parents can request certain policies but staff access them in the staff room.')"><div class="kc-letter">D</div>In the parent notice board</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Policies are internal documents for staff. They are not publicly available online."><div class="kc-letter">A</div>On the public Early Explorers website</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="true" data-feedback="Correct! Policies are in the staff room folder and on the shared drive for easy reference."><div class="kc-letter">B</div>In the staff room folder and on the shared drive</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="You should not need to ask the manager every time. Policies are accessible in the staff room and on the shared drive."><div class="kc-letter">C</div>By asking the manager each time you need one</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Policies are kept internally. Parents can request certain policies but staff access them in the staff room."><div class="kc-letter">D</div>In the parent notice board</div>
         </div>
         <div id="kc-1-feedback" style="display:none;"></div>
       </div>
@@ -247,10 +247,10 @@ body{font-family:'Nunito',sans-serif;background:var(--blue);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q slide-in anim-delay-1">A parent's friend arrives to collect their child, but they are not on the authorized pick-up list. What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Never release a child to someone not on the authorized list, even if the child knows them.')"><div class="kc-letter">A</div>Release the child if the child recognizes the person</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct! Politely explain you cannot release the child. Contact the parent to get verbal authorization and add the person to the list.')"><div class="kc-letter">B</div>Politely refuse and contact the parent for authorization before releasing</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Seeing ID is not enough. They must be on the authorized list or the parent must give permission.')"><div class="kc-letter">C</div>Release them if they show photo ID</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'The child cannot override the authorized list. Only parents can give permission.')"><div class="kc-letter">D</div>Ask the child if they want to go with the person</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Never release a child to someone not on the authorized list, even if the child knows them."><div class="kc-letter">A</div>Release the child if the child recognizes the person</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="true" data-feedback="Correct! Politely explain you cannot release the child. Contact the parent to get verbal authorization and add the person to the list."><div class="kc-letter">B</div>Politely refuse and contact the parent for authorization before releasing</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Seeing ID is not enough. They must be on the authorized list or the parent must give permission."><div class="kc-letter">C</div>Release them if they show photo ID</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="The child cannot override the authorized list. Only parents can give permission."><div class="kc-letter">D</div>Ask the child if they want to go with the person</div>
         </div>
         <div id="kc-2-feedback" style="display:none;"></div>
       </div>
@@ -323,9 +323,26 @@ function jumpToLesson(lessonIdx){const target=allSlides.findIndex(s=>parseInt(s.
 function goTo(idx,direction=1){if(idx<0||idx>=totalSlides)return;const outSlide=allSlides[currentIndex];const inSlide=allSlides[idx];outSlide.classList.remove('active');outSlide.classList.add('exit');setTimeout(()=>{outSlide.classList.remove('exit');inSlide.style.transform=direction>0?'translateX(60px)':'translateX(-60px)';},50);currentIndex=idx;inSlide.classList.add('active');setTimeout(()=>{inSlide.querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});inSlide.querySelectorAll('.slide-in, .slide-in-r').forEach((s)=>{s.style.opacity='1';s.style.transform='translateY(0)';});},100);updateUI();}
 function navigate(dir){goTo(currentIndex+dir,dir);}
 function updateUI(){const slide=allSlides[currentIndex];const lessonNum=parseInt(slide.dataset.lesson);const slideNum=parseInt(slide.dataset.slide);const lesson=lessons[lessonNum-1];const lessonSlides=allSlides.filter(s=>parseInt(s.dataset.lesson)===lessonNum);const slideInLesson=slideNum+1;document.getElementById('lesson-count').textContent=`Lesson ${lessonNum} of 3`;document.getElementById('slide-indicator').textContent=`Lesson ${lessonNum}: ${lesson.title} · ${slideInLesson} of ${lessonSlides.length}`;document.getElementById('btn-prev').disabled=currentIndex===0;const nextBtn=document.getElementById('btn-next');if(currentIndex===totalSlides-1){nextBtn.textContent='Return to LMS →';nextBtn.disabled=false;}else{nextBtn.textContent='Next →';nextBtn.disabled=false;}updateDots();const timeMap=[20,13,7];document.getElementById('timer').textContent=`${timeMap[lessonNum-1]}:00`;}
-function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;answered[kcId]=true;const container=document.getElementById(kcId);container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});if(isCorrect){el.classList.add('correct');}else{el.classList.add('wrong');container.querySelectorAll('.kc-opt').forEach(opt=>{if(opt.getAttribute('onclick').includes('true')){opt.classList.add('correct');}});}const fb=document.getElementById(kcId+'-feedback');fb.style.display='flex';fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);}
+function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;answered[kcId]=true;const container=document.getElementById(kcId);container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});if(isCorrect){el.classList.add('correct');}else{el.classList.add('wrong');container.querySelectorAll('.kc-opt').forEach(opt=>{if(opt.dataset.correct === 'true'){opt.classList.add('correct');}});}const fb=document.getElementById(kcId+'-feedback');fb.style.display='flex';fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);}
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);});
 buildDots();updateUI();setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});},300);
+
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
 
 function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
 </script>

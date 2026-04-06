@@ -52,9 +52,9 @@ body{font-family:'Nunito',sans-serif;background:var(--prev);color:var(--ink);hei
 .btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,122,79,0.6);}
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(76,175,125,0.2) 0%,transparent 70%);}
 .sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
@@ -307,10 +307,10 @@ body{font-family:'Nunito',sans-serif;background:var(--prev);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q slide-in anim-delay-1">Which piece of legislation places the Prevent duty on early years settings?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'The Children Act covers child welfare broadly but is not the legislation that created the Prevent duty.')"><div class="kc-letter">A</div>The Children Act 2004</div>
-          <div class="kc-opt" data-feedback="Correct. The Counter-Terrorism and Security Act 2015 places a legal duty on all early years providers to help prevent radicalisation." onclick="checkAnswer(this,'kc-1',true,this.dataset.feedback)"><div class="kc-letter">B</div>The Counter-Terrorism and Security Act 2015</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'The Equality Act covers discrimination and equality duties, not the Prevent duty specifically.')"><div class="kc-letter">C</div>The Equality Act 2010</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'GDPR is data protection legislation and has no connection to the Prevent duty.')"><div class="kc-letter">D</div>The UK GDPR 2018</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="The Children Act covers child welfare broadly but is not the legislation that created the Prevent duty."><div class="kc-letter">A</div>The Children Act 2004</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="true" data-feedback="Correct. The Counter-Terrorism and Security Act 2015 places a legal duty on all early years providers to help prevent radicalisation."><div class="kc-letter">B</div>The Counter-Terrorism and Security Act 2015</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="The Equality Act covers discrimination and equality duties, not the Prevent duty specifically."><div class="kc-letter">C</div>The Equality Act 2010</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="GDPR is data protection legislation and has no connection to the Prevent duty."><div class="kc-letter">D</div>The UK GDPR 2018</div>
         </div>
         <div id="kc-1-feedback" style="display:none;"></div>
       </div>
@@ -416,10 +416,10 @@ body{font-family:'Nunito',sans-serif;background:var(--prev);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q slide-in anim-delay-1">A 4-year-old repeatedly uses language that suggests their family holds extreme views about a particular group. What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Challenging the child directly is not appropriate. This requires a sensitive safeguarding response via the DSL.')"><div class="kc-letter">A</div>Challenge the child and explain why the views are wrong</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Contacting the parents directly without telling the DSL could compromise the safeguarding process.')"><div class="kc-letter">B</div>Speak to the parents at pick-up time</div>
-          <div class="kc-opt" data-feedback="Correct. Record exactly what was said and when, then report to your DSL immediately. Do not contact the family. The DSL will decide on next steps." onclick="checkAnswer(this,'kc-2',true,this.dataset.feedback)"><div class="kc-letter">C</div>Record exactly what was said and report to the DSL immediately</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Children often repeat things they have heard at home. Even one concerning comment should be recorded and reported.')"><div class="kc-letter">D</div>Ignore it as children often say things they do not understand</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Challenging the child directly is not appropriate. This requires a sensitive safeguarding response via the DSL."><div class="kc-letter">A</div>Challenge the child and explain why the views are wrong</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Contacting the parents directly without telling the DSL could compromise the safeguarding process."><div class="kc-letter">B</div>Speak to the parents at pick-up time</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="true" data-feedback="Correct. Record exactly what was said and when, then report to your DSL immediately. Do not contact the family. The DSL will decide on next steps."><div class="kc-letter">C</div>Record exactly what was said and report to the DSL immediately</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Children often repeat things they have heard at home. Even one concerning comment should be recorded and reported."><div class="kc-letter">D</div>Ignore it as children often say things they do not understand</div>
         </div>
         <div id="kc-2-feedback" style="display:none;"></div>
       </div>
@@ -521,10 +521,10 @@ body{font-family:'Nunito',sans-serif;background:var(--prev);color:var(--ink);hei
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q slide-in anim-delay-1">A colleague tells you they think a child's parent may hold extremist views. What should you and your colleague do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-3">
-          <div class="kc-opt" data-feedback="Correct. Any Prevent concern must be reported to the DSL. Do not discuss amongst colleagues, do not contact the family, and do not investigate yourselves." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">A</div>Both report the concern to the DSL straight away and not discuss it further</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Discussing it with other staff spreads the concern unnecessarily and could compromise confidentiality. Report only to the DSL.')"><div class="kc-letter">B</div>Discuss it with the wider staff team to get more opinions</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Never contact the family about a Prevent concern. This could compromise the process and potentially put others at risk.')"><div class="kc-letter">C</div>Approach the parent and ask them about their views</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'A concern from a colleague is worth taking seriously. Report it to the DSL and let them assess it.')"><div class="kc-letter">D</div>Do nothing as it is based on a colleague opinion not direct evidence</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="true" data-feedback="Correct. Any Prevent concern must be reported to the DSL. Do not discuss amongst colleagues, do not contact the family, and do not investigate yourselves."><div class="kc-letter">A</div>Both report the concern to the DSL straight away and not discuss it further</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Discussing it with other staff spreads the concern unnecessarily and could compromise confidentiality. Report only to the DSL."><div class="kc-letter">B</div>Discuss it with the wider staff team to get more opinions</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Never contact the family about a Prevent concern. This could compromise the process and potentially put others at risk."><div class="kc-letter">C</div>Approach the parent and ask them about their views</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="A concern from a colleague is worth taking seriously. Report it to the DSL and let them assess it."><div class="kc-letter">D</div>Do nothing as it is based on a colleague opinion not direct evidence</div>
         </div>
         <div id="kc-3-feedback" style="display:none;"></div>
       </div>
@@ -673,6 +673,23 @@ setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeou
 
 <script>
 window.MODULE_CODE="PD-01";
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
+
 window.returnToLMSForQuiz=function(){
   try{localStorage.setItem('ee_pending_quiz',window.MODULE_CODE||'PD-01');}catch(e){}
   if(window.opener&&!window.opener.closed){

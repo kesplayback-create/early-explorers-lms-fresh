@@ -55,9 +55,9 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* SLIDE SYSTEM */
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 
 /* TITLE CARD */
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(255,179,193,0.15) 0%,transparent 70%);}
@@ -340,10 +340,10 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q slide-in anim-delay-1">A child tells you something that concerns you about their home life. What should you do FIRST?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Never investigate yourself. Your role is to report, not investigate.')"><div class="kc-letter">A</div>Ask more questions to find out exactly what is happening</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! Listen, reassure the child, write down exactly what they said, and report immediately to the DSL.')"><div class="kc-letter">B</div>Listen carefully, reassure the child, and report immediately to the DSL</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Never contact parents before speaking to the DSL — this could put the child at further risk.')"><div class="kc-letter">C</div>Contact the parents to get their side of the story</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'Delaying could put the child at continued risk. Report immediately.')"><div class="kc-letter">D</div>Wait until the end of the day to see if anything else happens</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Never investigate yourself. Your role is to report, not investigate."><div class="kc-letter">A</div>Ask more questions to find out exactly what is happening</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="true" data-feedback="Correct! Listen, reassure the child, write down exactly what they said, and report immediately to the DSL."><div class="kc-letter">B</div>Listen carefully, reassure the child, and report immediately to the DSL</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Never contact parents before speaking to the DSL — this could put the child at further risk."><div class="kc-letter">C</div>Contact the parents to get their side of the story</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="Delaying could put the child at continued risk. Report immediately."><div class="kc-letter">D</div>Wait until the end of the day to see if anything else happens</div>
         </div>
         <div id="kc-1-feedback" style="display:none;"></div>
       </div>
@@ -467,10 +467,10 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q slide-in anim-delay-1">A 3-year-old child uses sexually explicit language that is age-inappropriate. This is most likely an indicator of:</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Physical abuse typically presents with injuries. Inappropriate sexual knowledge suggests sexual abuse or exposure.')"><div class="kc-letter">A</div>Physical abuse</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct. Age-inappropriate sexual knowledge or language is a key indicator of sexual abuse or exposure to sexual content.')"><div class="kc-letter">B</div>Sexual abuse or exposure</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'While concerning, this specifically indicates sexual abuse or exposure to inappropriate sexual content.')"><div class="kc-letter">C</div>Emotional abuse</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Neglect involves failure to meet basic needs. This indicator is more specific to sexual abuse.')"><div class="kc-letter">D</div>Neglect</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Physical abuse typically presents with injuries. Inappropriate sexual knowledge suggests sexual abuse or exposure."><div class="kc-letter">A</div>Physical abuse</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="true" data-feedback="Correct. Age-inappropriate sexual knowledge or language is a key indicator of sexual abuse or exposure to sexual content."><div class="kc-letter">B</div>Sexual abuse or exposure</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="While concerning, this specifically indicates sexual abuse or exposure to inappropriate sexual content."><div class="kc-letter">C</div>Emotional abuse</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Neglect involves failure to meet basic needs. This indicator is more specific to sexual abuse."><div class="kc-letter">D</div>Neglect</div>
         </div>
         <div id="kc-2-feedback" style="display:none;"></div>
       </div>
@@ -541,10 +541,10 @@ body{font-family:'Nunito',sans-serif;background:#8B1538;color:var(--ink);height:
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q slide-in anim-delay-1">A child starts to tell you something concerning but then stops and says "actually, never mind." What should you do?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-3">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Never dismiss a child who has started a disclosure, even if they stop. This is still a safeguarding concern.')"><div class="kc-letter">A</div>Accept their decision and move on</div>
-          <div class="kc-opt" data-feedback="Correct. Gently encourage them, reassure them, but don't push. Then report the partial disclosure to the DSL immediately." onclick="checkAnswer(this,'kc-3',true,this.dataset.feedback)"><div class="kc-letter">B</div>Gently encourage them to continue, reassure them, and report even partial disclosures to the DSL</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Forcing a child to talk can be harmful and may contaminate evidence. Gentle encouragement and reassurance, then report.')"><div class="kc-letter">C</div>Insist they tell you what they were going to say</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'Waiting could put the child at continued risk. Report immediately, even if the disclosure was incomplete.')"><div class="kc-letter">D</div>Wait to see if they bring it up again later</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Never dismiss a child who has started a disclosure, even if they stop. This is still a safeguarding concern."><div class="kc-letter">A</div>Accept their decision and move on</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="true" data-feedback="Correct. Gently encourage them, reassure them, but don't push. Then report the partial disclosure to the DSL immediately."><div class="kc-letter">B</div>Gently encourage them to continue, reassure them, and report even partial disclosures to the DSL</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Forcing a child to talk can be harmful and may contaminate evidence. Gentle encouragement and reassurance, then report."><div class="kc-letter">C</div>Insist they tell you what they were going to say</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="Waiting could put the child at continued risk. Report immediately, even if the disclosure was incomplete."><div class="kc-letter">D</div>Wait to see if they bring it up again later</div>
         </div>
         <div id="kc-3-feedback" style="display:none;"></div>
       </div>
@@ -762,6 +762,23 @@ setTimeout(()=>{
     setTimeout(()=>s.classList.add('visible'),i*120);
   });
 },300);
+
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
 
 function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
 </script>

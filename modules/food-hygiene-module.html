@@ -37,9 +37,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
 .btn-next-main{background:linear-gradient(135deg,#2E7D32,#1B5E20);color:#fff;box-shadow:0 4px 16px rgba(46,125,50,0.4);}
 .btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,125,50,0.5);}
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:24px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:24px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(165,214,167,0.15) 0%,transparent 70%);}
 .sl-title .big-icon{font-size:80px;margin-bottom:16px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
 @keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
@@ -250,9 +250,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q">What does HACCP stand for?</div>
         <div class="kc-opts" id="kc1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Close — but not quite. HACCP stands for Hazard Analysis and Critical Control Points. It is the food safety management system required by law.')"><div class="kc-letter">A</div>Hygiene And Cleaning Control Procedures</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',true,'Correct! HACCP — Hazard Analysis and Critical Control Points — is the internationally recognised food safety management system required by UK food law.')"><div class="kc-letter">B</div>Hazard Analysis and Critical Control Points</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Incorrect. HACCP is about hazard analysis and critical control points — a systematic approach to identifying and managing food safety risks.')"><div class="kc-letter">C</div>Health Assessment and Compliance Check Process</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="false" data-feedback="Close — but not quite. HACCP stands for Hazard Analysis and Critical Control Points. It is the food safety management system required by law."><div class="kc-letter">A</div>Hygiene And Cleaning Control Procedures</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="true" data-feedback="Correct! HACCP — Hazard Analysis and Critical Control Points — is the internationally recognised food safety management system required by UK food law."><div class="kc-letter">B</div>Hazard Analysis and Critical Control Points</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="false" data-feedback="Incorrect. HACCP is about hazard analysis and critical control points — a systematic approach to identifying and managing food safety risks."><div class="kc-letter">C</div>Health Assessment and Compliance Check Process</div>
         </div>
         <div id="kc1-feedback" style="display:none;"></div>
       </div>
@@ -327,9 +327,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q">Which temperature range is known as the "Danger Zone" where bacteria multiply most rapidly?</div>
         <div class="kc-opts" id="kc2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Not quite. 0°C to 100°C is simply the range between freezing and boiling water. The danger zone is a specific range linked to bacterial growth.')"><div class="kc-letter">A</div>0°C to 100°C</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Close, but too narrow. The full danger zone extends from 8°C up to 63°C — and bacteria can grow throughout this entire range.')"><div class="kc-letter">B</div>15°C to 45°C</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',true,'Correct! The danger zone is 8°C to 63°C. Bacteria multiply rapidly throughout this range. Food must be kept below 8°C or above 63°C to be safe.')"><div class="kc-letter">C</div>8°C to 63°C</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="false" data-feedback="Not quite. 0°C to 100°C is simply the range between freezing and boiling water. The danger zone is a specific range linked to bacterial growth."><div class="kc-letter">A</div>0°C to 100°C</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="false" data-feedback="Close, but too narrow. The full danger zone extends from 8°C up to 63°C — and bacteria can grow throughout this entire range."><div class="kc-letter">B</div>15°C to 45°C</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="true" data-feedback="Correct! The danger zone is 8°C to 63°C. Bacteria multiply rapidly throughout this range. Food must be kept below 8°C or above 63°C to be safe."><div class="kc-letter">C</div>8°C to 63°C</div>
         </div>
         <div id="kc2-feedback" style="display:none;"></div>
       </div>
@@ -402,9 +402,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q">Which colour chopping board should be used for preparing raw chicken?</div>
         <div class="kc-opts" id="kc3">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Red boards are for raw red meat such as beef, pork and lamb — not poultry. Using the wrong board risks cross-contamination between different raw protein types.')"><div class="kc-letter">A</div>Red</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',true,'Correct! Yellow boards are designated for raw poultry. Using the correct colour board and keeping it separate from other boards prevents cross-contamination.')"><div class="kc-letter">B</div>Yellow</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Blue boards are designated for raw fish. Always use the correct colour board for each food type to prevent cross-contamination.')"><div class="kc-letter">C</div>Blue</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="false" data-feedback="Red boards are for raw red meat such as beef, pork and lamb — not poultry. Using the wrong board risks cross-contamination between different raw protein types."><div class="kc-letter">A</div>Red</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="true" data-feedback="Correct! Yellow boards are designated for raw poultry. Using the correct colour board and keeping it separate from other boards prevents cross-contamination."><div class="kc-letter">B</div>Yellow</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="false" data-feedback="Blue boards are designated for raw fish. Always use the correct colour board for each food type to prevent cross-contamination."><div class="kc-letter">C</div>Blue</div>
         </div>
         <div id="kc3-feedback" style="display:none;"></div>
       </div>
@@ -472,9 +472,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 4</div>
         <div class="kc-q">You've cooked a large pot of soup for lunch. How should you cool it before refrigerating?</div>
         <div class="kc-opts" id="kc4">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Putting a large pot of hot soup straight in the fridge will raise the fridge temperature and put other foods at risk — and the soup will cool very slowly, spending too long in the danger zone.')"><div class="kc-letter">A</div>Put the pot directly in the fridge and let it cool overnight</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Leaving hot food on the counter lets it sit in the danger zone for hours — giving bacteria time to multiply to dangerous levels before it even goes in the fridge.')"><div class="kc-letter">B</div>Leave it on the counter until it reaches room temperature, then refrigerate</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',true,'Correct! Divide into shallow containers to increase surface area, use an ice bath or blast chiller if available, and get it below 8°C within 90 minutes before refrigerating.')"><div class="kc-letter">C</div>Divide into shallow containers, cool rapidly using an ice bath, and refrigerate within 90 minutes</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="false" data-feedback="Putting a large pot of hot soup straight in the fridge will raise the fridge temperature and put other foods at risk — and the soup will cool very slowly, spending too long in the danger zone."><div class="kc-letter">A</div>Put the pot directly in the fridge and let it cool overnight</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="false" data-feedback="Leaving hot food on the counter lets it sit in the danger zone for hours — giving bacteria time to multiply to dangerous levels before it even goes in the fridge."><div class="kc-letter">B</div>Leave it on the counter until it reaches room temperature, then refrigerate</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="true" data-feedback="Correct! Divide into shallow containers to increase surface area, use an ice bath or blast chiller if available, and get it below 8°C within 90 minutes before refrigerating."><div class="kc-letter">C</div>Divide into shallow containers, cool rapidly using an ice bath, and refrigerate within 90 minutes</div>
         </div>
         <div id="kc4-feedback" style="display:none;"></div>
       </div>
@@ -549,9 +549,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 5</div>
         <div class="kc-q">What is the correct order for cleaning a food preparation surface?</div>
         <div class="kc-opts" id="kc5">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc5',false,'Disinfecting before cleaning is ineffective — grease and food residue prevent disinfectant from reaching the surface and killing bacteria properly.')"><div class="kc-letter">A</div>Disinfect first, then clean with detergent</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc5',true,'Correct! Always clean with detergent first to remove dirt and grease, then rinse, then apply disinfectant and allow the correct contact time before allowing to air dry.')"><div class="kc-letter">B</div>Clean with detergent, rinse, disinfect, allow to air dry</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc5',false,'Using cleaning spray alone (combined cleaner/disinfectant) may be acceptable in some situations, but the full clean-rinse-disinfect-dry process is best practice and required in food businesses.')"><div class="kc-letter">C</div>Wipe with a multi-purpose cleaning spray and dry with a paper towel</div>
+          <div class="kc-opt" data-kc="kc5" data-correct="false" data-feedback="Disinfecting before cleaning is ineffective — grease and food residue prevent disinfectant from reaching the surface and killing bacteria properly."><div class="kc-letter">A</div>Disinfect first, then clean with detergent</div>
+          <div class="kc-opt" data-kc="kc5" data-correct="true" data-feedback="Correct! Always clean with detergent first to remove dirt and grease, then rinse, then apply disinfectant and allow the correct contact time before allowing to air dry."><div class="kc-letter">B</div>Clean with detergent, rinse, disinfect, allow to air dry</div>
+          <div class="kc-opt" data-kc="kc5" data-correct="false" data-feedback="Using cleaning spray alone (combined cleaner/disinfectant) may be acceptable in some situations, but the full clean-rinse-disinfect-dry process is best practice and required in food businesses."><div class="kc-letter">C</div>Wipe with a multi-purpose cleaning spray and dry with a paper towel</div>
         </div>
         <div id="kc5-feedback" style="display:none;"></div>
       </div>
@@ -631,9 +631,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 6</div>
         <div class="kc-q">A child with a known nut allergy has eaten food and is developing hives and lip swelling. Their EpiPen is in the room. What do you do FIRST?</div>
         <div class="kc-opts" id="kc6">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc6',false,'Calling the parent is important but must not be your first action. The child is showing signs of anaphylaxis — getting a first aider and being prepared to use the EpiPen takes priority.')"><div class="kc-letter">A</div>Call the parent immediately to ask about the child's allergy history</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc6',false,'Antihistamines act too slowly for anaphylaxis and are not an appropriate first response. The child needs adrenaline and emergency services, not antihistamines.')"><div class="kc-letter">B</div>Give the child an antihistamine and monitor for 10 minutes</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc6',true,'Correct! Shout for your manager and a first aider immediately. Stay with the child. Be ready to use the EpiPen per the care plan and call 999. Do not leave the child alone.')"><div class="kc-letter">C</div>Shout for manager and first aider, stay with the child, prepare to administer EpiPen and call 999</div>
+          <div class="kc-opt" data-kc="kc6" data-correct="false" data-feedback="Calling the parent is important but must not be your first action. The child is showing signs of anaphylaxis — getting a first aider and being prepared to use the EpiPen takes priority."><div class="kc-letter">A</div>Call the parent immediately to ask about the child's allergy history</div>
+          <div class="kc-opt" data-kc="kc6" data-correct="false" data-feedback="Antihistamines act too slowly for anaphylaxis and are not an appropriate first response. The child needs adrenaline and emergency services, not antihistamines."><div class="kc-letter">B</div>Give the child an antihistamine and monitor for 10 minutes</div>
+          <div class="kc-opt" data-kc="kc6" data-correct="true" data-feedback="Correct! Shout for your manager and a first aider immediately. Stay with the child. Be ready to use the EpiPen per the care plan and call 999. Do not leave the child alone."><div class="kc-letter">C</div>Shout for manager and first aider, stay with the child, prepare to administer EpiPen and call 999</div>
         </div>
         <div id="kc6-feedback" style="display:none;"></div>
       </div>
@@ -700,9 +700,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 7</div>
         <div class="kc-q">A child requires antibiotics at 12pm. The parent mentioned it at drop-off but hasn't completed a medication form. It is now 11:45am. What do you do?</div>
         <div class="kc-opts" id="kc7">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc7',false,'Verbal consent at drop-off is never sufficient. Administering medication without a signed form is a serious breach of procedure and could have legal consequences.')"><div class="kc-letter">A</div>Administer it — the parent verbally consented and the child needs their medication</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc7',false,'Missing a dose without informing the parent is not appropriate. The parent needs to know so they can arrange to come in, or collect the child, or make alternative arrangements.')"><div class="kc-letter">B</div>Skip the dose and tell the parent at collection that it wasn't given</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc7',true,'Correct! Contact the parent now — before the dose is due — explain a signed form is required, and ask them to return to sign it, email a signed form, or collect the child to administer it themselves.')"><div class="kc-letter">C</div>Contact the parent immediately, explain a signed form is required before the dose can be given</div>
+          <div class="kc-opt" data-kc="kc7" data-correct="false" data-feedback="Verbal consent at drop-off is never sufficient. Administering medication without a signed form is a serious breach of procedure and could have legal consequences."><div class="kc-letter">A</div>Administer it — the parent verbally consented and the child needs their medication</div>
+          <div class="kc-opt" data-kc="kc7" data-correct="false" data-feedback="Missing a dose without informing the parent is not appropriate. The parent needs to know so they can arrange to come in, or collect the child, or make alternative arrangements."><div class="kc-letter">B</div>Skip the dose and tell the parent at collection that it wasn't given</div>
+          <div class="kc-opt" data-kc="kc7" data-correct="true" data-feedback="Correct! Contact the parent now — before the dose is due — explain a signed form is required, and ask them to return to sign it, email a signed form, or collect the child to administer it themselves."><div class="kc-letter">C</div>Contact the parent immediately, explain a signed form is required before the dose can be given</div>
         </div>
         <div id="kc7-feedback" style="display:none;"></div>
       </div>
@@ -832,6 +832,23 @@ document.addEventListener('keydown',e=>{
 });
 buildDots();updateUI();
 setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*100);});},300);
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
+
 function returnToLMSForQuiz(){
   if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}
   else{alert('LMS window not found. Please return to the main LMS window and click Take Quiz.');}

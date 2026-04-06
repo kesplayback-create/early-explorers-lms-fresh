@@ -39,9 +39,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
 .btn-next-main{background:linear-gradient(135deg,#2E86AB,#1A5F7A);color:#fff;box-shadow:0 4px 16px rgba(46,134,171,0.4);}
 .btn-next-main:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,134,171,0.5);}
 .btn-next-main:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
-.slide.exit{opacity:0;transform:translateX(-60px);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateX(60px);padding:28px;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);visibility:visible;}
+.slide.exit{opacity:0;transform:translateX(-60px);visibility:visible;}
 .sl-title{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(168,216,234,0.15) 0%,transparent 70%);}
 .sl-title .big-icon{font-size:90px;margin-bottom:20px;animation:iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;}
 @keyframes iconBounce{from{opacity:0;transform:scale(0.4) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
@@ -214,9 +214,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q">A parent shares that their child slept badly last night. What should you do?</div>
         <div class="kc-opts" id="kc1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'Good instinct — but sharing verbally at collection is not enough. It must be recorded in the child\&#39;s daily log on the same day.')"><div class="kc-letter">A</div>Tell your colleague at handover time</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',true,'Correct! Important information shared by parents must be recorded in writing same day and passed on to anyone caring for that child.')"><div class="kc-letter">B</div>Note it in the child's daily log and ensure the room team knows</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc1',false,'This is too passive. Even if the child seems fine, changes in sleep can affect mood, behaviour and wellbeing throughout the day.')"><div class="kc-letter">C</div>Keep an eye on the child but take no further action unless they seem upset</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="false" data-feedback="Good instinct — but sharing verbally at collection is not enough. It must be recorded in the child\&#39;s daily log on the same day."><div class="kc-letter">A</div>Tell your colleague at handover time</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="true" data-feedback="Correct! Important information shared by parents must be recorded in writing same day and passed on to anyone caring for that child."><div class="kc-letter">B</div>Note it in the child's daily log and ensure the room team knows</div>
+          <div class="kc-opt" data-kc="kc1" data-correct="false" data-feedback="This is too passive. Even if the child seems fine, changes in sleep can affect mood, behaviour and wellbeing throughout the day."><div class="kc-letter">C</div>Keep an eye on the child but take no further action unless they seem upset</div>
         </div>
         <div id="kc1-feedback" style="display:none;"></div>
       </div>
@@ -283,9 +283,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q">A parent approaches you at pick-up, visibly upset, saying their child was hurt and nobody told them. What do you do first?</div>
         <div class="kc-opts" id="kc2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'Explaining immediately could come across as defensive and may escalate the situation. First, create the right environment.')"><div class="kc-letter">A</div>Explain what happened straight away so they have the full picture</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',true,'Correct! Move to a private space first, then listen fully, then inform your manager. Never discuss incidents at the door.')"><div class="kc-letter">B</div>Calmly invite them to step inside, listen to their concern, then inform your manager</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc2',false,'This delays resolution and dismisses their concern. Parents deserve a timely, respectful response.')"><div class="kc-letter">C</div>Ask them to email their complaint so it is formally recorded</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="false" data-feedback="Explaining immediately could come across as defensive and may escalate the situation. First, create the right environment."><div class="kc-letter">A</div>Explain what happened straight away so they have the full picture</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="true" data-feedback="Correct! Move to a private space first, then listen fully, then inform your manager. Never discuss incidents at the door."><div class="kc-letter">B</div>Calmly invite them to step inside, listen to their concern, then inform your manager</div>
+          <div class="kc-opt" data-kc="kc2" data-correct="false" data-feedback="This delays resolution and dismisses their concern. Parents deserve a timely, respectful response."><div class="kc-letter">C</div>Ask them to email their complaint so it is formally recorded</div>
         </div>
         <div id="kc2-feedback" style="display:none;"></div>
       </div>
@@ -347,9 +347,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q">A parent who speaks limited English needs important information about their child's SEND support plan. What is the best approach?</div>
         <div class="kc-opts" id="kc3">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Using a child as an interpreter is never appropriate — it places unfair responsibility on them and may cause them distress.')"><div class="kc-letter">A</div>Ask the child to help translate for their parent</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',false,'Speaking slowly does not resolve a language barrier and may come across as patronising. A written summary alone is also insufficient for complex SEND information.')"><div class="kc-letter">B</div>Speak slowly and clearly, then give them a written copy to take home</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc3',true,'Correct! Inform your manager who can arrange appropriate translation support to ensure the parent can fully participate in their child\&#39;s SEND planning.')"><div class="kc-letter">C</div>Inform the manager so translation support can be arranged</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="false" data-feedback="Using a child as an interpreter is never appropriate — it places unfair responsibility on them and may cause them distress."><div class="kc-letter">A</div>Ask the child to help translate for their parent</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="false" data-feedback="Speaking slowly does not resolve a language barrier and may come across as patronising. A written summary alone is also insufficient for complex SEND information."><div class="kc-letter">B</div>Speak slowly and clearly, then give them a written copy to take home</div>
+          <div class="kc-opt" data-kc="kc3" data-correct="true" data-feedback="Correct! Inform your manager who can arrange appropriate translation support to ensure the parent can fully participate in their child\&#39;s SEND planning."><div class="kc-letter">C</div>Inform the manager so translation support can be arranged</div>
         </div>
         <div id="kc3-feedback" style="display:none;"></div>
       </div>
@@ -410,9 +410,9 @@ body{font-family:'Nunito',sans-serif;background:var(--primary-deep);color:var(--
         <div class="kc-tag">🧠 Knowledge Check · Lesson 4</div>
         <div class="kc-q">A parent you get on well with asks for your personal mobile number to keep in touch. What should you do?</div>
         <div class="kc-opts" id="kc4">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'Sharing personal contact details with parents is not appropriate and blurs professional boundaries, even if your intentions are good.')"><div class="kc-letter">A</div>Share it — you have a good relationship and want to be helpful</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',false,'This is better but still risks boundary issues. Directing them to the nursery is the correct approach.')"><div class="kc-letter">B</div>Give them your number but only for nursery-related matters</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc4',true,'Correct! Politely explain that all communication goes through the nursery. This protects you and maintains professional boundaries.')"><div class="kc-letter">C</div>Politely decline and direct them to contact the nursery through official channels</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="false" data-feedback="Sharing personal contact details with parents is not appropriate and blurs professional boundaries, even if your intentions are good."><div class="kc-letter">A</div>Share it — you have a good relationship and want to be helpful</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="false" data-feedback="This is better but still risks boundary issues. Directing them to the nursery is the correct approach."><div class="kc-letter">B</div>Give them your number but only for nursery-related matters</div>
+          <div class="kc-opt" data-kc="kc4" data-correct="true" data-feedback="Correct! Politely explain that all communication goes through the nursery. This protects you and maintains professional boundaries."><div class="kc-letter">C</div>Politely decline and direct them to contact the nursery through official channels</div>
         </div>
         <div id="kc4-feedback" style="display:none;"></div>
       </div>
@@ -452,6 +452,23 @@ function updateUI(){const slide=allSlides[currentIndex];const lessonNum=parseInt
 function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;answered[kcId]=true;const container=document.getElementById(kcId);container.querySelectorAll('.kc-opt').forEach(opt=>{opt.classList.add('locked');});if(isCorrect){el.classList.add('correct');}else{el.classList.add('wrong');container.querySelectorAll('.kc-opt').forEach(opt=>{if(opt.getAttribute('onclick').includes('true,')){opt.classList.add('correct');}});}const fb=document.getElementById(kcId+'-feedback');fb.style.display='flex';fb.innerHTML=`<div class="kc-feedback ${isCorrect?'kc-pass':'kc-fail'}"><span>${isCorrect?'✅':'❌'}</span><span>${feedbackText}</span></div>`;setTimeout(()=>{document.getElementById('btn-next').disabled=false;},600);}
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')navigate(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')navigate(-1);});
 buildDots();updateUI();setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeout(()=>s.classList.add('visible'),i*120);});},300);
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
+
 function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
 </script>
 <script>

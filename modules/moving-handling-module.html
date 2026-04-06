@@ -118,7 +118,7 @@ body{font-family:'Nunito',sans-serif;background:var(--ink);color:var(--ink);heig
 .slide{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
+  opacity:0;pointer-events:none;visibility:hidden;
   transition:opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
   transform:translateX(60px);
   padding:28px;
@@ -128,7 +128,7 @@ body{font-family:'Nunito',sans-serif;background:var(--ink);color:var(--ink);heig
 }
 .slide.exit{
   opacity:0;transform:translateX(-60px);
-}
+visibility:visible;}
 
 /* ═══════════════════════════════════════════
    SLIDE LAYOUTS
@@ -624,10 +624,10 @@ svg.ring{transform:rotate(-90deg);}
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 1</div>
         <div class="kc-q slide-in anim-delay-1">What does the "E" in the TILE risk assessment framework stand for?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-1">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">A</div>Experience of the lifter</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">B</div>Equipment being used</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',true,'Correct! <strong>Environment</strong> — Is the floor clear? Is there room to move safely? Is lighting good?')"><div class="kc-letter">C</div>Environment — the space around you</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-1',false,'E stands for <strong>Environment</strong> — checking the space around you before lifting.')"><div class="kc-letter">D</div>Emergency procedure</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="E stands for <strong>Environment</strong> — checking the space around you before lifting."><div class="kc-letter">A</div>Experience of the lifter</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="E stands for <strong>Environment</strong> — checking the space around you before lifting."><div class="kc-letter">B</div>Equipment being used</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="true" data-feedback="Correct! <strong>Environment</strong> — Is the floor clear? Is there room to move safely? Is lighting good?"><div class="kc-letter">C</div>Environment — the space around you</div>
+          <div class="kc-opt" data-kc="kc-1" data-correct="false" data-feedback="E stands for <strong>Environment</strong> — checking the space around you before lifting."><div class="kc-letter">D</div>Emergency procedure</div>
         </div>
         <div id="kc-1-feedback" style="display:none;"></div>
       </div>
@@ -777,10 +777,10 @@ svg.ring{transform:rotate(-90deg);}
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 2</div>
         <div class="kc-q slide-in anim-delay-1">When lifting a child, which muscles should be doing most of the work?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-2">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Your back muscles are not designed for heavy lifting. Use your legs — they are far stronger.')"><div class="kc-letter">A</div>Your back muscles</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'While arm strength helps you hold, the primary lifting power must come from your legs.')"><div class="kc-letter">B</div>Your arm and shoulder muscles</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',true,'Correct! Your leg muscles are the strongest in your body — always drive upward through your legs when lifting.')"><div class="kc-letter">C</div>Your leg muscles</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-2',false,'Core strength helps stability, but the primary power for lifting must always come from your legs.')"><div class="kc-letter">D</div>Your core muscles only</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Your back muscles are not designed for heavy lifting. Use your legs — they are far stronger."><div class="kc-letter">A</div>Your back muscles</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="While arm strength helps you hold, the primary lifting power must come from your legs."><div class="kc-letter">B</div>Your arm and shoulder muscles</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="true" data-feedback="Correct! Your leg muscles are the strongest in your body — always drive upward through your legs when lifting."><div class="kc-letter">C</div>Your leg muscles</div>
+          <div class="kc-opt" data-kc="kc-2" data-correct="false" data-feedback="Core strength helps stability, but the primary power for lifting must always come from your legs."><div class="kc-letter">D</div>Your core muscles only</div>
         </div>
         <div id="kc-2-feedback" style="display:none;"></div>
       </div>
@@ -888,10 +888,10 @@ svg.ring{transform:rotate(-90deg);}
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 3</div>
         <div class="kc-q slide-in anim-delay-1">Why should you always give a verbal warning before lifting a toddler?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-3">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This is a secondary benefit. The primary reason is to prevent the toddler from making a sudden, unexpected movement that could injure you.')"><div class="kc-letter">A</div>It is a safeguarding requirement</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',true,'Correct! Toddlers who know what is coming do not lunge or twist unexpectedly — preventing sudden load shifts that cause injury.')"><div class="kc-letter">B</div>To prevent unexpected movement that could cause sudden load shifts</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'While communicating positively is good practice, the key reason here is preventing unexpected movement for safety.')"><div class="kc-letter">C</div>To build a positive relationship with the child</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-3',false,'This is not the primary reason. The focus is on preventing sudden movements that cause injury.')"><div class="kc-letter">D</div>To wake them up before lifting</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="This is a secondary benefit. The primary reason is to prevent the toddler from making a sudden, unexpected movement that could injure you."><div class="kc-letter">A</div>It is a safeguarding requirement</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="true" data-feedback="Correct! Toddlers who know what is coming do not lunge or twist unexpectedly — preventing sudden load shifts that cause injury."><div class="kc-letter">B</div>To prevent unexpected movement that could cause sudden load shifts</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="While communicating positively is good practice, the key reason here is preventing unexpected movement for safety."><div class="kc-letter">C</div>To build a positive relationship with the child</div>
+          <div class="kc-opt" data-kc="kc-3" data-correct="false" data-feedback="This is not the primary reason. The focus is on preventing sudden movements that cause injury."><div class="kc-letter">D</div>To wake them up before lifting</div>
         </div>
         <div id="kc-3-feedback" style="display:none;"></div>
       </div>
@@ -973,10 +973,10 @@ svg.ring{transform:rotate(-90deg);}
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 4</div>
         <div class="kc-q slide-in anim-delay-1">A toddler is actively resisting being lifted and beginning to arch their back. What should you do first?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-4">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Forcing a lift on a resisting child significantly increases injury risk for both the child and yourself.')"><div class="kc-letter">A</div>Complete the lift quickly before they resist further</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Calling for help may be needed, but the first step is to pause and stop the unsafe lift attempt.')"><div class="kc-letter">B</div>Immediately call for a colleague</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',true,'Correct! Pause and do not force the lift. Then communicate with the child and consider if the lift is necessary before trying again.')"><div class="kc-letter">C</div>Pause, do not force the lift, then communicate to calm the child</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-4',false,'Documenting comes later. The immediate priority is stopping the unsafe situation.')"><div class="kc-letter">D</div>Log it in the accident book and try again later</div>
+          <div class="kc-opt" data-kc="kc-4" data-correct="false" data-feedback="Forcing a lift on a resisting child significantly increases injury risk for both the child and yourself."><div class="kc-letter">A</div>Complete the lift quickly before they resist further</div>
+          <div class="kc-opt" data-kc="kc-4" data-correct="false" data-feedback="Calling for help may be needed, but the first step is to pause and stop the unsafe lift attempt."><div class="kc-letter">B</div>Immediately call for a colleague</div>
+          <div class="kc-opt" data-kc="kc-4" data-correct="true" data-feedback="Correct! Pause and do not force the lift. Then communicate with the child and consider if the lift is necessary before trying again."><div class="kc-letter">C</div>Pause, do not force the lift, then communicate to calm the child</div>
+          <div class="kc-opt" data-kc="kc-4" data-correct="false" data-feedback="Documenting comes later. The immediate priority is stopping the unsafe situation."><div class="kc-letter">D</div>Log it in the accident book and try again later</div>
         </div>
         <div id="kc-4-feedback" style="display:none;"></div>
       </div>
@@ -1069,10 +1069,10 @@ svg.ring{transform:rotate(-90deg);}
         <div class="kc-tag slide-in">🧠 Knowledge Check · Lesson 5</div>
         <div class="kc-q slide-in anim-delay-1">A colleague asks you to help move a full cot to another room. What is the safest approach?</div>
         <div class="kc-opts slide-in anim-delay-2" id="kc-5">
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'Even with correct technique, a full cot (mattress, bedding, possibly 25kg+) is too heavy and awkward for one person to move safely.')"><div class="kc-letter">A</div>Move it alone using correct lifting technique</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'This is incorrect. Children should never be inside a cot while it is being moved.')"><div class="kc-letter">B</div>Move it with the child still inside to save time</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',true,'Correct! Remove contents to reduce weight, then two people move it together — one at each end — communicating throughout.')"><div class="kc-letter">C</div>Remove contents, then move as a two-person lift with communication</div>
-          <div class="kc-opt" onclick="checkAnswer(this,'kc-5',false,'Dragging risks floor damage and uncontrolled movement. Always carry using correct two-person technique.')"><div class="kc-letter">D</div>Drag it across the floor to avoid lifting</div>
+          <div class="kc-opt" data-kc="kc-5" data-correct="false" data-feedback="Even with correct technique, a full cot (mattress, bedding, possibly 25kg+) is too heavy and awkward for one person to move safely."><div class="kc-letter">A</div>Move it alone using correct lifting technique</div>
+          <div class="kc-opt" data-kc="kc-5" data-correct="false" data-feedback="This is incorrect. Children should never be inside a cot while it is being moved."><div class="kc-letter">B</div>Move it with the child still inside to save time</div>
+          <div class="kc-opt" data-kc="kc-5" data-correct="true" data-feedback="Correct! Remove contents to reduce weight, then two people move it together — one at each end — communicating throughout."><div class="kc-letter">C</div>Remove contents, then move as a two-person lift with communication</div>
+          <div class="kc-opt" data-kc="kc-5" data-correct="false" data-feedback="Dragging risks floor damage and uncontrolled movement. Always carry using correct two-person technique."><div class="kc-letter">D</div>Drag it across the floor to avoid lifting</div>
         </div>
         <div id="kc-5-feedback" style="display:none;"></div>
       </div>
@@ -1343,7 +1343,7 @@ function checkAnswer(el, kcId, isCorrect, feedbackText) {
     el.classList.add('wrong');
     // Highlight correct one
     container.querySelectorAll('.kc-opt').forEach(opt => {
-      if (opt.getAttribute('onclick').includes('true')) {
+      if (opt.dataset.correct === 'true') {
         opt.classList.add('correct');
       }
     });
@@ -1384,6 +1384,23 @@ setTimeout(() => {
     setTimeout(() => s.classList.add('visible'), i * 120);
   });
 }, 300);
+
+
+// Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
+document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.kc-opt');
+    if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
+    const kcId = opt.dataset.kc;
+    const isCorrect = opt.dataset.correct === 'true';
+    const feedback = opt.dataset.feedback;
+    if (kcId && feedback !== undefined) {
+        checkAnswer(opt, kcId, isCorrect, feedback);
+    }
+});
 
 function returnToLMSForQuiz(){if(window.opener&&!window.opener.closed){window.close();window.opener.startQuiz(MODULE_CODE);window.opener.focus();}else{alert('LMS window not found. Please return to the main LMS window and click "Take Quiz".');}}
 </script>
