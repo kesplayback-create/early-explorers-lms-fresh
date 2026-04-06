@@ -672,7 +672,7 @@ setTimeout(()=>{allSlides[0].querySelectorAll('.step').forEach((s,i)=>{setTimeou
 </script>
 
 <script>
-window.MODULE_CODE="PD-01";
+window.MODULE_CODE="PV-01";
 
 // Delegated click handler for kc-opt buttons (avoids onclick quoting issues)
 document.addEventListener('click', function(e) {
@@ -691,9 +691,9 @@ document.addEventListener('click', function(e) {
 });
 
 window.returnToLMSForQuiz=function(){
-  try{localStorage.setItem('ee_pending_quiz',window.MODULE_CODE||'PD-01');}catch(e){}
+  try{localStorage.setItem('ee_pending_quiz',window.MODULE_CODE||'PV-01');}catch(e){}
   if(window.opener&&!window.opener.closed){
-    try{window.opener.focus();window.opener.startQuiz&&window.opener.startQuiz(window.MODULE_CODE||'PD-01');}catch(e){}
+    try{window.opener.focus();window.opener.startQuiz&&window.opener.startQuiz(window.MODULE_CODE||'PV-01');}catch(e){}
     try{window.close();}catch(e){}
   }else{
     try{window.location.href='../index.html';}catch(e){alert('Please return to the main LMS window and click Take Quiz.');}
