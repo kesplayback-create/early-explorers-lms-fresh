@@ -406,6 +406,10 @@ function checkAnswer(el,kcId,isCorrect,feedbackText){if(answered[kcId])return;an
 document.addEventListener('click', function(e) {
     const opt = e.target.closest('.kc-opt');
     if (!opt) return;
+    // Only fire if this option is inside the currently active slide
+    const slide = opt.closest('.slide');
+    if (!slide || !slide.classList.contains('active')) return;
+    e.stopPropagation();
     const kcId = opt.dataset.kc;
     const isCorrect = opt.dataset.correct === 'true';
     const feedback = opt.dataset.feedback;
