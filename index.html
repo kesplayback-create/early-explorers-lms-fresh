@@ -3318,6 +3318,27 @@ async function renderPanelTraining(s) {
       const statusLabel = status === 'completed' ? '✅ Complete' : status === 'in_progress' ? '⏳ In Progress' : '○ Not Started';
       const barColor = status === 'completed' ? 'var(--sage)' : status === 'in_progress' ? 'var(--teal)' : 'var(--border)';
 
+      const MODULE_DISPLAY_NAMES = {
+        'SG-L1': 'Safeguarding Refresher',
+        'MH-01': 'Safe Moving & Handling in Early Years',
+        'HS-01': 'Health & Safety Procedures',
+        'BH-01': 'Behaviour Approach at Early Explorers',
+        'PP-01': 'Policies & Procedures Overview',
+      };
+      const moduleTitle = MODULE_DISPLAY_NAMES[m.code] || m.name;
+
+      let certDownloadBtn = '';
+      if (cert) {
+        const issued = cert.issued_date || '';
+        const staffName = encodeURIComponent(`${s.first_name} ${s.last_name}`);
+        const moduleParam = encodeURIComponent(moduleTitle);
+        const dateParam = encodeURIComponent(issued);
+        const certParam = encodeURIComponent(cert.certificate_number || '');
+        const scoreParam = encodeURIComponent(String(cert.score ?? ''));
+        const certUrl = `certificate-template.html?name=${staffName}&module=${moduleParam}&date=${dateParam}&cert=${certParam}&score=${scoreParam}`;
+        certDownloadBtn = `<button onclick="window.open('${certUrl}','_blank')" style="margin-top:8px;padding:6px 12px;background:var(--amber);border:none;border-radius:8px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;">🏆 View Certificate</button>`;
+      }
+
       const certInfo = cert
         ? `<div style="font-size:11px;color:var(--sage);font-weight:700;margin-top:4px;">🏆 Certified · Renewal ${cert.expiry_date ? new Date(cert.expiry_date).toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : 'N/A'}</div>`
         : status === 'completed' ? `<div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;">No certificate on record</div>` : '';
@@ -3339,6 +3360,7 @@ async function renderPanelTraining(s) {
           <div style="height:100%;width:${pct}%;background:${barColor};border-radius:10px;transition:width 0.5s;"></div>
         </div>
         <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;text-align:right;">${pct}% complete</div>
+        ${certDownloadBtn}
       </div>`;
     }).join('');
 
