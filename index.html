@@ -893,15 +893,16 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
 
         <!-- Slide-in staff detail panel -->
         <div id="staff-panel" style="display:none;position:fixed;top:0;right:0;width:min(700px,100vw);height:100vh;background:#fff;z-index:9001;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,0.2);">
-          <div style="display:flex;align-items:center;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:2;">
+          <div style="display:flex;flex-shrink:0;align-items:center;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:2;">
             <div id="staff-panel-avatar" style="width:44px;height:44px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">?</div>
             <div style="flex:1;">
               <div id="staff-panel-name" style="font-family:Quicksand,sans-serif;font-size:17px;font-weight:700;color:var(--ink);"></div>
               <div id="staff-panel-role" style="font-size:12px;color:var(--muted);font-weight:600;"></div>
             </div>
+            <button id="staff-panel-back" onclick="staffPanelBack()" style="display:none;background:var(--teal-light);border:1px solid var(--teal);color:var(--teal-deep);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;">&#8592; Back</button>
             <button onclick="closeStaffPanel()" style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;">Close</button>
           </div>
-          <div style="display:flex;border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;">
+          <div id="staff-panel-tabs" style="display:flex;flex-shrink:0;border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;position:sticky;top:85px;background:#fff;z-index:2;">
             <button class="sp-tab active" onclick="switchPanelTab('details',this)">Details</button>
             <button class="sp-tab" onclick="switchPanelTab('dbs',this)">DBS</button>
             <button class="sp-tab" onclick="switchPanelTab('recruitment',this)">Recruitment</button>
@@ -2474,6 +2475,8 @@ function filterStaffCards() { renderStaffCards(); }
 async function openStaffPanel(staffId) {
   _currentStaffId = staffId;
   _currentPanelTab = 'details';
+  _panelHistory = [];
+  updatePanelBack();
   document.getElementById('staff-panel-overlay').style.display = 'block';
   document.getElementById('staff-panel').style.display = 'flex';
   document.getElementById('staff-panel').style.flexDirection = 'column';
@@ -2500,10 +2503,31 @@ function closeStaffPanel() {
   document.getElementById('staff-panel-overlay').style.display = 'none';
   document.getElementById('staff-panel').style.display = 'none';
   _currentStaffId = null;
+  _panelHistory = [];
 }
 
-function switchPanelTab(tab, btn) {
+let _panelHistory = [];
+function updatePanelBack() {
+  const b = document.getElementById('staff-panel-back');
+  if (b) b.style.display = _panelHistory.length ? 'inline-block' : 'none';
+  // Keep the tab bar pinned directly under the header, whatever its height
+  const tabs = document.getElementById('staff-panel-tabs');
+  const head = tabs && tabs.previousElementSibling;
+  if (tabs && head && head.offsetHeight) tabs.style.top = head.offsetHeight + 'px';
+}
+function staffPanelBack() {
+  const prev = _panelHistory.pop();
+  if (!prev) return;
+  const btn = document.querySelector(`.sp-tab[onclick*="'${prev}'"]`);
+  if (btn) switchPanelTab(prev, btn, true);
+}
+function switchPanelTab(tab, btn, fromBack) {
+  if (!fromBack && tab !== _currentPanelTab) _panelHistory.push(_currentPanelTab);
   _currentPanelTab = tab;
+  updatePanelBack();
+  const panelEl = document.getElementById('staff-panel');
+  if (panelEl) panelEl.scrollTop = 0;
+  if (btn && btn.scrollIntoView) btn.scrollIntoView({block:'nearest', inline:'nearest'});
   document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   const s = _staffData.find(x => x.id === _currentStaffId);
