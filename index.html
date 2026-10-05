@@ -483,6 +483,7 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
       <div class="nav-item active" onclick="showTab('dashboard',this)"><span class="nav-icon">🏠</span> Dashboard</div>
       <div class="nav-item" onclick="showTab('courses',this)"><span class="nav-icon">📚</span> My Training</div>
       <div class="nav-item" onclick="showTab('certs',this)"><span class="nav-icon">🏆</span> Certificates</div>
+      <div class="nav-item" onclick="showTab('myinduction',this)"><span class="nav-icon">🧭</span> My Induction</div>
     </div>
     <div class="nav-blk">
       <div class="nav-lbl">Management</div>
@@ -762,6 +763,10 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
       </div>
 
       <!-- CERTIFICATES -->
+      <div id="tab-myinduction" class="tab-panel">
+        <div id="myinduction-content" style="max-width:820px;"></div>
+      </div>
+
       <div id="tab-certs" class="tab-panel">
         <div class="alert alert-info" style="margin-bottom:22px;" id="certs-alert">Loading certificates...</div>
         <div class="certs-grid" id="certs-container">
@@ -899,6 +904,7 @@ body { font-family:'Nunito',sans-serif; background:var(--cream); color:var(--ink
           <div style="display:flex;border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;">
             <button class="sp-tab active" onclick="switchPanelTab('details',this)">Details</button>
             <button class="sp-tab" onclick="switchPanelTab('dbs',this)">DBS</button>
+            <button class="sp-tab" onclick="switchPanelTab('recruitment',this)">Recruitment</button>
             <button class="sp-tab" onclick="switchPanelTab('quals',this)">Qualifications</button>
             <button class="sp-tab" onclick="switchPanelTab('emergency',this)">Emergency</button>
             <button class="sp-tab" onclick="switchPanelTab('induction',this)">Induction</button>
@@ -1690,7 +1696,7 @@ function showTab(id,nav){
   if (id === 'training') { setTimeout(applyTrainingLocks, 100); }
   document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
   const p=document.getElementById('tab-'+id);if(p)p.classList.add('active');
-  const ttls={dashboard:'My Dashboard',courses:'My Training',certs:'My Certificates',compliance:'Compliance Report',staff:'Staff Overview',policies:'Policies & Documents',addstaff:'Add Staff',settings:'Account Settings'};
+  const ttls={dashboard:'My Dashboard',courses:'My Training',certs:'My Certificates',myinduction:'My Induction',compliance:'Compliance Report',staff:'Staff Overview',policies:'Policies & Documents',addstaff:'Add Staff',settings:'Account Settings'};
   const t=document.getElementById('topbar-ttl');if(t&&ttls[id])t.textContent=ttls[id];
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if(nav)nav.classList.add('active');
@@ -1707,6 +1713,8 @@ function showTab(id,nav){
     loadPolicies();
   } else if(id === 'settings' && typeof loadSettings === 'function') {
     loadSettings();
+  } else if(id === 'myinduction' && typeof loadMyInduction === 'function') {
+    loadMyInduction();
   }
 }
 function openModule(){showScreen('screen-module');}
@@ -2358,6 +2366,13 @@ async function loadStaffOverview() {
     const dbsMap = {};
     (dbsData||[]).forEach(d => { dbsMap[d.user_id] = d; });
 
+    // Load safer recruitment records (table added in v3.0; ignore if not migrated yet)
+    const recruitMap = {};
+    try {
+      const { data: recData } = await window.supabaseClient.from('staff_recruitment_checks').select('*');
+      (recData||[]).forEach(r => { recruitMap[r.user_id] = r; });
+    } catch(_) {}
+
     // Load induction completions count per user
     const { data: completions } = await window.supabaseClient
       .from('induction_checklist_completions').select('user_id, completed');
@@ -2375,6 +2390,8 @@ async function loadStaffOverview() {
       dbs: dbsMap[s.id] || null,
       inductionDone: completionMap[s.id] || 0,
       inductionTotal: totalItems,
+      recruit: recruitMap[s.id] || null,
+      recruitDone: recruitStatus(recruitMap[s.id]).done,
     }));
 
     // Stats
@@ -2443,6 +2460,10 @@ function renderStaffCards() {
         <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;"><span>Induction</span><span style="color:${inductColor};">${s.inductionDone}/${s.inductionTotal}</span></div>
         <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="height:100%;width:${inductPct}%;background:${inductColor};border-radius:10px;transition:width 0.5s;"></div></div>
       </div>
+      <div style="margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;"><span>Safer recruitment</span><span style="color:${s.recruitDone===RECRUIT_CHECKS.length?'var(--sage)':s.recruitDone>0?'var(--teal)':'var(--amber)'};">${s.recruitDone||0}/${RECRUIT_CHECKS.length}</span></div>
+        <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="height:100%;width:${Math.round(((s.recruitDone||0)/RECRUIT_CHECKS.length)*100)}%;background:${s.recruitDone===RECRUIT_CHECKS.length?'var(--sage)':s.recruitDone>0?'var(--teal)':'var(--amber)'};border-radius:10px;transition:width 0.5s;"></div></div>
+      </div>
       <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:8px;">${s.staff_reference ? 'Ref: '+s.staff_reference : 'No ref number'} · ${s.hire_date ? 'Started '+new Date(s.hire_date).toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : 'No start date'}</div>
     </div>`;
   }).join('');
@@ -2489,6 +2510,7 @@ function switchPanelTab(tab, btn) {
   switch(tab) {
     case 'details': renderPanelDetails(s); break;
     case 'dbs': renderPanelDBS(s); break;
+    case 'recruitment': renderPanelRecruitment(s); break;
     case 'quals': renderPanelQuals(s); break;
     case 'emergency': renderPanelEmergency(s); break;
     case 'induction': renderPanelInduction(s); break;
@@ -2811,7 +2833,8 @@ async function confirmStaffRemoval(userId) {
       const tables = [
         'staff_forms', 'staff_dbs', 'staff_qualifications', 'staff_emergency_contacts',
         'user_module_progress', 'lesson_completions', 'quiz_attempts',
-        'certificates', 'policy_acknowledgements', 'notifications', 'audit_log'
+        'certificates', 'policy_acknowledgements', 'notifications', 'audit_log',
+        'staff_recruitment_checks', 'induction_checklist_completions'
       ];
       for (const table of tables) {
         await window.supabaseClient.from(table).delete().eq('user_id', userId);
@@ -3236,6 +3259,297 @@ async function toggleInductionItem(itemId, checked, userId) {
     renderStaffCards();
     showToast(checked ? 'Item marked complete' : 'Item unchecked');
   } catch(e) { alert('Error: '+e.message); }
+}
+
+// ── SAFER RECRUITMENT + MY INDUCTION (v3.0) ──
+function eeEsc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function eeDate(d) {
+  return d ? new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+}
+
+const RECRUIT_CHECKS = [
+  { key:'ref1',    label:'First reference' },
+  { key:'ref2',    label:'Second reference' },
+  { key:'rtw',     label:'Right to work' },
+  { key:'id',      label:'Identity' },
+  { key:'disqual', label:'Disqualification declaration' },
+  { key:'history', label:'Employment history and gaps' },
+];
+
+// Mirrors ee_my_recruitment_status() in Supabase. Keep the two in step.
+function recruitStatus(r) {
+  const today = new Date().toISOString().slice(0,10);
+  const st = {
+    ref1:    !!(r && r.ref1_received && r.ref1_outcome === 'satisfactory'),
+    ref2:    !!(r && r.ref2_received && r.ref2_outcome === 'satisfactory'),
+    rtw:     !!(r && r.rtw_checked_date && (!r.rtw_expiry || r.rtw_expiry >= today)),
+    id:      !!(r && r.id_checked_date),
+    disqual: !!(r && r.disqual_signed_date && r.disqual_outcome === 'no_issues'),
+    history: !!(r && r.history_complete && r.gaps_explained),
+  };
+  st.done = RECRUIT_CHECKS.filter(c => st[c.key]).length;
+  st.total = RECRUIT_CHECKS.length;
+  return st;
+}
+
+function recruitWarnings(r) {
+  const w = [];
+  if (!r) return w;
+  if (r.ref1_outcome === 'concerns' || r.ref2_outcome === 'concerns')
+    w.push('A reference raised concerns. Follow up before the start date and record the outcome in the notes.');
+  if (r.disqual_outcome === 'issue_declared')
+    w.push('A disqualification issue has been declared. This person must not work with children until Ofsted has granted a waiver.');
+  if (r.rtw_expiry) {
+    const days = Math.floor((new Date(r.rtw_expiry) - new Date()) / 86400000);
+    if (days < 0) w.push('Right to work permission has expired. A follow-up check is needed now.');
+    else if (days <= 60) w.push(`Right to work permission expires in ${days} days. Book a follow-up check.`);
+  }
+  return w;
+}
+
+async function renderPanelRecruitment(s) {
+  if (!s) return;
+  const box = document.getElementById('staff-panel-content');
+  box.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">Loading...</div>';
+  const { data: r, error } = await window.supabaseClient
+    .from('staff_recruitment_checks').select('*').eq('user_id', s.id).maybeSingle();
+  if (error) {
+    box.innerHTML = `<div class="alert alert-info">Could not load the recruitment record: ${eeEsc(error.message)}. If this says the table does not exist, run induction-migration.sql in Supabase.</div>`;
+    return;
+  }
+  s.recruit = r || null;
+  const st = recruitStatus(r);
+  const v = k => eeEsc(r?.[k] ?? '');
+  const sel = (id, val, opts) => `<select class="form-select" id="${id}">${opts.map(([k,l]) => `<option value="${k}" ${val===k?'selected':''}>${l}</option>`).join('')}</select>`;
+  const refOpts = [['pending','Awaiting'],['satisfactory','Satisfactory'],['concerns','Concerns raised']];
+  const tick = ok => ok ? '<span style="color:var(--sage);font-weight:800;">Done</span>' : '<span style="color:var(--amber);font-weight:800;">Outstanding</span>';
+  const head = (title, ok) => `<div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px;"><div style="font-size:14px;font-weight:800;color:var(--teal-deep);">${title}</div><div style="font-size:12px;">${tick(ok)}</div></div>`;
+  const warnings = recruitWarnings(r);
+
+  const refBlock = n => `
+    ${head(n===1 ? 'First reference' : 'Second reference', st['ref'+n])}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><div class="sp-label">Referee name</div><input class="form-input" id="rc-ref${n}-name" value="${v('ref'+n+'_name')}"></div>
+      <div><div class="sp-label">Organisation and relationship</div><input class="form-input" id="rc-ref${n}-org" value="${v('ref'+n+'_org')}" placeholder="e.g. Little Stars Nursery, line manager"></div>
+      <div><div class="sp-label">Requested</div><input class="form-input" type="date" id="rc-ref${n}-req" value="${v('ref'+n+'_requested')}"></div>
+      <div><div class="sp-label">Received</div><input class="form-input" type="date" id="rc-ref${n}-rec" value="${v('ref'+n+'_received')}"></div>
+      <div style="grid-column:1/-1;"><div class="sp-label">Outcome</div>${sel('rc-ref'+n+'-out', r?.['ref'+n+'_outcome'] || 'pending', refOpts)}</div>
+    </div>`;
+
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="font-size:15px;font-weight:800;color:var(--ink);">Safer Recruitment</div>
+      <button onclick="saveRecruitmentRecord()" class="btn-teal" style="padding:8px 18px;font-size:13px;">Save</button>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;">${st.done} of ${st.total} checks complete. DBS is recorded on its own tab.</div>
+    ${warnings.map(t => `<div style="background:#fde8e8;border:1px solid #f5c6c6;border-radius:10px;padding:12px 16px;margin-bottom:10px;font-size:13px;font-weight:700;color:#c0392b;">${eeEsc(t)}</div>`).join('')}
+    <div><div class="sp-label">Interview date</div><input class="form-input" type="date" id="rc-interview" value="${v('interview_date')}" style="max-width:220px;"></div>
+    ${refBlock(1)}
+    ${refBlock(2)}
+    ${head('Right to work', st.rtw)}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><div class="sp-label">Document or method</div>${sel('rc-rtw-type', r?.rtw_doc_type || '', [['','Select'],['uk_irish_passport','UK or Irish passport'],['share_code','Home Office online check (share code)'],['birth_cert_ni','UK birth certificate plus NI evidence'],['other','Other, see notes']])}</div>
+      <div><div class="sp-label">Checked on</div><input class="form-input" type="date" id="rc-rtw-date" value="${v('rtw_checked_date')}"></div>
+      <div><div class="sp-label">Checked by</div><input class="form-input" id="rc-rtw-by" value="${v('rtw_checked_by')}"></div>
+      <div><div class="sp-label">Permission ends (if time-limited)</div><input class="form-input" type="date" id="rc-rtw-exp" value="${v('rtw_expiry')}"></div>
+    </div>
+    ${head('Identity', st.id)}
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div><div class="sp-label">Document seen</div><input class="form-input" id="rc-id-type" value="${v('id_doc_type')}" placeholder="e.g. Passport"></div>
+      <div><div class="sp-label">Checked on</div><input class="form-input" type="date" id="rc-id-date" value="${v('id_checked_date')}"></div>
+      <div><div class="sp-label">Checked by</div><input class="form-input" id="rc-id-by" value="${v('id_checked_by')}"></div>
+    </div>
+    ${head('Childcare disqualification declaration', st.disqual)}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><div class="sp-label">Signed on</div><input class="form-input" type="date" id="rc-dq-date" value="${v('disqual_signed_date')}"></div>
+      <div><div class="sp-label">Outcome</div>${sel('rc-dq-out', r?.disqual_outcome || 'pending', [['pending','Not yet signed'],['no_issues','Nothing declared'],['issue_declared','Issue declared']])}</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Record the outcome only. Keep anything declared on the confidential paper file, not here.</div>
+    ${head('Employment history', st.history)}
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;cursor:pointer;"><input type="checkbox" id="rc-hist" ${r?.history_complete?'checked':''} style="width:18px;height:18px;accent-color:var(--teal);"> Full employment history received</label>
+      <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;cursor:pointer;"><input type="checkbox" id="rc-gaps" ${r?.gaps_explained?'checked':''} style="width:18px;height:18px;accent-color:var(--teal);"> Any gaps explored and explained</label>
+      <div style="max-width:220px;"><div class="sp-label">Reviewed on</div><input class="form-input" type="date" id="rc-hist-date" value="${v('history_reviewed_date')}"></div>
+    </div>
+    <div style="margin-top:22px;"><div class="sp-label">Notes</div><textarea class="form-input" id="rc-notes" rows="3" style="resize:vertical;">${v('notes')}</textarea></div>
+    ${r?.updated_at ? `<div style="font-size:11px;color:var(--muted);margin-top:10px;">Last saved ${eeDate(r.updated_at)}</div>` : ''}
+  `;
+}
+
+async function saveRecruitmentRecord() {
+  const s = _staffData.find(x => x.id === _currentStaffId);
+  if (!s) return;
+  const g = id => document.getElementById(id);
+  const d = id => g(id).value || null;
+  const t = id => g(id).value.trim() || null;
+  const payload = {
+    user_id: s.id,
+    interview_date: d('rc-interview'),
+    ref1_name: t('rc-ref1-name'), ref1_org: t('rc-ref1-org'), ref1_requested: d('rc-ref1-req'), ref1_received: d('rc-ref1-rec'), ref1_outcome: g('rc-ref1-out').value,
+    ref2_name: t('rc-ref2-name'), ref2_org: t('rc-ref2-org'), ref2_requested: d('rc-ref2-req'), ref2_received: d('rc-ref2-rec'), ref2_outcome: g('rc-ref2-out').value,
+    rtw_doc_type: d('rc-rtw-type'), rtw_checked_date: d('rc-rtw-date'), rtw_checked_by: t('rc-rtw-by'), rtw_expiry: d('rc-rtw-exp'),
+    id_doc_type: t('rc-id-type'), id_checked_date: d('rc-id-date'), id_checked_by: t('rc-id-by'),
+    disqual_signed_date: d('rc-dq-date'), disqual_outcome: g('rc-dq-out').value,
+    history_complete: g('rc-hist').checked, gaps_explained: g('rc-gaps').checked, history_reviewed_date: d('rc-hist-date'),
+    notes: t('rc-notes'),
+    updated_by: localStorage.getItem('user_id'),
+    updated_at: new Date().toISOString(),
+  };
+  try {
+    const { error } = await window.supabaseClient.from('staff_recruitment_checks').upsert(payload, { onConflict: 'user_id' });
+    if (error) throw error;
+    s.recruit = payload;
+    s.recruitDone = recruitStatus(payload).done;
+    renderStaffCards();
+    showToast('Recruitment record saved');
+    renderPanelRecruitment(s);
+  } catch(e) { alert('Error saving recruitment record: ' + e.message); }
+}
+
+// ── MY INDUCTION (staff view) ──
+function eeOpenMyForm(type) {
+  openFormModal(type, localStorage.getItem('user_id'), localStorage.getItem('user_name') || '');
+  // Refresh My Induction once the form window is closed
+  const timer = setInterval(() => {
+    if (!document.getElementById('form-modal-overlay')) { clearInterval(timer); loadMyInduction(); }
+  }, 800);
+}
+async function loadMyInduction() {
+  const box = document.getElementById('myinduction-content');
+  if (!box) return;
+  const userId = localStorage.getItem('user_id');
+  const userName = localStorage.getItem('user_name') || '';
+  if (!userId || !window.supabaseClient) { box.innerHTML = '<div class="card">Please sign in again.</div>'; return; }
+  box.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">Loading your induction...</div>';
+
+  const sb = window.supabaseClient;
+  const safe = p => p.then(r => r, () => ({ data: null, error: true }));
+  const [formsRes, acksRes, itemsRes, compsRes, recruitRes, progressRows, modules] = await Promise.all([
+    safe(sb.from('staff_forms').select('form_type,submitted_at').eq('user_id', userId)),
+    safe(sb.from('policy_acknowledgements').select('policy_filename').eq('user_id', userId)),
+    safe(sb.from('induction_checklist_items').select('*').eq('is_active', true).order('display_order')),
+    safe(sb.from('induction_checklist_completions').select('*').eq('user_id', userId)),
+    safe(sb.rpc('ee_my_recruitment_status')),
+    window.EE_API ? EE_API.getUserProgress(userId).catch(() => []) : Promise.resolve([]),
+    window.EE_API ? EE_API.getModules().catch(() => []) : Promise.resolve([]),
+  ]);
+
+  // Forms
+  const forms = formsRes.data || [];
+  const hq = forms.find(f => f.form_type === 'health_questionnaire');
+  const dpa = forms.find(f => f.form_type === 'deductions_from_pay');
+  const formsDone = (hq?1:0) + (dpa?1:0);
+
+  // Policies
+  const policyTotal = (typeof POLICY_CATALOGUE !== 'undefined') ? POLICY_CATALOGUE.length : 0;
+  const policyDone = Math.min((acksRes.data || []).length, policyTotal);
+
+  // Training
+  const prog = new Map((progressRows || []).map(r => [r.module_id, r]));
+  const modTotal = (modules || []).length;
+  const modDone = (modules || []).filter(m => Number(prog.get(m.id)?.progress_percentage || 0) >= 100).length;
+
+  // Manager checklist
+  const items = itemsRes.data || [];
+  const compMap = {};
+  (compsRes.data || []).forEach(c => { compMap[c.item_id] = c; });
+  const itemsDone = items.filter(i => compMap[i.id]?.completed).length;
+
+  // Pre-employment checks
+  const rs = recruitRes.data || null;
+  const recDone = rs ? RECRUIT_CHECKS.filter(c => rs[c.key]).length : 0;
+
+  const steps = [
+    { title:'Your forms', who:'You', done:formsDone, total:2,
+      note:'Health Questionnaire and Deductions from Pay Agreement.',
+      actions: [
+        !hq  ? `<button class="btn-teal" onclick="eeOpenMyForm('hq')">Complete Health Questionnaire</button>` : '',
+        !dpa ? `<button class="btn-teal" onclick="eeOpenMyForm('dpa')">Sign Deductions from Pay</button>` : '',
+      ].join(' ') },
+    { title:'Read and accept policies', who:'You', done:policyDone, total:policyTotal,
+      note:'Read each policy and confirm you understand it.',
+      actions: policyDone < policyTotal ? `<button class="btn-teal" onclick="showTab('policies',null)">Go to policies</button>` : '' },
+    { title:'Complete your training', who:'You', done:modDone, total:modTotal,
+      note:'Each module ends with a short quiz and a certificate.',
+      actions: modDone < modTotal ? `<button class="btn-teal" onclick="showTab('courses',null)">Go to training</button>` : '' },
+    { title:'Induction with your manager', who:'Your manager', done:itemsDone, total:items.length,
+      note:'Your manager will go through these with you and tick them off.', actions:'' },
+    { title:'Pre-employment checks', who:'Your manager', done:recDone, total:RECRUIT_CHECKS.length,
+      note:'References, right to work, identity and declarations. Ask your manager if anything is outstanding.', actions:'' },
+  ];
+
+  const sumDone = steps.reduce((a,s) => a + (s.total ? s.done/s.total : 0), 0);
+  const counted = steps.filter(s => s.total).length;
+  const overall = counted ? Math.round((sumDone / counted) * 100) : 0;
+  const colour = (d,t) => (t && d >= t) ? 'var(--sage)' : (d > 0 ? 'var(--teal)' : 'var(--amber)');
+
+  const stepHtml = steps.map((s, i) => {
+    const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
+    const complete = s.total && s.done >= s.total;
+    return `<div class="card" style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;${complete?'background:var(--sage-pale);border-color:#cfe3d1;':''}">
+      <div style="width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;${complete?'background:var(--sage);color:#fff;':'background:var(--teal-light);color:var(--teal-deep);'}">${complete ? '✓' : i+1}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div style="font-size:15px;font-weight:800;color:var(--ink);">${s.title}</div>
+          <div style="font-size:13px;font-weight:800;color:${colour(s.done,s.total)};">${s.total ? `${s.done} of ${s.total}` : 'Not set up yet'}</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);font-weight:600;margin:2px 0 8px;">${s.who} · ${s.note}</div>
+        <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${colour(s.done,s.total)};border-radius:10px;transition:width 0.5s;"></div></div>
+        ${s.actions && s.actions.trim() ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">${s.actions}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Checklist detail grouped by category (read-only)
+  const cats = [];
+  items.forEach(i => { if (!cats.includes(i.category)) cats.push(i.category); });
+  const EE_CAT_LABELS = { policies:'Policies', rota_duties:'Rota and duties', staff_issues:'Staff issues', confidentiality:'Confidentiality', general_conduct:'General conduct', telephone:'Telephone rules', health_safety:'Health and safety', supervision:'Supervision', key_groups:'Key groups', training_development:'Training and development', abuse_neglect:'Abuse or neglect', communication:'Communication', special_needs:'Special needs', record_keeping:'Record keeping', team_meetings:'Team meetings', medication:'Medication', certificates:'Certificates held', admin:'Administration' };
+  const label = c => EE_CAT_LABELS[c] || String(c || 'Other').replace(/_/g,' ').replace(/^\w/, m => m.toUpperCase());
+  const checklistHtml = cats.map(c => {
+    const ci = items.filter(i => i.category === c);
+    const cd = ci.filter(i => compMap[i.id]?.completed).length;
+    return `<details style="border-bottom:1px solid var(--border);padding:10px 0;">
+      <summary style="cursor:pointer;display:flex;justify-content:space-between;font-size:14px;font-weight:700;color:var(--ink);list-style:none;">
+        <span>${eeEsc(label(c))}</span><span style="color:${colour(cd,ci.length)};font-size:13px;">${cd}/${ci.length}</span>
+      </summary>
+      <div style="padding:8px 0 4px;">${ci.map(i => {
+        const comp = compMap[i.id];
+        return `<div class="induction-item">
+          <span style="width:20px;text-align:center;font-weight:800;color:${comp?.completed?'var(--sage)':'var(--border)'};">${comp?.completed?'✓':'○'}</span>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--ink);">${eeEsc(i.title)}</div>
+          ${comp?.completed_at ? `<div style="font-size:11px;color:var(--muted);">Covered ${eeDate(comp.completed_at)}</div>` : ''}</div>
+        </div>`;
+      }).join('')}</div>
+    </details>`;
+  }).join('');
+
+  const recruitHtml = RECRUIT_CHECKS.map(c => `
+    <div class="induction-item">
+      <span style="width:20px;text-align:center;font-weight:800;color:${rs?.[c.key]?'var(--sage)':'var(--amber)'};">${rs?.[c.key]?'✓':'○'}</span>
+      <div style="flex:1;font-size:13px;font-weight:600;color:var(--ink);">${c.label}</div>
+      <div style="font-size:12px;font-weight:700;color:${rs?.[c.key]?'var(--sage)':'var(--muted)'};">${rs?.[c.key]?'Complete':'Outstanding'}</div>
+    </div>`).join('');
+
+  box.innerHTML = `
+    <div class="prog-card" style="margin-bottom:22px;">
+      <div class="sec-hdr" style="margin-bottom:11px;">
+        <div class="sec-ttl">Your induction</div>
+      </div>
+      <div class="prog-row"><div class="prog-bg"><div class="prog-fill" style="width:${overall}%;"></div></div><div class="prog-pct">${overall}%</div></div>
+      <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:7px;">${overall === 100 ? 'All done. Your manager will confirm the end of your induction.' : 'Work through the steps below. Your manager can see your progress.'}</div>
+    </div>
+    ${stepHtml}
+    <div class="card" style="margin-top:22px;">
+      <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px;">Induction checklist</div>
+      <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px;">What your manager will cover with you. Tap a section to see each item.</div>
+      ${checklistHtml || '<div style="font-size:13px;color:var(--muted);padding:10px 0;">Your checklist is not available yet.</div>'}
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:8px;">Pre-employment checks</div>
+      ${recruitHtml}
+    </div>`;
 }
 
 // ── TRAINING TAB ──
