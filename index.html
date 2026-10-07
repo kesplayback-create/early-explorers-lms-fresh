@@ -3062,6 +3062,29 @@ function showAddQualForm(userId) {
   if (form) { form.style.display = 'block'; form.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
 }
 
+// Certificate upload helpers
+function safeStorageName(name) {
+  const dot = name.lastIndexOf('.');
+  const base = (dot > 0 ? name.slice(0, dot) : name).normalize('NFKD').replace(/[^\w.-]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'certificate';
+  const ext = (dot > 0 ? name.slice(dot + 1) : '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  return ext ? `${base.slice(0, 80)}.${ext}` : base.slice(0, 80);
+}
+function checkCertFile(file) {
+  const okTypes = ['pdf','jpg','jpeg','png'];
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (!okTypes.includes(ext)) return 'Please choose a PDF, JPG or PNG file.';
+  if (file.size > 10 * 1024 * 1024) return 'That file is over 10MB. Please scan or save it at a smaller size and try again.';
+  return null;
+}
+function explainUploadError(e) {
+  const msg = (e && (e.message || e.error)) || String(e);
+  if (/row-level security|violates|Unauthorized|403/i.test(msg)) return 'Upload blocked by storage permissions (staff-documents bucket has no upload policy for admins). Details: ' + msg;
+  if (/Bucket not found/i.test(msg)) return 'The staff-documents storage bucket does not exist in Supabase. Details: ' + msg;
+  if (/Invalid key/i.test(msg)) return 'The file name contains characters storage will not accept. Rename the file and try again. Details: ' + msg;
+  if (/exceeded|too large|413/i.test(msg)) return 'The file is larger than the storage limit. Details: ' + msg;
+  return msg;
+}
+
 async function saveNewQual(userId) {
   const name = document.getElementById('q-name').value.trim();
   if (!name) { alert('Qualification name is required'); return; }
@@ -3076,9 +3099,10 @@ async function saveNewQual(userId) {
   try {
     // Upload file first if provided
     if (file) {
+      const bad = checkCertFile(file);
+      if (bad) throw new Error(bad);
       if (progress) { progress.style.display='block'; progress.textContent='Uploading certificate...'; }
-      const ext = file.name.split('.').pop();
-      const path = `qualifications/${userId}/${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+      const path = `qualifications/${userId}/${Date.now()}_${safeStorageName(file.name)}`;
       const { error: upErr } = await window.supabaseClient.storage
         .from('staff-documents').upload(path, file, { upsert: false });
       if (upErr) throw upErr;
@@ -3104,7 +3128,7 @@ async function saveNewQual(userId) {
   } catch(e) {
     if (btn) btn.disabled = false;
     if (progress) { progress.style.display='none'; }
-    alert('Error: '+e.message);
+    alert('Error: '+explainUploadError(e));
   }
 }
 
@@ -3114,7 +3138,9 @@ async function uploadQualCert(input, qualId, userId) {
   const label = input.closest('label');
   if (label) label.style.opacity = '0.6';
   try {
-    const path = `qualifications/${userId}/${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+    const bad = checkCertFile(file);
+    if (bad) throw new Error(bad);
+    const path = `qualifications/${userId}/${Date.now()}_${safeStorageName(file.name)}`;
     const { error: upErr } = await window.supabaseClient.storage
       .from('staff-documents').upload(path, file, { upsert: false });
     if (upErr) throw upErr;
@@ -3124,7 +3150,7 @@ async function uploadQualCert(input, qualId, userId) {
     const s = _staffData.find(x => x.id === userId);
     if (s) await renderPanelQuals(s);
     showToast('Certificate uploaded');
-  } catch(e) { alert('Upload error: '+e.message); if (label) label.style.opacity='1'; }
+  } catch(e) { alert('Upload error: '+explainUploadError(e)); if (label) label.style.opacity='1'; input.value=''; }
 }
 
 async function downloadQualCert(filePath, fileName) {
